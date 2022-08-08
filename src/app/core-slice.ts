@@ -20,7 +20,7 @@ export const coreSlice = createSlice({
     showToast: (state, action: PayloadAction<SapNotification>) => {
       state.notifications.push(action.payload);
     },
-    setUser: (state, action: PayloadAction<User>) => {
+    setAuthUser: (state, action: PayloadAction<User | undefined>) => {
       state.user = action.payload;
     },
     dismissToast: (state, action: PayloadAction<string>) => {
@@ -30,7 +30,7 @@ export const coreSlice = createSlice({
   }
 });
 
-export const { setGlobalError, dismissToast, showToast } = coreSlice.actions;
+export const { setGlobalError, dismissToast, showToast, setAuthUser } = coreSlice.actions;
 
 export const globalErrorSelector = (state: RootState) => state.core.globalError;
 export const notificationSelector = (state: RootState) => state.core.notifications;
