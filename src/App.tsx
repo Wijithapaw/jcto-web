@@ -19,15 +19,15 @@ const getAuthToken = async () => {
 
 Amplify.configure({
   Auth: {
-    region: 'ap-south-1',
-    userPoolId: 'ap-south-1_aup9LWNw7',
-    userPoolWebClientId: '2n1qg8ll8t2u7c6oba99s4bohc',
+    region: process.env.REACT_APP_COGNITO_REGION,
+    userPoolId: process.env.REACT_APP_COGNITO_USER_POOL_ID,
+    userPoolWebClientId: process.env.REACT_APP_COGNITO_CLIENTID,
     mandatorySignIn: true,
     oauth: {
-      domain: 'devjctops.auth.ap-south-1.amazoncognito.com',
+      domain: process.env.REACT_APP_COGNITO_OAUTH_DOMAIN,
       scope: ['email', 'openid', 'profile'],
-      redirectSignIn: 'http://localhost:3000',
-      redirectSignOut: 'http://localhost:3000',
+      redirectSignIn: window.location.origin,
+      redirectSignOut: window.location.origin,
       responseType: 'code',
     },
   },
@@ -35,7 +35,7 @@ Amplify.configure({
     endpoints: [
       {
         name: "jctops",
-        endpoint: "http://localhost:6000/",
+        endpoint: process.env.REACT_APP_API_URL,
         custom_header: async () => {
           return { Authorization: `${await getAuthToken()}` }
         }

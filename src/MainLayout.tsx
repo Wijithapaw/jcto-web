@@ -38,7 +38,7 @@ export default function MainLayout({ children }: Props) {
                         <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                             {
                                 authenticated ? <>
-                                    {routes.map((path) => <li className="nav-item">
+                                    {routes.map((path) => <li className="nav-item" key={path.path}>
                                         <Link className={`nav-link ${isActivePath(path.path) ? 'active' : ''}`} to={path.path}>{path.title}</Link>
                                     </li>)}
                                     <li className="nav-item dropdown">
