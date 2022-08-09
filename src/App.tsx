@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { authUserSelector, setAuthUser } from './app/core-slice';
 import { Amplify, Auth, Hub } from 'aws-amplify';
 import { useEffect } from 'react';
+import CustomersPage from './features/customer/components/CustomersPage';
 
 const getAuthToken = async () => {
   try {
@@ -34,7 +35,7 @@ Amplify.configure({
   API: {
     endpoints: [
       {
-        name: "jctops",
+        name: "jcto",
         endpoint: process.env.REACT_APP_API_URL,
         custom_header: async () => {
           return { Authorization: `${await getAuthToken()}` }
@@ -75,7 +76,7 @@ function App() {
   return <MainLayout>
     {
       authenticated ? <Routes>
-        <Route path="/customers" element={<PrivateRoute><div>Customers</div></PrivateRoute>} />
+        <Route path="/customers" element={<PrivateRoute><CustomersPage /></PrivateRoute>} />
         <Route path="/orders" element={<PrivateRoute><div>Customers</div></PrivateRoute>} />
         <Route path="/customer-entries" element={<PrivateRoute><div>Customers</div></PrivateRoute>} />
         <Route path="/" element={<Navigate to={authenticated ? "/orders" : "/"} />} />
