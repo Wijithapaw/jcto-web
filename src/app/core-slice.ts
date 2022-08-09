@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "./store";
-import { SapNotification, User } from "./types";
+import { AppNotification, User } from "./types";
 
 export interface CoreState {
   user?: User;
   globalError?: string;
-  notifications: SapNotification[];
+  notifications: AppNotification[];
 }
 
 const initialState: CoreState = { notifications: [] }
@@ -17,7 +17,7 @@ export const coreSlice = createSlice({
     setGlobalError: (state, action: PayloadAction<string>) => {
       state.globalError = action.payload;
     },
-    showToast: (state, action: PayloadAction<SapNotification>) => {
+    showToast: (state, action: PayloadAction<AppNotification>) => {
       state.notifications.push(action.payload);
     },
     setAuthUser: (state, action: PayloadAction<User | undefined>) => {

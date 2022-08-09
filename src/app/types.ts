@@ -28,7 +28,7 @@ export interface IDictionary<T> {
   [key: string] : T;
 }
 
-export interface SapNotification {
+export interface AppNotification {
   type: NotificationType,
   message: string;
   title?: string;
@@ -38,6 +38,10 @@ export interface SapNotification {
 export interface User {
   email: string;
   name: string;
+}
+
+export interface ErrorResponse {
+  errorMessage: string;
 }
 
 export enum NotificationType { 'error' , 'success' , 'warning'}

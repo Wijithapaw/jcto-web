@@ -4,7 +4,7 @@ import { coreApi } from "../../../app/core-api";
 export default function CustomersPage() {
     const [hello, setHello] = useState<string>();
     useEffect(() => {
-       coreApi.get<string>("helloworld")
+       coreApi.get<string>("helloworld/wijitha")
             .then(data => {
                 setHello(data);
             });
