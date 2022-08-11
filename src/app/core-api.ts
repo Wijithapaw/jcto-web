@@ -1,5 +1,5 @@
+import { rejects } from "assert";
 import { API } from "aws-amplify";
-import { NotificationType, showNotification } from "./notification-service";
 
 export const coreApi = {
     get
@@ -7,15 +7,12 @@ export const coreApi = {
 
 function handleError(err: any) {
     const status = err.response.status;
-    const errMsg = err.response.data?.errorMessage || 'Unknoen error';
-    showNotification(status === 400 ? NotificationType.warning : NotificationType.error, errMsg);
+    const errorMessage = err.response.data?.errorMessage || 'Unknown API error';
+    return Promise.reject({status, errorMessage})
 }
 
 function get<T>(path: string, params?: any) {
     return API.get("jcto", path, params)
         .then(data => data as T)
-        .catch(err => {
-            handleError(err);
-            throw err;
-        });
+        .catch(handleError)
 }

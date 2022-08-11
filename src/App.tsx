@@ -4,10 +4,15 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import MainLayout from './MainLayout';
 import PrivateRoute from './components/PrivateRoute';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { authUserSelector, setAuthUser } from './app/core-slice';
+import { authUserSelector, setAuthUser, setGlobalError } from './app/core-slice';
 import { Amplify, Auth, Hub } from 'aws-amplify';
 import { useEffect } from 'react';
 import CustomersPage from './features/customer/components/CustomersPage';
+import { NotificationType, showNotification } from './app/notification-service';
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { fas } from "@fortawesome/free-solid-svg-icons";
+
+library.add(fas);
 
 const getAuthToken = async () => {
   try {
@@ -51,6 +56,7 @@ function App() {
   const authenticated = !!useAppSelector(authUserSelector);
 
   useEffect(() => {
+    //Listen for auth events
     Hub.listen('auth', ({ payload: { event, data } }) => {
       switch (event) {
         case 'signIn':
@@ -66,11 +72,26 @@ function App() {
       }
     });
 
+    //Check user's authenticity
     Auth.currentAuthenticatedUser().then(user => {
       dispatch(setAuthUser({ email: user.username, name: user.username }));
     }).catch(() => {
       dispatch(setAuthUser(undefined));
     });
+
+    //Handle unhandled errors globally
+    window.onunhandledrejection = (err) => {
+      const { status, errorMessage } = err.reason;
+      switch (status) {
+        case 400: showNotification(NotificationType.warning, errorMessage); break;
+        case 409: dispatch(setGlobalError(errorMessage)); break;
+        case 500: showNotification(NotificationType.error, errorMessage); break;
+        default:
+          console.log(err.reason);
+          showNotification(NotificationType.error, errorMessage || 'Unknown error!'); 
+          break;
+      }
+    }
   }, []);
 
   return <MainLayout>

@@ -12,7 +12,7 @@ export default function GlobalError() {
     dispatch(setGlobalError(''));
   }
 
-  return <Modal isOpen={!!error} toggle={hideError} size='md' centered>
+  return <Modal isOpen={!!error} toggle={hideError} size='md' centered backdrop="static">
     <ModalHeader toggle={hideError} className="text-danger">
       <SapIcon icon='warning' />
       <span className="ms-2">Error</span>

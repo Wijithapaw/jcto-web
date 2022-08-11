@@ -41,7 +41,8 @@ export interface User {
 }
 
 export interface ErrorResponse {
-  errorMessage: string;
+  status: number;
+  message: string;
 }
 
 export enum NotificationType { 'error' , 'success' , 'warning'}

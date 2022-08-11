@@ -12,5 +12,5 @@ export default function PrivateRoute({ children, permission }: Props) {
 
   const authenticated = !!user;
 
-  return authenticated ? children : <Navigate to="/login" />;
+  return authenticated ? children : <Navigate to="/" />;
 }
