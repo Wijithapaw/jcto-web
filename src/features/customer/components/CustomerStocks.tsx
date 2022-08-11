@@ -109,7 +109,7 @@ export default function CustomerStocks() {
         </tbody>
         <tfoot>
             <tr>
-                <td colSpan={7} className="text-start text-muted">
+                <td colSpan={PRODUCT_CODES.length * 2 + 1} className="text-start text-muted">
                     <i><small>*All the figures are in metric tons (MT)</small></i>
                 </td>
             </tr>
