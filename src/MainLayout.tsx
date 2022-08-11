@@ -7,11 +7,11 @@ import SapToast from "./components/SapToast";
 
 const routes = [
     {
-        path: '/customers', title: 'Customers'
+        path: '/orders', title: 'Orders'
     },
     {
-        path: '/orders', title: 'Orders'
-    }
+        path: '/customers', title: 'Customers'
+    }    
 ];
 
 interface Props {

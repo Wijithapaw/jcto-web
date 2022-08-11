@@ -98,8 +98,8 @@ function App() {
     {
       authenticated ? <Routes>
         <Route path="/customers" element={<PrivateRoute><CustomersPage /></PrivateRoute>} />
-        <Route path="/orders" element={<PrivateRoute><div>Customers</div></PrivateRoute>} />
-        <Route path="/customer-entries" element={<PrivateRoute><div>Customers</div></PrivateRoute>} />
+        <Route path="/orders" element={<PrivateRoute><div>Orders</div></PrivateRoute>} />
+        <Route path="/customer-entries" element={<PrivateRoute><div>Entries</div></PrivateRoute>} />
         <Route path="/" element={<Navigate to={authenticated ? "/orders" : "/"} />} />
       </Routes> : null
     }
