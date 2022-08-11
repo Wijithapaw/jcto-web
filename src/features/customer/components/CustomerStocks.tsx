@@ -46,14 +46,14 @@ export default function CustomerStocks() {
         navigate({ pathname: '/entries', search: `?${createSearchParams({ customerId })}` })
     }
 
-    return <Table bordered style={{ tableLayout: 'fixed', textAlign: 'center' }}>
+    return <Table bordered style={{ tableLayout: 'fixed', textAlign: 'right' }}>
         <thead>
             <tr>
                 <th rowSpan={2} className="text-start">
                     Customer
                 </th>
                 {
-                    PRODUCT_CODES.map(code => <th key={code} colSpan={2}>{code}</th>)
+                    PRODUCT_CODES.map(code => <th key={code} colSpan={2} className="text-center">{code}</th>)
                 }
             </tr>
             <tr>
@@ -78,10 +78,10 @@ export default function CustomerStocks() {
                         const productStock = customerStock.stocks.find(s => s.productCode == productCode);
                         return <Fragment key={productCode}>
                             <td>
-                                {productStock?.remainingStock}
+                                {productStock?.remainingStock.toFixed(4)}
                             </td>
                             <td>
-                                {productStock?.undeliveredStock}
+                                {productStock?.undeliveredStock.toFixed(4)}
                             </td>
                         </Fragment>
                     })}
