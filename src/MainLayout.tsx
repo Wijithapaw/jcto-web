@@ -6,12 +6,9 @@ import GlobalError from "./components/GlobalError";
 import SapToast from "./components/SapToast";
 
 const routes = [
-    {
-        path: '/orders', title: 'Orders'
-    },
-    {
-        path: '/customers', title: 'Customers'
-    }    
+    { path: '/customers', title: 'Customers' },
+    { path: '/entries', title: 'Entries' },
+    { path: '/orders', title: 'Orders' },
 ];
 
 interface Props {

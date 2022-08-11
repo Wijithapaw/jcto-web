@@ -11,6 +11,8 @@ import CustomersPage from './features/customer/components/CustomersPage';
 import { NotificationType, showNotification } from './app/notification-service';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
+import OrdersPage from './features/order/components/OrdersPage';
+import EntryListPage from './features/entry/components/EntryListPage';
 
 library.add(fas);
 
@@ -88,7 +90,7 @@ function App() {
         case 500: showNotification(NotificationType.error, errorMessage); break;
         default:
           console.log(err.reason);
-          showNotification(NotificationType.error, errorMessage || 'Unknown error!'); 
+          showNotification(NotificationType.error, errorMessage || 'Unknown error!');
           break;
       }
     }
@@ -98,8 +100,8 @@ function App() {
     {
       authenticated ? <Routes>
         <Route path="/customers" element={<PrivateRoute><CustomersPage /></PrivateRoute>} />
-        <Route path="/orders" element={<PrivateRoute><div>Orders</div></PrivateRoute>} />
-        <Route path="/customer-entries" element={<PrivateRoute><div>Entries</div></PrivateRoute>} />
+        <Route path="/orders" element={<PrivateRoute><OrdersPage /></PrivateRoute>} />
+        <Route path="/entries" element={<PrivateRoute><EntryListPage /></PrivateRoute>} />
         <Route path="/" element={<Navigate to={authenticated ? "/orders" : "/"} />} />
       </Routes> : null
     }

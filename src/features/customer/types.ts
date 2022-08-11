@@ -1,5 +1,6 @@
 export interface CustomerStocks {
-    customer: string;
+    customerId: string;
+    customerName: string;
     stocks: ProductStock[];
 }
 

@@ -8,7 +8,8 @@ export interface CustomerState {
 
 const customerStocks: CustomerStocks[] = [
     {
-        customer: 'JKCS',
+        customerId: 'customer-1',
+        customerName: 'JKCS',
         stocks: [
             {
                 productCode: 'GO',
@@ -28,7 +29,8 @@ const customerStocks: CustomerStocks[] = [
         ]
     },
     {
-        customer: 'ABC',
+        customerId: 'customer-2',
+        customerName: 'ABC',
         stocks: [
             {
                 productCode: 'GO',
@@ -48,7 +50,8 @@ const customerStocks: CustomerStocks[] = [
         ]
     },
     {
-        customer: 'XYZ',
+        customerId: 'customer-3',
+        customerName: 'XYZ',
         stocks: [
             {
                 productCode: 'GO',

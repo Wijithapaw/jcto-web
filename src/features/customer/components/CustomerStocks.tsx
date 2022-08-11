@@ -4,8 +4,10 @@ import { useAppSelector } from "../../../app/hooks"
 import { IDictionary } from "../../../app/types";
 import { customerStocksSelector } from "../customer-slice"
 import { ProductStock, PRODUCT_CODES } from "../types";
+import { createSearchParams, useNavigate } from 'react-router-dom'
 
 export default function CustomerStocks() {
+    const navigate = useNavigate();
     const customerStocks = useAppSelector(customerStocksSelector);
 
     const [productStockSummary, setProductStockSummary] = useState<IDictionary<ProductStock>>({});
@@ -40,6 +42,10 @@ export default function CustomerStocks() {
         return +total.toFixed(4);
     }
 
+    const handleCustomerSelect = (customerId: string) => {
+        navigate({ pathname: '/entries', search: `?${createSearchParams({ customerId })}` })
+    }
+
     return <Table bordered style={{ tableLayout: 'fixed', textAlign: 'center' }}>
         <thead>
             <tr>
@@ -61,9 +67,12 @@ export default function CustomerStocks() {
         </thead>
         <tbody>
             {
-                customerStocks.map(customerStock => <tr key={customerStock.customer}>
+                customerStocks.map(customerStock => <tr key={customerStock.customerName}>
                     <th className="text-start">
-                        {customerStock.customer}
+                        <span style={{ cursor: 'pointer' }}
+                            onClick={() => handleCustomerSelect(customerStock.customerId)}>
+                            {customerStock.customerName}
+                        </span>
                     </th>
                     {PRODUCT_CODES.map(productCode => {
                         const productStock = customerStock.stocks.find(s => s.productCode == productCode);
