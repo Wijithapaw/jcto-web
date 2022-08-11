@@ -1,18 +1,20 @@
-import { useEffect, useState } from "react"
-import { coreApi } from "../../../app/core-api";
-import SapIcon from "../../../components/SapIcon";
+import { useState } from "react";
+import { Col, Row } from "reactstrap";
+import { dateHelpers } from "../../../app/helpers";
+import CustomerStocks from "./CustomerStocks";
 
 export default function CustomersPage() {
-    const [hello, setHello] = useState<string>();
-    useEffect(() => {
-       coreApi.get<string>("helloworld/wiji")
-            .then(data => {
-                setHello(data);
-            });
-    }, []);
-
-    return <div>
-        Customers page! - {hello}
-        <SapIcon icon='warning' />
-    </div>
+    const [date, setDate] = useState(new Date());
+    return <>
+        <Row>
+            <Col className="mt-3 mb-3">
+                <h2>Customer stocks as at: {dateHelpers.toDatetimeStr(date)}</h2>
+            </Col>
+        </Row>
+        <Row>
+            <Col>
+                <CustomerStocks />
+            </Col>
+        </Row>
+    </>
 }
