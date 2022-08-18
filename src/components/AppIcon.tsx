@@ -8,7 +8,7 @@ interface Props {
   title?: string;
 }
 
-export default function SapIcon({icon, className, color, title}: Props) {
+export default function AppIcon({icon, className, color, title}: Props) {
   return <FontAwesomeIcon 
     className={className} 
     icon={icon} 

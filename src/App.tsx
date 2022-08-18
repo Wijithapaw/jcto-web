@@ -97,7 +97,9 @@ function App() {
     }
 
     //Load global data
-    dispatch(getCustomerListItemsAsync());
+    if(authenticated) {
+      dispatch(getCustomerListItemsAsync());
+    }
   }, []);
 
   return <MainLayout>

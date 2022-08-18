@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { authUserSelector } from "./app/core-slice";
 import { useAppSelector } from "./app/hooks";
 import GlobalError from "./components/GlobalError";
-import SapToast from "./components/SapToast";
+import AppToast from "./components/AppToast";
 
 const routes = [
     { path: '/customers', title: 'Customers' },
@@ -70,7 +70,7 @@ export default function MainLayout({ children }: Props) {
                 {children}
             </div>
             <GlobalError />
-            <SapToast />
+            <AppToast />
         </>
     )
 }

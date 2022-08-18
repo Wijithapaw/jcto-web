@@ -1,7 +1,7 @@
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import { globalErrorSelector, setGlobalError } from "../app/core-slice";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import SapIcon from "./SapIcon";
+import AppIcon from "./AppIcon";
 
 export default function GlobalError() {
   const error = useAppSelector(globalErrorSelector);
@@ -14,7 +14,7 @@ export default function GlobalError() {
 
   return <Modal isOpen={!!error} toggle={hideError} size='md' centered backdrop="static">
     <ModalHeader toggle={hideError} className="text-danger">
-      <SapIcon icon='warning' />
+      <AppIcon icon='warning' />
       <span className="ms-2">Error</span>
       </ModalHeader>
     <ModalBody>

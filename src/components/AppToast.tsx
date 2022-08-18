@@ -3,7 +3,7 @@ import { dismissToast, notificationSelector } from "../app/core-slice";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { NotificationType } from "../app/types";
 
-export default function SapToast() {
+export default function AppToast() {
     const notifications = useAppSelector(notificationSelector);
 
     const dispatch = useAppDispatch();
