@@ -95,12 +95,15 @@ function App() {
           break;
       }
     }
+  }, []);
 
-    //Load global data
-    if(authenticated) {
+  useEffect(() => {
+    if (authenticated) {
+      //Load global data
       dispatch(getCustomerListItemsAsync());
     }
-  }, []);
+
+  }, [authenticated])
 
   return <MainLayout>
     {
