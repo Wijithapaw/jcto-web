@@ -13,6 +13,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import OrdersPage from './features/order/components/OrdersPage';
 import EntryListPage from './features/entry/components/EntryListPage';
+import { getCustomerListItemsAsync } from './features/customer/customer-slice';
 
 library.add(fas);
 
@@ -94,6 +95,9 @@ function App() {
           break;
       }
     }
+
+    //Load global data
+    dispatch(getCustomerListItemsAsync());
   }, []);
 
   return <MainLayout>

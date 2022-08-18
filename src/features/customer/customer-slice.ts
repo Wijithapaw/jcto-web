@@ -1,11 +1,15 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
+import { ListItem } from "../../app/types";
+import { customerApi } from "./customer-api";
 import { CustomerStocks } from "./types";
 
 export interface CustomerState {
     customerStocks: CustomerStocks[];
+    customerListItems: ListItem[];
 }
 
+//TODO: Delete this once finalized
 const customerStocks: CustomerStocks[] = [
     {
         customerId: 'customer-1',
@@ -73,18 +77,38 @@ const customerStocks: CustomerStocks[] = [
 
 ];
 
-const initialState: CustomerState = { customerStocks };
+const initialState: CustomerState = { customerStocks: [], customerListItems: [] };
+
+export const getCustomerStocksAsync = createAsyncThunk(
+    'customer/stocks',
+    async () => {
+        return await customerApi.getCustomerStocks();
+    }
+);
+
+export const getCustomerListItemsAsync = createAsyncThunk(
+    'customer/listitems',
+    async () => {
+        return await customerApi.getCustomerListItems();
+    }
+);
 
 export const customerSlice = createSlice({
     name: 'customer',
     initialState,
-    reducers: {
-
+    reducers: {},
+    extraReducers: (builder) => {
+        builder.addCase(getCustomerStocksAsync.fulfilled, (state, action) => {
+            state.customerStocks = action.payload
+        }).addCase(getCustomerListItemsAsync.fulfilled, (state, action) => {
+            state.customerListItems = action.payload
+        })
     }
 });
 
 export const { } = customerSlice.actions;
 
 export const customerStocksSelector = (state: RootState) => state.customer.customerStocks;
+export const customerListItemsSelector = (state: RootState) => state.customer.customerListItems;
 
 export default customerSlice.reducer;

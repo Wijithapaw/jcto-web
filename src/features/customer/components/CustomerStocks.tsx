@@ -1,16 +1,21 @@
 import { Fragment, useEffect, useState } from "react";
 import { Table } from "reactstrap";
-import { useAppSelector } from "../../../app/hooks"
+import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import { IDictionary } from "../../../app/types";
-import { customerStocksSelector } from "../customer-slice"
+import { customerStocksSelector, getCustomerStocksAsync } from "../customer-slice"
 import { ProductStock, PRODUCT_CODES } from "../types";
 import { createSearchParams, useNavigate } from 'react-router-dom'
 
 export default function CustomerStocks() {
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const customerStocks = useAppSelector(customerStocksSelector);
 
     const [productStockSummary, setProductStockSummary] = useState<IDictionary<ProductStock>>({});
+
+    useEffect(() => {
+        dispatch(getCustomerStocksAsync());
+    }, [])
 
     useEffect(() => {
         let summary = {};
