@@ -2,13 +2,15 @@ import { Fragment, useEffect, useState } from "react";
 import { Table } from "reactstrap";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import { IDictionary } from "../../../app/types";
-import { customerStocksSelector, getCustomerStocksAsync } from "../customer-slice"
-import { ProductStock, PRODUCT_CODES } from "../types";
+import { customerStocksSelector, getCustomerStocksAsync, productsListItemsSelector } from "../customer-slice"
+import { ProductStock } from "../types";
 import { createSearchParams, useNavigate } from 'react-router-dom'
 
 export default function CustomerStocks() {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+
+    const products = useAppSelector(productsListItemsSelector);
     const customerStocks = useAppSelector(customerStocksSelector);
 
     const [productStockSummary, setProductStockSummary] = useState<IDictionary<ProductStock>>({});
@@ -19,7 +21,7 @@ export default function CustomerStocks() {
 
     useEffect(() => {
         let summary = {};
-        PRODUCT_CODES.forEach(productCode => {
+        products.forEach(productCode => {
             const prodSummary: ProductStock = {
                 productId: productCode.id,
                 remainingStock: getRemainingStokcs(productCode.id),
@@ -58,12 +60,12 @@ export default function CustomerStocks() {
                     Customer
                 </th>
                 {
-                    PRODUCT_CODES.map(code => <th key={code.id} colSpan={2} className="text-center">{code.label}</th>)
+                    products.map(code => <th key={code.id} colSpan={2} className="text-center">{code.label}</th>)
                 }
             </tr>
             <tr>
                 {
-                    PRODUCT_CODES.map(code => <Fragment key={code.id}>
+                    products.map(code => <Fragment key={code.id}>
                         <th>Remaining</th>
                         <th>Undelivered</th>
                     </Fragment>)
@@ -79,7 +81,7 @@ export default function CustomerStocks() {
                             {customerStock.customerName}
                         </span>
                     </th>
-                    {PRODUCT_CODES.map(productCode => {
+                    {products.map(productCode => {
                         const productStock = customerStock.stocks.find(s => s.productId == productCode.id);
                         return <Fragment key={productCode.id}>
                             <td>
@@ -96,7 +98,7 @@ export default function CustomerStocks() {
                 <th className="text-start">
                     Totals
                 </th>
-                {PRODUCT_CODES.map(productCode => {
+                {products.map(productCode => {
                     return <Fragment key={productCode.id}>
                         <th>
                             {productStockSummary[productCode.id]?.remainingStock.toFixed(4)}
@@ -111,7 +113,7 @@ export default function CustomerStocks() {
                 <th className="text-start">
                     Overall Totals
                 </th>
-                {PRODUCT_CODES.map(productCode => {
+                {products.map(productCode => {
                     return <Fragment key={productCode.id}>
                         <th colSpan={2}>
                             {((productStockSummary[productCode.id]?.remainingStock || 0)
@@ -123,7 +125,7 @@ export default function CustomerStocks() {
         </tbody>
         <tfoot>
             <tr>
-                <td colSpan={PRODUCT_CODES.length * 2 + 1} className="text-start text-muted">
+                <td colSpan={products.length * 2 + 1} className="text-start text-muted">
                     <i><small>*All the figures are in metric tons (MT)</small></i>
                 </td>
             </tr>

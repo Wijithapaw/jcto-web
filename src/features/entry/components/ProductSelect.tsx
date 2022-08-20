@@ -1,5 +1,6 @@
+import { useAppSelector } from "../../../app/hooks";
 import Dropdown from "../../../components/Dropdown";
-import { PRODUCT_CODES } from "../../customer/types";
+import { productsListItemsSelector } from "../../customer/customer-slice";
 
 interface Props {
     name?: string;
@@ -8,8 +9,9 @@ interface Props {
 }
 
 export default function ProductSelect({ name, onChange, selectedValue }: Props) {
+    const products = useAppSelector(productsListItemsSelector);
     return <Dropdown
-        items={PRODUCT_CODES}
+        items={products}
         name={name}
         onChange={onChange}
         selectedValue={selectedValue}

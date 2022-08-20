@@ -4,7 +4,8 @@ import { CustomerStocks } from "./types";
 
 export const customerApi = {
     getCustomerStocks,
-    getCustomerListItems
+    getCustomerListItems,
+    getProductsListItems
 }
 
 function getCustomerStocks() {
@@ -13,4 +14,8 @@ function getCustomerStocks() {
 
 function getCustomerListItems() {
     return coreApi.get<ListItem[]>('customers/listitems')
+}
+
+function getProductsListItems() {
+    return coreApi.get<ListItem[]>('customers/products/listitems')
 }

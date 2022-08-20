@@ -13,7 +13,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import OrdersPage from './features/order/components/OrdersPage';
 import EntryListPage from './features/entry/components/EntryListPage';
-import { getCustomerListItemsAsync } from './features/customer/customer-slice';
+import { getCustomerListItemsAsync, getProductsListItemsAsync } from './features/customer/customer-slice';
 
 library.add(fas);
 
@@ -101,6 +101,7 @@ function App() {
     if (authenticated) {
       //Load global data
       dispatch(getCustomerListItemsAsync());
+      dispatch(getProductsListItemsAsync());
     }
 
   }, [authenticated])

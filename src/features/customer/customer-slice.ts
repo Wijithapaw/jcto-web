@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { dateHelpers } from "../../app/helpers";
 import { RootState } from "../../app/store";
 import { ListItem } from "../../app/types";
 import { customerApi } from "./customer-api";
@@ -9,6 +8,7 @@ export interface CustomerState {
     customerStocksRefreshedTime?: string;
     customerStocks: CustomerStocks[];
     customerListItems: ListItem[];
+    productsListItems: ListItem[];
 }
 
 //TODO: Delete this once finalized
@@ -79,7 +79,7 @@ const customerStocks: CustomerStocks[] = [
 
 ];
 
-const initialState: CustomerState = { customerStocks: [], customerListItems: [] };
+const initialState: CustomerState = { customerStocks: [], customerListItems: [], productsListItems: [] };
 
 export const getCustomerStocksAsync = createAsyncThunk(
     'customer/stocks',
@@ -95,6 +95,13 @@ export const getCustomerListItemsAsync = createAsyncThunk(
     }
 );
 
+export const getProductsListItemsAsync = createAsyncThunk(
+    'customer/product/listitems',
+    async () => {
+        return await customerApi.getProductsListItems();
+    }
+);
+
 export const customerSlice = createSlice({
     name: 'customer',
     initialState,
@@ -105,6 +112,8 @@ export const customerSlice = createSlice({
             state.customerStocks = action.payload
         }).addCase(getCustomerListItemsAsync.fulfilled, (state, action) => {
             state.customerListItems = action.payload
+        }).addCase(getProductsListItemsAsync.fulfilled, (state, action) => {
+            state.productsListItems = action.payload
         })
     }
 });
@@ -114,5 +123,6 @@ export const { } = customerSlice.actions;
 export const customerStocksSelector = (state: RootState) => state.customer.customerStocks;
 export const customerStocksRefreshedTimeSelector = (state: RootState) => state.customer.customerStocksRefreshedTime;
 export const customerListItemsSelector = (state: RootState) => state.customer.customerListItems;
+export const productsListItemsSelector = (state: RootState) => state.customer.productsListItems;
 
 export default customerSlice.reducer;

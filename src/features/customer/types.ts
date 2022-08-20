@@ -11,9 +11,3 @@ export interface ProductStock {
     remainingStock: number;
     undeliveredStock: number;
 }
-
-export const PRODUCT_CODES: ListItem[] = [
-    { id: 'ID_GO', label: 'GO' },
-    { id: 'ID_380_LSFO', label: '380_LSFO' },
-    { id: 'ID_380_HSFO', label: '380_HSFO' }
-]; 
