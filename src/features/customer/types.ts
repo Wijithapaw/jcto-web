@@ -1,3 +1,5 @@
+import { ListItem } from "../../app/types";
+
 export interface CustomerStocks {
     customerId: string;
     customerName: string;
@@ -5,9 +7,13 @@ export interface CustomerStocks {
 }
 
 export interface ProductStock {
-    productCode: string;
+    productId: string;
     remainingStock: number;
     undeliveredStock: number;
 }
 
-export const PRODUCT_CODES: string[] = ['GO', '380_LSFO', '380_HSFO']; 
+export const PRODUCT_CODES: ListItem[] = [
+    { id: 'ID_GO', label: 'GO' },
+    { id: 'ID_380_LSFO', label: '380_LSFO' },
+    { id: 'ID_380_HSFO', label: '380_HSFO' }
+]; 

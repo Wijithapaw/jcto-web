@@ -19,7 +19,7 @@ export default function Dropdown({ id, name, selectedValue = '', items, showEmpt
     value={selectedValue}
     onChange={(e) => onChange(e.target.value)}
   >
-    {showEmptyRow && <option label={placeholder || 'Please select'} value='' />}
+    {showEmptyRow && <option label={placeholder || ''} value='' />}
     {items.map(i => <option key={i.id} label={i.label} value={i.id} />)}
   </Input>
 }

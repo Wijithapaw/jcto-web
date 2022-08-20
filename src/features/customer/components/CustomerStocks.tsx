@@ -21,18 +21,18 @@ export default function CustomerStocks() {
         let summary = {};
         PRODUCT_CODES.forEach(productCode => {
             const prodSummary: ProductStock = {
-                productCode,
-                remainingStock: getRemainingStokcs(productCode),
-                undeliveredStock: getUndeliveredStokcs(productCode),
+                productId: productCode.id,
+                remainingStock: getRemainingStokcs(productCode.id),
+                undeliveredStock: getUndeliveredStokcs(productCode.id),
             };
-            summary = { ...summary, [productCode]: prodSummary }
+            summary = { ...summary, [productCode.id]: prodSummary }
         })
         setProductStockSummary(summary);
     }, [customerStocks]);
 
     const getRemainingStokcs = (productCode: string) => {
         const total = customerStocks.flatMap(s => s.stocks)
-            .filter(s => s.productCode === productCode)
+            .filter(s => s.productId === productCode)
             .map(s => s.remainingStock)
             .reduce((a, b) => a + b, 0);
 
@@ -41,7 +41,7 @@ export default function CustomerStocks() {
 
     const getUndeliveredStokcs = (productCode: string) => {
         var total = customerStocks.flatMap(s => s.stocks)
-            .filter(s => s.productCode === productCode)
+            .filter(s => s.productId === productCode)
             .map(s => s.undeliveredStock)
             .reduce((a, b) => a + b, 0);
         return +total.toFixed(4);
@@ -58,12 +58,12 @@ export default function CustomerStocks() {
                     Customer
                 </th>
                 {
-                    PRODUCT_CODES.map(code => <th key={code} colSpan={2} className="text-center">{code}</th>)
+                    PRODUCT_CODES.map(code => <th key={code.id} colSpan={2} className="text-center">{code.label}</th>)
                 }
             </tr>
             <tr>
                 {
-                    PRODUCT_CODES.map(code => <Fragment key={code}>
+                    PRODUCT_CODES.map(code => <Fragment key={code.id}>
                         <th>Remaining</th>
                         <th>Undelivered</th>
                     </Fragment>)
@@ -80,8 +80,8 @@ export default function CustomerStocks() {
                         </span>
                     </th>
                     {PRODUCT_CODES.map(productCode => {
-                        const productStock = customerStock.stocks.find(s => s.productCode == productCode);
-                        return <Fragment key={productCode}>
+                        const productStock = customerStock.stocks.find(s => s.productId == productCode.id);
+                        return <Fragment key={productCode.id}>
                             <td>
                                 {productStock?.remainingStock.toFixed(4)}
                             </td>
@@ -97,12 +97,12 @@ export default function CustomerStocks() {
                     Totals
                 </th>
                 {PRODUCT_CODES.map(productCode => {
-                    return <Fragment key={productCode}>
+                    return <Fragment key={productCode.id}>
                         <th>
-                            {productStockSummary[productCode]?.remainingStock.toFixed(4)}
+                            {productStockSummary[productCode.id]?.remainingStock.toFixed(4)}
                         </th>
                         <th>
-                            {productStockSummary[productCode]?.undeliveredStock.toFixed(4)}
+                            {productStockSummary[productCode.id]?.undeliveredStock.toFixed(4)}
                         </th>
                     </Fragment>
                 })}
@@ -112,10 +112,10 @@ export default function CustomerStocks() {
                     Overall Totals
                 </th>
                 {PRODUCT_CODES.map(productCode => {
-                    return <Fragment key={productCode}>
+                    return <Fragment key={productCode.id}>
                         <th colSpan={2}>
-                            {((productStockSummary[productCode]?.remainingStock || 0)
-                                + (productStockSummary[productCode]?.undeliveredStock || 0)).toFixed(4)}
+                            {((productStockSummary[productCode.id]?.remainingStock || 0)
+                                + (productStockSummary[productCode.id]?.undeliveredStock || 0)).toFixed(4)}
                         </th>
                     </Fragment>
                 })}
