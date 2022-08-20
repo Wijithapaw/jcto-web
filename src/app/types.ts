@@ -20,11 +20,11 @@ export interface PaginatorData {
 }
 
 export interface Dictionary {
-  [key: string] : string;
+  [key: string]: string;
 }
 
 export interface IDictionary<T> {
-  [key: string] : T;
+  [key: string]: T;
 }
 
 export interface AppNotification {
@@ -44,4 +44,9 @@ export interface ErrorResponse {
   message: string;
 }
 
-export enum NotificationType { 'error' , 'success' , 'warning'}
+export interface EntityCreateResult {
+  id: string;
+  concurrencyKey: string;
+}
+
+export enum NotificationType { 'error', 'success', 'warning' }

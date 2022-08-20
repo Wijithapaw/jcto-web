@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Button, Col, Form, FormGroup, Label, Row } from "reactstrap";
 import { Formik, Field } from 'formik';
 import * as Yup from 'yup';
@@ -8,18 +8,18 @@ import FormLabel from "../../../components/FormLabel";
 import DateSelect2 from "../../../components/DateSelect2";
 import ProductSelect from "./ProductSelect";
 import CustomerSelect from "./CustomerSelect";
+import { entryApi } from "../entry-api";
+import { showNotification } from "../../../app/notification-service";
+import { NotificationType } from "../../../app/types";
 
 const digitsOnly = (value?: string) => /^\d+$/.test(value || '')
 
 interface Props {
-    id?: string;
+    entryId?: string;
     customerId?: string;
 }
 
-export default function EntryDetailsForm({ id, customerId }: Props) {
-    const [entryId, setEntryId] = useState(id);
-    const [entry, setEntry] = useState<Entry>();
-
+export default function EntryDetailsForm({ entryId, customerId }: Props) {
     const validationSchema = useMemo(() => {
         return Yup.object().shape({
             entryNo: Yup.string()
@@ -30,12 +30,12 @@ export default function EntryDetailsForm({ id, customerId }: Props) {
                 .required(' is required')
                 .test('dd', ' must be greater than 0', (value) => (value || 0) > 0),
             entryDate: Yup.string().required(' is required'),
-            productCode: Yup.string().required(' is required'),
+            productId: Yup.string().required(' is required'),
             customerId: Yup.string().required(' is required'),
         });
     }, [])
 
-    useEffect(() => {
+    const entry = useMemo(() => {
         if (entryId) {
             //todo
         } else {
@@ -45,24 +45,39 @@ export default function EntryDetailsForm({ id, customerId }: Props) {
                 entryDate: dateHelpers.toIsoString(new Date()),
                 entryNo: '',
                 initialQuantity: 0,
-                productCode: '',
+                productId: '',
                 status: EntryStatus.Active
             };
-            setEntry(newEntry);
+            return newEntry;
         }
     }, [entryId]);
 
-    return entry && <Formik initialValues={{ ...entry }}
+    return entry && <Formik initialValues={{...entry}}
         onSubmit={(values, { setSubmitting, resetForm }) => {
             setSubmitting(true);
-            const editingEntry = values as Entry;
 
-            if (entryId) console.log('update', editingEntry);
-            else console.log('new', editingEntry);
+            const editingEntry: Entry = {
+                customerId : values.customerId,
+                customerName: '',
+                productId: values.productId,
+                entryDate: values.entryDate,
+                entryNo: values.entryNo,
+                initialQuantity: values.initialQuantity,
+                status: values.status
+            };
+
+            entryApi.createEntry(editingEntry)
+                .then(() => {
+                    showNotification(NotificationType.success, "Entry created successfully");
+                    resetForm();
+                }).finally(() => setSubmitting(false));
+        }}
+        onReset={(values, { resetForm, setValues }) => {
+            setValues({ ...entry })
         }}
         validationSchema={validationSchema}>
         {
-            ({ errors, touched, handleSubmit, dirty, values, setFieldValue, setFieldTouched }) => (
+            ({ errors, touched, handleSubmit, values, setFieldValue, resetForm }) => (
                 <Form onSubmit={e => {
                     e.preventDefault();
                     handleSubmit();
@@ -73,21 +88,18 @@ export default function EntryDetailsForm({ id, customerId }: Props) {
                                 <FormLabel label="Customer" touched={touched.customerId} error={errors.customerId} />
                                 <CustomerSelect
                                     selectedValue={values.customerId}
-                                    onChange={(id) => {
-                                        setFieldTouched('customerId', true);
-                                        setFieldValue('customerId', id, true);
-                                    }} />
+                                    onChange={(id) => setFieldValue('customerId', id, true)} />
                             </FormGroup>
                         </Col>
                         <Col md={4}>
                             <FormGroup>
-                                <FormLabel label="Entry ID" touched={touched.entryNo} error={errors.entryNo} />
+                                <FormLabel label="Entry No" touched={touched.entryNo} error={errors.entryNo} />
                                 <Field name="entryNo" type="text" className="form-control" />
                             </FormGroup>
                         </Col>
                         <Col md={5}>
                             <FormGroup>
-                                <FormLabel label="Intial Quantity" touched={touched.initialQuantity} error={errors.initialQuantity} />
+                                <FormLabel label="Initial Quantity" touched={touched.initialQuantity} error={errors.initialQuantity} />
                                 <Field name="initialQuantity" type="number" className="form-control" />
                             </FormGroup>
                         </Col>
@@ -96,19 +108,13 @@ export default function EntryDetailsForm({ id, customerId }: Props) {
                         <Col>
                             <FormGroup>
                                 <FormLabel label="Entry Date" touched={touched.entryDate} error={errors.entryDate} />
-                                <DateSelect2 value={values.entryDate} onChange={(d) => {
-                                    setFieldTouched('entryDate', true);
-                                    setFieldValue('entryDate', d, true);
-                                }} />
+                                <DateSelect2 value={values.entryDate} onChange={(d) => setFieldValue('entryDate', d, true)} />
                             </FormGroup>
                         </Col>
                         <Col>
                             <FormGroup>
-                                <FormLabel label="Product" touched={touched.productCode} error={errors.productCode} />
-                                <ProductSelect selectedValue={values.productCode} onChange={(p) => {
-                                    setFieldTouched('productCode', true);
-                                    setFieldValue('productCode', p, true);
-                                }} />
+                                <FormLabel label="Product" touched={touched.productId} error={errors.productId} />
+                                <ProductSelect selectedValue={values.productId} onChange={(p) => setFieldValue('productId', p, true)} />
                             </FormGroup>
                         </Col>
                         <Col md={2}>
@@ -124,8 +130,8 @@ export default function EntryDetailsForm({ id, customerId }: Props) {
                     <Row>
                         <Col>
                             <FormGroup>
-                                <Button>Cancel</Button>
-                                <Button className="ms-2" color="primary">Save</Button>
+                                <Button type="reset" onClick={() => resetForm()}>Reset</Button>
+                                <Button type="submit" className="ms-2" color="primary">Save</Button>
                             </FormGroup>
                         </Col>
                     </Row>

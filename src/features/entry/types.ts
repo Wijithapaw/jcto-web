@@ -9,7 +9,7 @@ export interface EntriesFilter {
 export interface Entry {
     entryNo: string;
     initialQuantity: number;
-    productCode: string;
+    productId: string;
     entryDate: string;
     customerId: string;
     customerName: string;
