@@ -6,10 +6,12 @@ interface Props {
   onChange?: (value: string) => void;
   placeHolder?: string;
   isClearable?: boolean;
+  disabled?: boolean;
 }
 
-export default function DateSelect2({ value, onChange, placeHolder, isClearable }: Props) {
+export default function DateSelect2({ value, onChange, placeHolder, isClearable, disabled }: Props) {
   return <DateSelect
+    disabled={disabled}
     value={dateHelpers.strToDate(value)}
     isClearable={isClearable}
     onChange={(d) => onChange && onChange(dateHelpers.toIsoString(d))}

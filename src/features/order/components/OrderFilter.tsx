@@ -1,16 +1,18 @@
-import { Button, Card, CardBody, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
+import { Button, Card, CardBody, Col, Form, FormGroup, FormText, Input, Label, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
 import { useSearchParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { changeEntryFilter, entryFilterSelector } from "../entry-slice";
+import { changeOrderFilter, orderFilterSelector } from "../order-slice";
 import CustomerSelect from "../../customer/components/CustomerSelect";
 import { FormEvent, useEffect, useState } from "react";
 import DateSelect2 from "../../../components/DateSelect2";
-import EntryDetailsForm from "./EntryDetailsForm";
+import OrderStatusSplitButton from "./OrderStatusSplitButton";
+import ProductSelect from "../../customer/components/ProductSelect";
+import OrderDetailsForm from "./OrderDetailsForm";
 
-export default function EntryFilter() {
+export default function OrderFilter() {
     const dispatch = useAppDispatch();
     const [searchParams, setSearchParams] = useSearchParams();
-    const filter = useAppSelector(entryFilterSelector);
+    const filter = useAppSelector(orderFilterSelector);
     const [showAddNew, setShowAddNew] = useState(false);
 
     useEffect(() => {
@@ -19,7 +21,7 @@ export default function EntryFilter() {
     }, [])
 
     const handleFilterChange = (field: string, value: any) => {
-        dispatch(changeEntryFilter({ [field]: value }));
+        dispatch(changeOrderFilter({ [field]: value }));
     }
 
     const handleCustomerChange = (customerId: string) => {
@@ -50,11 +52,21 @@ export default function EntryFilter() {
                             </Col>
                             <Col>
                                 <FormGroup row>
-                                    <Label md="auto">Entry No.</Label>
+                                    <Label md="auto">Product</Label>
                                     <Col>
-                                        <Input type="text"
-                                            value={filter.entryNo}
-                                            onChange={(e) => handleFilterChange("entryNo", e.target.value)} />
+                                        <ProductSelect
+                                            selectedValue={filter.productId}
+                                            onChange={(e) => handleFilterChange("productId", e)} />
+                                    </Col>
+                                </FormGroup>
+                            </Col>
+                            <Col>
+                                <FormGroup row>
+                                    <Label md="auto">Order No.</Label>
+                                    <Col>
+                                        <Input
+                                            value={filter.orderNo}
+                                            onChange={(e) => handleFilterChange("orderNo", e.target.value)} />
                                     </Col>
                                 </FormGroup>
                             </Col>
@@ -79,13 +91,13 @@ export default function EntryFilter() {
                                     </Col>
                                 </FormGroup>
                             </Col>
-                            <Col className="pt-2">
-                                <FormGroup check>
-                                    <Label for="cbxShowActiveOnly">Show Active Entries Only</Label>
-                                    <Input id="cbxShowActiveOnly"
-                                        type="checkbox"
-                                        checked={filter.activeEntriesOnly}
-                                        onChange={(e) => handleFilterChange("activeEntriesOnly", e.target.checked)} />
+                            <Col>
+                                <FormGroup>
+                                    <Label className="me-4">Status</Label>
+                                    <OrderStatusSplitButton
+                                        showAllOption
+                                        value={filter.status}
+                                        onChange={(status) => handleFilterChange("status", status)} />
                                 </FormGroup>
                             </Col>
                         </Row>
@@ -106,10 +118,10 @@ export default function EntryFilter() {
             </Form>
             <Modal isOpen={showAddNew} size="lg" toggle={() => setShowAddNew(false)} backdrop="static">
                 <ModalHeader toggle={() => setShowAddNew(false)}>
-                    New Entry
+                    New Order
                 </ModalHeader>
                 <ModalBody>
-                    <EntryDetailsForm customerId={filter.customerId} />
+                    <OrderDetailsForm />
                 </ModalBody>
             </Modal>
         </CardBody>

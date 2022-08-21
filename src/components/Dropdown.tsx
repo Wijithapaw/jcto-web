@@ -9,10 +9,12 @@ interface Props {
   showEmptyRow?: boolean;
   placeholder: string;
   onChange: (value: string) => void;
+  disabled?: boolean;
 }
 
-export default function Dropdown({ id, name, selectedValue = '', items, showEmptyRow = true, placeholder, onChange }: Props) {
+export default function Dropdown({ id, name, selectedValue = '', items, showEmptyRow = true, placeholder, onChange, disabled }: Props) {
   return <Input
+    disabled={disabled}
     id={id}
     name={name}
     type="select"

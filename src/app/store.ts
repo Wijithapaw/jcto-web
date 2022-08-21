@@ -3,13 +3,15 @@ import counterReducer from '../features/counter/counterSlice';
 import coreReducer from './core-slice';
 import customerReducer from '../features/customer/customer-slice';
 import entryReducer from '../features/entry/entry-slice';
+import orderReducer from '../features/order/order-slice';
 
 export const store = configureStore({
   reducer: {
     core: coreReducer,
     customer: customerReducer,
     counter: counterReducer,    
-    entry: entryReducer
+    entry: entryReducer,
+    order: orderReducer,
   },
 });
 

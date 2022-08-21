@@ -8,10 +8,12 @@ interface Props {
   onChange: (value: Date) => void;
   placeHolder?: string;
   isClearable?: boolean;
+  disabled?: boolean;
 }
 
-export default function DateSelect({ value, onChange, placeHolder, isClearable }: Props) {
+export default function DateSelect({ value, onChange, placeHolder, isClearable, disabled }: Props) {
   return <DatePicker selected={value}
+    disabled={disabled}
     placeholderText={placeHolder}
     className="form-control"
     dateFormat="yyyy-MM-dd"
