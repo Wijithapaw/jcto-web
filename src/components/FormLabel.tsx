@@ -7,7 +7,12 @@ interface Props {
 }
 
 export default function FormLabel({ label, error, touched }: Props) {
-    return <Label className={error && touched ? 'text-danger' : ''}>
-        {`${label}`}<i><small>{`${error && touched ? error : ''}`}</small></i>
+    return <Label >
+        {`${label}`}
+        <i className={error && touched ? 'text-danger' : ''}>
+            <small>
+                {`${error && touched ? ' ' + error : ''}`}
+            </small>
+        </i>
     </Label>
 }

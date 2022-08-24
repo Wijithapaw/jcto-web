@@ -116,7 +116,7 @@ export default function OrderFilter() {
                     </Col>
                 </Row>
             </Form>
-            <Modal isOpen={showAddNew} size="lg" toggle={() => setShowAddNew(false)} backdrop="static">
+            <Modal isOpen={showAddNew} size="xl" toggle={() => setShowAddNew(false)} backdrop="static">
                 <ModalHeader toggle={() => setShowAddNew(false)}>
                     New Order
                 </ModalHeader>
