@@ -21,6 +21,7 @@ export interface Order {
     xBondNumber?: string;
     releaseEntries?: OrderStockReleaseEntry[];
     bowserEntries?: BowserEntry[];
+    remarks?: string;
 }
 
 export interface OrderStockReleaseEntry {

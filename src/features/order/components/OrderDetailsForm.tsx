@@ -9,16 +9,18 @@ import ProductSelect from "../../customer/components/ProductSelect";
 import CustomerSelect from "../../customer/components/CustomerSelect";
 import { showNotification } from "../../../app/notification-service";
 import { NotificationType } from "../../../app/types";
-import { BuyerType, Order, OrderStatus, OrderStockReleaseEntry } from "../types";
+import { BowserEntry, BuyerType, Order, OrderStatus, OrderStockReleaseEntry } from "../types";
 import OrderStatusSplitButton from "./OrderStatusSplitButton";
 import BuyerTypeSplitButton from "./BuyerTypeSplitButton";
 import StockReleaseEntriesTable from "./StockReleaseEntriesTable";
+import BowserDetailsTable from "./BowserDetailsTable";
 
 interface Props {
     orderId?: string;
 }
 
 export default function OrderDetailsForm({ orderId }: Props) {
+    const isNewOrder = true; // !!orderId;
     const validationSchema = useMemo(() => {
         return Yup.object().shape({
             orderDate: Yup.string().required('is required'),
@@ -46,6 +48,25 @@ export default function OrderDetailsForm({ orderId }: Props) {
                     (items, ctx) => {
                         const entrySum = +items?.map(i => i.deliveredQuantity).reduce((a, b) => a + b, 0) || 0;
                         return ctx.parent.quantity === entrySum;
+                    }),
+            bowserEntries: Yup.array()
+                .test('RequiredWhenLocal', 'must have entries',
+                    (items, ctx) => {
+                        if (ctx.parent.buyerType === BuyerType.Local) {
+                            return items && items.length > 0 || false
+                        }
+                        return true;
+                    })
+                .test('FillAll', 'must fill all the fields',
+                    (items, ctx) => {
+                        if (ctx.parent.buyerType === BuyerType.Local) {
+                            const valid = items ? items.every((i: BowserEntry) => {
+                                var valid = i.capacity > 0 && i.count > 0
+                                return valid;
+                            }) : false;
+                            return valid;
+                        }
+                        return true;
                     })
         });
     }, [])
@@ -65,7 +86,8 @@ export default function OrderDetailsForm({ orderId }: Props) {
                 ObRefPrefix: '',
                 buyerType: BuyerType.Barge,
                 releaseEntries: [],
-                status: OrderStatus.Undelivered
+                status: OrderStatus.Undelivered,
+                bowserEntries: [],
             };
             return newOrder;
         }
@@ -146,7 +168,7 @@ export default function OrderDetailsForm({ orderId }: Props) {
                             <Col>
                                 <FormGroup>
                                     <FormLabel label="Buyer" touched={touched.buyer} error={errors.buyer} />
-                                    <Input disabled={disabled} value={values.buyer} onChange={(e) => setFieldValue('buyer', e.target.value)} />
+                                    <Input disabled={disabled} value={values.buyer} onChange={(e) => { setFieldValue('buyer', e.target.value); }} />
                                 </FormGroup>
                             </Col>
                             <Col>
@@ -156,19 +178,24 @@ export default function OrderDetailsForm({ orderId }: Props) {
                                     <BuyerTypeSplitButton
                                         disabled={disabled}
                                         value={values.buyerType}
-                                        onChange={(s) => setFieldValue('buyerType', s)}
+                                        onChange={(s) => {
+                                            setFieldValue('bowserEntries', []);
+                                            setFieldValue('buyerType', s);
+                                        }}
                                     />
                                 </FormGroup>
                             </Col>
                             <Col>
-                                <FormGroup>
-                                    <FormLabel label="Status" touched={touched.status} error={errors.status} />
-                                    <br />
-                                    <OrderStatusSplitButton
-                                        value={values.status}
-                                        onChange={(s) => setFieldValue('status', s)}
-                                    />
-                                </FormGroup>
+                                {isNewOrder &&
+                                    <FormGroup>
+                                        <FormLabel label="Status" touched={touched.status} error={errors.status} />
+                                        <br />
+                                        <OrderStatusSplitButton
+                                            value={values.status}
+                                            onChange={(s) => setFieldValue('status', s)}
+                                        />
+                                    </FormGroup>
+                                }
                             </Col>
                         </Row>
                         <Row>
@@ -181,8 +208,30 @@ export default function OrderDetailsForm({ orderId }: Props) {
                                         items={values.releaseEntries}
                                         onChange={(e) => {
                                             setFieldTouched('releaseEntries')
-                                            setFieldValue('releaseEntries', e, true);
+                                            setFieldValue('releaseEntries', e);
                                         }} />
+                                </FormGroup>
+                            </Col>
+                        </Row>
+                        <Row>
+                            {values.buyerType == BuyerType.Local &&
+                                <Col>
+                                    <FormGroup>
+                                        <BowserDetailsTable
+                                            disabled={disabled}
+                                            touched={touched.bowserEntries}
+                                            error={errors.bowserEntries}
+                                            items={values.bowserEntries}
+                                            onChange={(e) => {
+                                                setFieldTouched('bowserEntries')
+                                                setFieldValue('bowserEntries', e);
+                                            }} />
+                                    </FormGroup>
+                                </Col>}
+                            <Col>
+                                <FormGroup>
+                                    <FormLabel label="Remarks" />
+                                    <Input disabled={disabled} type="textarea" value={values.remarks} onChange={(e) => setFieldValue('remarks', e.target.value)} />
                                 </FormGroup>
                             </Col>
                         </Row>
