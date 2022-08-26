@@ -17,7 +17,7 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
         var newEntry: OrderStockReleaseEntry = {
             id: uuidv4(),
             entryNo: '',
-            ObRef: '',
+            obRef: '',
             quantity: 0,
             deliveredQuantity: 0
         };
@@ -76,8 +76,8 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
                 </thead>
                 <tbody>
                     {items.map((item) => <tr key={item.id}>
-                        <td><Input disabled={disabled} name="entryNo" onChange={(e) => updateItem(item.id, e)} /></td>
-                        <td><Input disabled={disabled} name="ObRef" onChange={(e) => updateItem(item.id, e)} /></td>
+                        <td><Input maxLength={20} disabled={disabled} name="entryNo" onChange={(e) => updateItem(item.id, e)} /></td>
+                        <td><Input maxLength={20} disabled={disabled} name="obRef" onChange={(e) => updateItem(item.id, e)} /></td>
                         <td><Input disabled={disabled} name="quantity" type="number" onChange={(e) => updateItem(item.id, e)} /></td>
                         <td><Input disabled={disabled} name="deliveredQuantity" type="number" onChange={(e) => updateItem(item.id, e)} /></td>
                         {!disabled && <td className="align-middle"> <AppIcon icon="x"

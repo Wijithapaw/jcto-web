@@ -15,10 +15,10 @@ export interface Order {
     buyer: string;
     status: OrderStatus;
     quantity: number;
-    ObRefPrefix: string;    
-    tankNumber: string;
+    obRefPrefix: string;    
+    tankNo: string;
     buyerType: BuyerType;
-    xBondNumber?: string;
+    xBondNo?: string;
     releaseEntries?: OrderStockReleaseEntry[];
     bowserEntries?: BowserEntry[];
     remarks?: string;
@@ -27,7 +27,7 @@ export interface Order {
 export interface OrderStockReleaseEntry {
     id: string;
     entryNo: string;    
-    ObRef: string;
+    obRef: string;
     quantity: number;
     deliveredQuantity: number
 }

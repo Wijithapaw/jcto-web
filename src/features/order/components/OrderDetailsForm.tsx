@@ -26,13 +26,15 @@ export default function OrderDetailsForm({ orderId }: Props) {
             orderDate: Yup.string().required('is required'),
             productId: Yup.string().required('is required'),
             customerId: Yup.string().required('is required'),
-            buyer: Yup.string().required('is required'),
-            ObRefPrefix: Yup.string().required('is required'),
-            tankNumber: Yup.string()
+            buyer: Yup.string().required('is required').max(100, "length must be < 100"),
+            obRefPrefix: Yup.string().required('is required').max(20, "length must be < 20"),
+            tankNo: Yup.string()
                 .required('is required')
+                .max(20, "length must be < 20")
                 .test('Digits only', 'must have only digits', validationHelpers.digitsOnly),
             orderNo: Yup.string()
                 .required(' is required')
+                .max(20, "length must be < 20")
                 .test('Digits only', 'must have only digits', validationHelpers.digitsOnly),
             quantity: Yup.number()
                 .required(' is required')
@@ -41,7 +43,12 @@ export default function OrderDetailsForm({ orderId }: Props) {
                 .test('NotEmpty', 'must have entries', (items) => items && items.length > 0 || false)
                 .test('FillAll', 'must fill all the fields',
                     (items) => items ? items.every((i: OrderStockReleaseEntry) => {
-                        var valid = i.entryNo && i.ObRef && i.quantity > 0 && i.deliveredQuantity > 0
+                        var valid = i.entryNo && i.obRef && i.quantity > 0 && i.deliveredQuantity > 0
+                        return valid;
+                    }) : false)
+                .test('DeliveredQuantityLessThanQuantity', 'Delivered Quantities must be <= Quantity',
+                    (items) => items ? items.every((i: OrderStockReleaseEntry) => {
+                        var valid = i.quantity >= i.deliveredQuantity
                         return valid;
                     }) : false)
                 .test('Summation', 'Sum of delivered quantities does not tally with overall quantity',
@@ -80,10 +87,10 @@ export default function OrderDetailsForm({ orderId }: Props) {
                 productId: '',
                 customerId: '',
                 orderNo: '',
-                tankNumber: '',
+                tankNo: '',
                 quantity: 0,
                 buyer: '',
-                ObRefPrefix: '',
+                obRefPrefix: '',
                 buyerType: BuyerType.Barge,
                 releaseEntries: [],
                 status: OrderStatus.Undelivered,
@@ -130,7 +137,7 @@ export default function OrderDetailsForm({ orderId }: Props) {
                             <Col>
                                 <FormGroup>
                                     <FormLabel label="Order No." touched={touched.orderNo} error={errors.orderNo} />
-                                    <Input disabled={disabled} value={values.orderNo} onChange={(e) => setFieldValue('orderNo', e.target.value)} />
+                                    <Input disabled={disabled} maxLength={20} value={values.orderNo} onChange={(e) => setFieldValue('orderNo', e.target.value)} />
                                 </FormGroup>
                             </Col>
                             <Col>
@@ -155,20 +162,20 @@ export default function OrderDetailsForm({ orderId }: Props) {
                         <Row>
                             <Col>
                                 <FormGroup>
-                                    <FormLabel label="OB Ref. Prefix" touched={touched.ObRefPrefix} error={errors.ObRefPrefix} />
-                                    <Input disabled={disabled} value={values.ObRefPrefix} onChange={(e) => setFieldValue('ObRefPrefix', e.target.value)} />
+                                    <FormLabel label="OB Prefix" touched={touched.obRefPrefix} error={errors.obRefPrefix} />
+                                    <Input disabled={disabled} maxLength={20} value={values.obRefPrefix} onChange={(e) => setFieldValue('obRefPrefix', e.target.value)} />
                                 </FormGroup>
                             </Col>
                             <Col>
                                 <FormGroup>
-                                    <FormLabel label="Tank No." touched={touched.tankNumber} error={errors.tankNumber} />
-                                    <Input disabled={disabled} value={values.tankNumber} onChange={(e) => setFieldValue('tankNumber', e.target.value)} />
+                                    <FormLabel label="Tank No." touched={touched.tankNo} error={errors.tankNo} />
+                                    <Input disabled={disabled} maxLength={20} value={values.tankNo} onChange={(e) => setFieldValue('tankNo', e.target.value)} />
                                 </FormGroup>
                             </Col>
                             <Col>
                                 <FormGroup>
                                     <FormLabel label="Buyer" touched={touched.buyer} error={errors.buyer} />
-                                    <Input disabled={disabled} value={values.buyer} onChange={(e) => { setFieldValue('buyer', e.target.value); }} />
+                                    <Input disabled={disabled} maxLength={100} value={values.buyer} onChange={(e) => { setFieldValue('buyer', e.target.value); }} />
                                 </FormGroup>
                             </Col>
                             <Col>
