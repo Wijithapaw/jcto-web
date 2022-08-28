@@ -15,8 +15,8 @@ export default function BuyerTypeSplitButton({ value, onChange, disabled }: Prop
             Barge
         </Button>
         <Button color="primary" outline
-            onClick={() => !disabled && onChange(BuyerType.Local)}
-            active={value === BuyerType.Local}>
+            onClick={() => !disabled && onChange(BuyerType.Bowser)}
+            active={value === BuyerType.Bowser}>
             Local
         </Button>
     </ButtonGroup>

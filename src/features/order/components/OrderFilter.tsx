@@ -1,7 +1,7 @@
 import { Button, Card, CardBody, Col, Form, FormGroup, FormText, Input, Label, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
 import { useSearchParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { changeOrderFilter, orderFilterSelector } from "../order-slice";
+import { changeOrderFilter, orderFilterSelector, searchOrdersAsync } from "../order-slice";
 import CustomerSelect from "../../customer/components/CustomerSelect";
 import { FormEvent, useEffect, useState } from "react";
 import DateSelect2 from "../../../components/DateSelect2";
@@ -31,7 +31,7 @@ export default function OrderFilter() {
 
     const handleSearch = (e: FormEvent) => {
         e.preventDefault();
-        console.log(filter);
+        dispatch(searchOrdersAsync(filter));
     }
 
     return <Card>

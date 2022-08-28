@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, useEffect } from "react";
 import { Card, CardBody, CardHeader, Col, Input, Label, Row, Table } from "reactstrap";
 import { v4 as uuidv4 } from 'uuid';
 import AppIcon from "../../../components/AppIcon";
@@ -76,10 +76,10 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
                 </thead>
                 <tbody>
                     {items.map((item) => <tr key={item.id}>
-                        <td><Input maxLength={20} disabled={disabled} name="entryNo" onChange={(e) => updateItem(item.id, e)} /></td>
-                        <td><Input maxLength={20} disabled={disabled} name="obRef" onChange={(e) => updateItem(item.id, e)} /></td>
-                        <td><Input disabled={disabled} name="quantity" type="number" onChange={(e) => updateItem(item.id, e)} /></td>
-                        <td><Input disabled={disabled} name="deliveredQuantity" type="number" onChange={(e) => updateItem(item.id, e)} /></td>
+                        <td><Input maxLength={20} value={item.entryNo} disabled={disabled} name="entryNo" onChange={(e) => updateItem(item.id, e)} /></td>
+                        <td><Input maxLength={20} value={item.obRef} disabled={disabled} name="obRef" onChange={(e) => updateItem(item.id, e)} /></td>
+                        <td><Input disabled={disabled} value={item.quantity} name="quantity" type="number" step="0.0001" onChange={(e) => updateItem(item.id, e)} /></td>
+                        <td><Input disabled={disabled} value={item.deliveredQuantity} name="deliveredQuantity" type="number" step="0.0001" onChange={(e) => updateItem(item.id, e)} /></td>
                         {!disabled && <td className="align-middle"> <AppIcon icon="x"
                             onClick={() => deleteItem(item.id)}
                             className="text-danger"

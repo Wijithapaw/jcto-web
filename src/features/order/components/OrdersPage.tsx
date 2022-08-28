@@ -1,5 +1,6 @@
 import { Col, Row } from "reactstrap";
 import OrderFilter from "./OrderFilter";
+import OrdersList from "./OrdersList";
 
 export default function OrdersPage() {
     return <>
@@ -10,7 +11,7 @@ export default function OrdersPage() {
         </Row>
         <Row>
             <Col>
-                Data here
+                <OrdersList/>
             </Col>
         </Row>
     </>

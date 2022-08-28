@@ -3,7 +3,8 @@ import dayjs from "dayjs";
 export const dateHelpers = {
     toDatetimeStr,
     toIsoString,
-    strToDate
+    strToDate,
+    toShortDateStr
 }
 
 export const validationHelpers = {
@@ -21,6 +22,10 @@ function toIsoString(value?: Date) {
 function strToDate(valueStr?: string) {
     return valueStr ? new Date(valueStr) : undefined;
 }
+
+function toShortDateStr(date: string) {
+    return dayjs(date).format("DD/MM/YYYY");
+  }
 
 function digitsOnly(value?: string) {
     return /^\d+$/.test(value || '')

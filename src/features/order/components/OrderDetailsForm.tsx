@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button, Col, Form, FormGroup, Input, Row } from "reactstrap";
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -14,13 +14,27 @@ import OrderStatusSplitButton from "./OrderStatusSplitButton";
 import BuyerTypeSplitButton from "./BuyerTypeSplitButton";
 import StockReleaseEntriesTable from "./StockReleaseEntriesTable";
 import BowserDetailsTable from "./BowserDetailsTable";
+import { orderApi } from "../order-api";
 
 interface Props {
     orderId?: string;
 }
 
 export default function OrderDetailsForm({ orderId }: Props) {
-    const isNewOrder = true; // !!orderId;
+    const [editingOrderId, setEditingOrderId] = useState(orderId);
+    const [editingOrder, setEditingOrder] = useState<Order>();
+
+    useEffect(() => {
+        setEditingOrderId(orderId);
+    }, [orderId]);
+
+    useEffect(() => {
+        editingOrderId && orderApi.getOrder(editingOrderId)
+            .then(order => setEditingOrder(order));
+    }, [editingOrderId])
+
+    const isNewOrder = () => !editingOrderId;
+
     const validationSchema = useMemo(() => {
         return Yup.object().shape({
             orderDate: Yup.string().required('is required'),
@@ -47,10 +61,7 @@ export default function OrderDetailsForm({ orderId }: Props) {
                         return valid;
                     }) : false)
                 .test('DeliveredQuantityLessThanQuantity', 'Delivered Quantities must be <= Quantity',
-                    (items) => items ? items.every((i: OrderStockReleaseEntry) => {
-                        var valid = i.quantity >= i.deliveredQuantity
-                        return valid;
-                    }) : false)
+                    (items) => items ? items.every((i: OrderStockReleaseEntry) => (i.quantity >= i.deliveredQuantity)) : false)
                 .test('Summation', 'Sum of delivered quantities does not tally with overall quantity',
                     (items, ctx) => {
                         const entrySum = +items?.map(i => i.deliveredQuantity).reduce((a, b) => a + b, 0) || 0;
@@ -59,19 +70,16 @@ export default function OrderDetailsForm({ orderId }: Props) {
             bowserEntries: Yup.array()
                 .test('RequiredWhenLocal', 'must have entries',
                     (items, ctx) => {
-                        if (ctx.parent.buyerType === BuyerType.Local) {
+                        if (ctx.parent.buyerType === BuyerType.Bowser) {
                             return items && items.length > 0 || false
                         }
                         return true;
                     })
                 .test('FillAll', 'must fill all the fields',
                     (items, ctx) => {
-                        if (ctx.parent.buyerType === BuyerType.Local) {
-                            const valid = items ? items.every((i: BowserEntry) => {
-                                var valid = i.capacity > 0 && i.count > 0
-                                return valid;
-                            }) : false;
-                            return valid;
+                        if (ctx.parent.buyerType === BuyerType.Bowser) {
+                            const isValid = items ? (items.every((i: BowserEntry) => (i.capacity > 0 && i.count > 0))) : false;
+                            return isValid;
                         }
                         return true;
                     })
@@ -79,8 +87,8 @@ export default function OrderDetailsForm({ orderId }: Props) {
     }, [])
 
     const order = useMemo(() => {
-        if (orderId) {
-            //todo
+        if (editingOrder) {
+            return editingOrder;
         } else {
             const newOrder: Order = {
                 orderDate: dateHelpers.toIsoString(new Date()),
@@ -98,22 +106,20 @@ export default function OrderDetailsForm({ orderId }: Props) {
             };
             return newOrder;
         }
-    }, [orderId]);
+    }, [editingOrder]);
 
-    return order && <Formik initialValues={{ ...order }}
+    return order && <Formik
+        initialValues={{ ...order }}
+        enableReinitialize
         onSubmit={(values, { setSubmitting, resetForm }) => {
             setSubmitting(true);
-
             const editingOrder: Order = { ...values };
-
-            console.log(editingOrder);
-            setSubmitting(false);
-
-            // entryApi.createEntry(editingEntry)
-            //     .then(() => {
-            //         showNotification(NotificationType.success, "Entry created successfully");
-            //         resetForm();
-            //     }).finally(() => setSubmitting(false));
+            const promise = isNewOrder() ? orderApi.createOrder(editingOrder) : orderApi.updateOrder(editingOrderId!, editingOrder);
+            promise.then((res) => {
+                showNotification(NotificationType.success, `Order ${isNewOrder() ? 'Created' : 'Updated'} successfully`);
+                isNewOrder() ? setEditingOrderId(res.id)
+                    : setEditingOrder({ ...editingOrder, concurrencyKey: res.concurrencyKey });
+            }).finally(() => setSubmitting(false));
         }}
         onReset={(values, { resetForm, setValues }) => {
             setValues({ ...order })
@@ -155,7 +161,7 @@ export default function OrderDetailsForm({ orderId }: Props) {
                             <Col>
                                 <FormGroup>
                                     <FormLabel label="Quantity" touched={touched.quantity} error={errors.quantity} />
-                                    <Input type="number" disabled={disabled} value={values.quantity} onChange={(e) => setFieldValue('quantity', e.target.value)} />
+                                    <Input type="number" step="0.0001" disabled={disabled} value={values.quantity} onChange={(e) => setFieldValue('quantity', e.target.value)} />
                                 </FormGroup>
                             </Col>
                         </Row>
@@ -193,7 +199,7 @@ export default function OrderDetailsForm({ orderId }: Props) {
                                 </FormGroup>
                             </Col>
                             <Col>
-                                {isNewOrder &&
+                                {!isNewOrder() &&
                                     <FormGroup>
                                         <FormLabel label="Status" touched={touched.status} error={errors.status} />
                                         <br />
@@ -221,7 +227,7 @@ export default function OrderDetailsForm({ orderId }: Props) {
                             </Col>
                         </Row>
                         <Row>
-                            {values.buyerType == BuyerType.Local &&
+                            {values.buyerType == BuyerType.Bowser &&
                                 <Col>
                                     <FormGroup>
                                         <BowserDetailsTable
