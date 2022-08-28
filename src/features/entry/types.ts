@@ -1,4 +1,11 @@
-export interface EntriesFilter {
+import { PagedFilter } from "../../app/types";
+
+export enum EntryStatus {
+    Active = 0,
+    Completed = 1
+}
+
+export interface EntriesFilter extends PagedFilter {
     customerId: string;
     entryNo: string;
     from: string;
@@ -16,7 +23,22 @@ export interface Entry {
     status: EntryStatus;
 }
 
-export enum EntryStatus {
-    Active = 0,
-    Completed = 1
+export interface EntryListItem {
+    id: string;
+    customer: string;
+    product: string;
+    initialQuantity: number;
+    remainingQuantity: number;
+    entryDate: string;
+    entryNo: string;
+    status: EntryStatus;
+    transactions: EntryTransaction[];
+}
+
+export interface EntryTransaction {
+    orderDate: string;
+    orderNo: string;
+    obRef: string;
+    quantity: number;
+    deliveredQuantity: number;
 }

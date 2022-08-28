@@ -1,5 +1,6 @@
 import { Col, Row } from "reactstrap";
 import EntryFilter from "./EntryFilter";
+import EntryList from "./EntryList";
 
 export default function EntryListPage() {
     return <>
@@ -10,7 +11,7 @@ export default function EntryListPage() {
         </Row>
         <Row>
             <Col>
-                Data here
+                <EntryList />
             </Col>
         </Row>
     </>
