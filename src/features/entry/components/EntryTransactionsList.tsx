@@ -1,5 +1,6 @@
 import { Table } from "reactstrap";
 import { dateHelpers } from "../../../app/helpers";
+import { OrderStatus } from "../../order/types";
 import { EntryTransaction } from "../types";
 
 interface Props {
@@ -13,6 +14,7 @@ export default function EntryTransactionsList({ items }: Props) {
                 <th>Order Date</th>
                 <th>Order No.</th>
                 <th>OB Ref</th>
+                <th className="text-center">Delivered</th>
                 <th className="text-end">Qty</th>
                 <th className="text-end">Delivered Qty</th>
             </tr>
@@ -22,8 +24,11 @@ export default function EntryTransactionsList({ items }: Props) {
                 <td>{dateHelpers.toShortDateStr(val.orderDate)}</td>
                 <td>{val.orderNo}</td>
                 <td>{val.obRef}</td>
+                <td className={`text-center ${val.orderStatus === OrderStatus.Delivered ? 'text-success' : 'text-danger'}`}>
+                    {val.orderStatus === OrderStatus.Delivered ? 'Yes' : 'No'}
+                </td>
                 <td className="text-end">{val.quantity.toFixed(4)}</td>
-                <td className="text-end">{val.deliveredQuantity.toFixed(4)}</td>
+                <td className="text-end">{val.deliveredQuantity.toFixed(4)}</td>               
             </tr>))}
         </tbody>
     </Table> : <span className="text-muted"><i>No stock releases</i></span>} </>

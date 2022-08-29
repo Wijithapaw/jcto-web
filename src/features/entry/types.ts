@@ -1,4 +1,5 @@
 import { PagedFilter } from "../../app/types";
+import { OrderStatus } from "../order/types";
 
 export enum EntryStatus {
     Active = 0,
@@ -38,6 +39,7 @@ export interface EntryListItem {
 export interface EntryTransaction {
     orderDate: string;
     orderNo: string;
+    orderStatus: OrderStatus;
     obRef: string;
     quantity: number;
     deliveredQuantity: number;

@@ -18,5 +18,5 @@ export function showNotification(type: NotificationType, message: string, title?
 
     setTimeout(() => {
         store.dispatch(dismissToast(id));
-    }, 3000);
+    }, 5000);
 }
