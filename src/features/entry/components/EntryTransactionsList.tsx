@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function EntryTransactionsList({ items }: Props) {
-    return <> {items.length > 0 ? <Table>
+    return <> {items.length > 0 ? <Table responsive>
         <thead>
             <tr>
                 <th>Order Date</th>

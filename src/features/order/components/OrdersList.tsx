@@ -21,7 +21,7 @@ export default function OrdersList() {
     }
 
     return <>
-        <Table>
+        <Table responsive>
             <thead>
                 <tr>
                     <th>Order Date</th>

@@ -64,7 +64,7 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
             </Row>
         </CardHeader>
         <CardBody>
-            <Table>
+            <Table responsive>
                 <thead>
                     <tr>
                         <td>Entry No</td>

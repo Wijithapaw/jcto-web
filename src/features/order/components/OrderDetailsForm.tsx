@@ -134,31 +134,31 @@ export default function OrderDetailsForm({ orderId }: Props) {
                         handleSubmit();
                     }}>
                         <Row>
-                            <Col>
+                            <Col md={3}>
                                 <FormGroup>
                                     <FormLabel label="Date" touched={touched.orderDate} error={errors.orderDate} />
                                     <DateSelect2 disabled={disabled} value={values.orderDate} onChange={(d) => setFieldValue('orderDate', d)} />
                                 </FormGroup>
                             </Col>
-                            <Col>
+                            <Col md={2}>
                                 <FormGroup>
                                     <FormLabel label="Order No." touched={touched.orderNo} error={errors.orderNo} />
                                     <Input disabled={disabled} maxLength={20} value={values.orderNo} onChange={(e) => setFieldValue('orderNo', e.target.value)} />
                                 </FormGroup>
                             </Col>
-                            <Col>
+                            <Col md={3}>
                                 <FormGroup>
                                     <FormLabel label="Customer" touched={touched.customerId} error={errors.customerId} />
                                     <CustomerSelect disabled={disabled} selectedValue={values.customerId} onChange={(c) => setFieldValue('customerId', c)} />
                                 </FormGroup>
                             </Col>
-                            <Col>
+                            <Col md={2}>
                                 <FormGroup>
                                     <FormLabel label="Product" touched={touched.productId} error={errors.productId} />
                                     <ProductSelect disabled={disabled} selectedValue={values.productId} onChange={(p) => setFieldValue('productId', p)} />
                                 </FormGroup>
                             </Col>
-                            <Col>
+                            <Col md={2}>
                                 <FormGroup>
                                     <FormLabel label="Quantity" touched={touched.quantity} error={errors.quantity} />
                                     <Input type="number" step="0.0001" disabled={disabled} value={values.quantity} onChange={(e) => setFieldValue('quantity', e.target.value)} />
@@ -166,25 +166,25 @@ export default function OrderDetailsForm({ orderId }: Props) {
                             </Col>
                         </Row>
                         <Row>
-                            <Col>
+                            <Col md={2}>
                                 <FormGroup>
                                     <FormLabel label="OB Prefix" touched={touched.obRefPrefix} error={errors.obRefPrefix} />
                                     <Input disabled={disabled} maxLength={20} value={values.obRefPrefix} onChange={(e) => setFieldValue('obRefPrefix', e.target.value)} />
                                 </FormGroup>
                             </Col>
-                            <Col>
+                            <Col md={2}>
                                 <FormGroup>
                                     <FormLabel label="Tank No." touched={touched.tankNo} error={errors.tankNo} />
                                     <Input disabled={disabled} maxLength={20} value={values.tankNo} onChange={(e) => setFieldValue('tankNo', e.target.value)} />
                                 </FormGroup>
                             </Col>
-                            <Col>
+                            <Col md={2}>
                                 <FormGroup>
                                     <FormLabel label="Buyer" touched={touched.buyer} error={errors.buyer} />
                                     <Input disabled={disabled} maxLength={100} value={values.buyer} onChange={(e) => { setFieldValue('buyer', e.target.value); }} />
                                 </FormGroup>
                             </Col>
-                            <Col>
+                            <Col md={3}>
                                 <FormGroup>
                                     <FormLabel label="Buyer Type" />
                                     <br />
@@ -198,7 +198,7 @@ export default function OrderDetailsForm({ orderId }: Props) {
                                     />
                                 </FormGroup>
                             </Col>
-                            <Col>
+                            <Col md={3}>
                                 {!isNewOrder() &&
                                     <FormGroup>
                                         <FormLabel label="Status" touched={touched.status} error={errors.status} />

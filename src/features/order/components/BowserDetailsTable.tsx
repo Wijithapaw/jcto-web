@@ -57,7 +57,7 @@ export default function BowserDetailsTable({ items = [], onChange, error, touche
             </Row>
         </CardHeader>
         <CardBody>
-            <Table>
+            <Table responsive>
                 <thead>
                     <tr>
                         <td>Capacity</td>
