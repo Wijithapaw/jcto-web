@@ -53,7 +53,7 @@ export default function CustomerStocks() {
         navigate({ pathname: '/entries', search: `?${createSearchParams({ customerId })}` })
     }
 
-    return <Table bordered style={{ tableLayout: 'fixed', textAlign: 'right' }}>
+    return <Table bordered style={{ textAlign: 'right' }} responsive>
         <thead>
             <tr>
                 <th rowSpan={2} className="text-start">
