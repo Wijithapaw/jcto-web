@@ -10,9 +10,10 @@ interface Props {
     error?: string;
     touched?: boolean;
     disabled?: boolean;
+    showDeliveredQty: boolean;
 }
 
-export default function StockReleaseEntriesTable({ items = [], onChange, error, touched, disabled }: Props) {
+export default function StockReleaseEntriesTable({ items = [], onChange, error, touched, disabled, showDeliveredQty }: Props) {
     const addNewItem = () => {
         var newEntry: OrderStockReleaseEntry = {
             id: uuidv4(),
@@ -70,7 +71,7 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
                         <td>Entry No</td>
                         <td>OB Ref.</td>
                         <td>Quantity</td>
-                        <td>Delivered Quantity</td>
+                        {showDeliveredQty && <td>Delivered Quantity</td>}
                         {!disabled && <td></td>}
                     </tr>
                 </thead>
@@ -79,7 +80,7 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
                         <td><Input maxLength={20} value={item.entryNo} disabled={disabled} name="entryNo" onChange={(e) => updateItem(item.id, e)} /></td>
                         <td><Input maxLength={20} value={item.obRef} disabled={disabled} name="obRef" onChange={(e) => updateItem(item.id, e)} /></td>
                         <td><Input disabled={disabled} value={item.quantity} name="quantity" type="number" step="0.0001" onChange={(e) => updateItem(item.id, e)} /></td>
-                        <td><Input disabled={disabled} value={item.deliveredQuantity} name="deliveredQuantity" type="number" step="0.0001" onChange={(e) => updateItem(item.id, e)} /></td>
+                        {showDeliveredQty && <td><Input disabled={disabled} value={item.deliveredQuantity} name="deliveredQuantity" type="number" step="0.0001" onChange={(e) => updateItem(item.id, e)} /></td>}
                         {!disabled && <td className="align-middle"> <AppIcon icon="x"
                             onClick={() => deleteItem(item.id)}
                             className="text-danger"

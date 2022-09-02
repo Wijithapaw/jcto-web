@@ -13,7 +13,7 @@ export default function AppToast() {
     }
 
     return <div aria-live="polite" aria-atomic="true">
-        <div style={{ position: "absolute", top: 0, right: 0, zIndex: 9999, float: "right" }}>
+        <div style={{ position: "fixed", top: 0, right: 0, zIndex: 9999, float: "right" }}>
             {
                 notifications.map(n => (<Toast key={n.id} className="m-2" style={{ background: 'white' }}>
                     <ToastHeader key={n.id} 

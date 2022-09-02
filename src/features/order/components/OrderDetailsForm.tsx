@@ -56,15 +56,17 @@ export default function OrderDetailsForm({ orderId }: Props) {
             releaseEntries: Yup.array()
                 .test('NotEmpty', 'must have entries', (items) => items && items.length > 0 || false)
                 .test('FillAll', 'must fill all the fields',
-                    (items) => items ? items.every((i: OrderStockReleaseEntry) => {
-                        var valid = i.entryNo && i.obRef && i.quantity > 0 && i.deliveredQuantity > 0
+                    (items, ctx) => items ? items.every((i: OrderStockReleaseEntry) => {
+                        var valid = i.entryNo && i.obRef && i.quantity > 0
+                            && (ctx.parent.status === OrderStatus.Undelivered || i.deliveredQuantity > 0)
                         return valid;
                     }) : false)
                 .test('DeliveredQuantityLessThanQuantity', 'Delivered Quantities must be <= Quantity',
                     (items) => items ? items.every((i: OrderStockReleaseEntry) => (i.quantity >= i.deliveredQuantity)) : false)
-                .test('Summation', 'Sum of delivered quantities does not tally with overall quantity',
+                .test('Summation', 'Sum of release quantities does not tally with overall quantity',
                     (items, ctx) => {
-                        const entrySum = +items?.map(i => i.deliveredQuantity).reduce((a, b) => a + b, 0) || 0;
+                        const entrySum = ctx.parent.status === OrderStatus.Delivered ? +items?.map(i => i.deliveredQuantity).reduce((a, b) => a + b, 0) || 0
+                            : +items?.map(i => i.quantity).reduce((a, b) => a + b, 0) || 0;
                         return ctx.parent.quantity === entrySum;
                     }),
             bowserEntries: Yup.array()
@@ -126,8 +128,8 @@ export default function OrderDetailsForm({ orderId }: Props) {
         }}
         validationSchema={validationSchema}>
         {
-            ({ errors, touched, handleSubmit, values, setFieldValue, resetForm, setFieldTouched }) => {
-                var disabled = values.status === OrderStatus.Delivered;
+            ({ errors, touched, handleSubmit, values, setFieldValue, resetForm, setFieldTouched, validateForm }) => {
+                var disabled = editingOrder && (editingOrder.status === OrderStatus.Delivered);
                 return (
                     <Form onSubmit={e => {
                         e.preventDefault();
@@ -205,7 +207,15 @@ export default function OrderDetailsForm({ orderId }: Props) {
                                         <br />
                                         <OrderStatusSplitButton
                                             value={values.status}
-                                            onChange={(s) => setFieldValue('status', s)}
+                                            onChange={(s) => {
+                                                if (s === OrderStatus.Undelivered && values.releaseEntries) {
+                                                    var entries = [...values.releaseEntries]
+                                                    entries.forEach(e => e.deliveredQuantity = 0);
+                                                    setFieldTouched('releaseEntries')
+                                                    setFieldValue('releaseEntries', entries);
+                                                }
+                                                setFieldValue('status', s);
+                                            }}
                                         />
                                     </FormGroup>
                                 }
@@ -215,6 +225,7 @@ export default function OrderDetailsForm({ orderId }: Props) {
                             <Col>
                                 <FormGroup>
                                     <StockReleaseEntriesTable
+                                        showDeliveredQty={values.status === OrderStatus.Delivered}
                                         disabled={disabled}
                                         touched={touched.releaseEntries}
                                         error={errors.releaseEntries}

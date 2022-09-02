@@ -6,6 +6,12 @@ export enum EntryStatus {
     Completed = 1
 }
 
+export enum EntryApprovalType {
+    Rebond = 1,
+    Xbond = 2,
+    Letter = 3
+}
+
 export interface EntriesFilter extends PagedFilter {
     customerId: string;
     entryNo: string;
@@ -43,4 +49,12 @@ export interface EntryTransaction {
     obRef: string;
     quantity: number;
     deliveredQuantity: number;
+}
+
+export interface EntryApproval {
+    entryId: string;
+    type?: EntryApprovalType;
+    approvalRef: string;
+    quantity: number;
+    approvalDate: string;
 }
