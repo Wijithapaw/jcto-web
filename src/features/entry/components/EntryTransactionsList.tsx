@@ -1,34 +1,54 @@
 import { Table } from "reactstrap";
 import { dateHelpers } from "../../../app/helpers";
+import AppIcon from "../../../components/AppIcon";
 import { OrderStatus } from "../../order/types";
-import { EntryTransaction } from "../types";
+import { EntryApprovalType, EntryTransaction, EntryTransactionType } from "../types";
 
 interface Props {
     items: EntryTransaction[]
+}
+
+function getApprovalType(approvalType: EntryApprovalType) {
+    switch (approvalType) {
+        case EntryApprovalType.Rebond: return 'Rebond';
+        case EntryApprovalType.Xbond: return 'Xbond';
+        case EntryApprovalType.Letter: return 'Letter';
+        default: return '';
+    }
 }
 
 export default function EntryTransactionsList({ items }: Props) {
     return <> {items.length > 0 ? <Table responsive>
         <thead>
             <tr>
-                <th>Order Date</th>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Approval Type</th>
+                <th>Approval Ref</th>
                 <th>Order No.</th>
                 <th>OB Ref</th>
-                <th className="text-center">Delivered</th>
                 <th className="text-end">Qty</th>
                 <th className="text-end">Delivered Qty</th>
             </tr>
         </thead>
         <tbody>
-            {items.map((val, i) => (<tr key={i}>
-                <td>{dateHelpers.toShortDateStr(val.orderDate)}</td>
-                <td>{val.orderNo}</td>
-                <td>{val.obRef}</td>
-                <td className={`text-center ${val.orderStatus === OrderStatus.Delivered ? 'text-success' : 'text-danger'}`}>
-                    {val.orderStatus === OrderStatus.Delivered ? 'Yes' : 'No'}
+            {items.map((val, i) => (<tr key={i} className={val.type === EntryTransactionType.Approval ? `text-success` : ''}>
+                <td>{dateHelpers.toShortDateStr(val.transactionDate)}</td>
+                <td>{val.type === EntryTransactionType.Approval ? 'Approval' : 'Order'} </td>
+                <td>{getApprovalType(val.approvalType)}</td>
+                <td>{val.approvalRef}</td>
+                <td>
+                    {val.orderNo && <AppIcon size="xs"
+                        className={`me-2 ${val.orderStatus === OrderStatus.Delivered ? 'text-success' : 'text-danger'}`}
+                        icon={val.orderStatus === OrderStatus.Delivered ? 'tick' : 'x'}
+                    /> || val.orderStatus}
+                    {val.orderNo}
                 </td>
-                <td className="text-end">{val.quantity.toFixed(4)}</td>
-                <td className="text-end">{val.deliveredQuantity.toFixed(4)}</td>               
+                <td>{val.obRef}</td>
+                <td className="text-end">{Math.abs(val.quantity).toFixed(4)}</td>
+                <td className="text-end">
+                    {val.deliveredQuantity && Math.abs(val.deliveredQuantity).toFixed(4)}
+                </td>
             </tr>))}
         </tbody>
     </Table> : <span className="text-muted"><i>No stock releases</i></span>} </>

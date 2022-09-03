@@ -13,9 +13,10 @@ import { NotificationType, showNotification } from "../../../app/notification-se
 interface Props {
     entryId: string;
     id?: string;
+    onUpdate?: () => void;
 }
 
-export default function EntryApprovalForm({ entryId, id }: Props) {
+export default function EntryApprovalForm({ entryId, id, onUpdate }: Props) {
     const validationSchema = useMemo(() => {
         return Yup.object().shape({
             quantity: Yup.number()
@@ -56,6 +57,7 @@ export default function EntryApprovalForm({ entryId, id }: Props) {
                 .then(() => {
                     showNotification(NotificationType.success, "Added entry approval successfully");
                     resetForm();
+                    onUpdate && onUpdate();
                 }).finally(() => setSubmitting(false));
         }}
         onReset={(values, { resetForm, setValues }) => {

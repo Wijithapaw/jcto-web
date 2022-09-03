@@ -36,7 +36,7 @@ export default function OrdersList() {
                 </tr>
             </thead>
             <tbody>
-                {orders.items.map(val => (<tr>
+                {orders.items.map(val => (<tr key={val.id}>
                     <td>{dateHelpers.toShortDateStr(val.orderDate)}</td>
                     <td>{val.orderNo}</td>
                     <td>{val.customer}</td>

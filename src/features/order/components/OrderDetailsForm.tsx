@@ -57,16 +57,17 @@ export default function OrderDetailsForm({ orderId }: Props) {
                 .test('NotEmpty', 'must have entries', (items) => items && items.length > 0 || false)
                 .test('FillAll', 'must fill all the fields',
                     (items, ctx) => items ? items.every((i: OrderStockReleaseEntry) => {
-                        var valid = i.entryNo && i.obRef && i.quantity > 0
-                            && (ctx.parent.status === OrderStatus.Undelivered || i.deliveredQuantity > 0)
+                        var valid = i.entryNo && i.obRef && i.quantity > 0 && i.approvalType
+                            && (ctx.parent.status === OrderStatus.Undelivered || i.deliveredQuantity && i.deliveredQuantity > 0)
                         return valid;
                     }) : false)
                 .test('DeliveredQuantityLessThanQuantity', 'Delivered Quantities must be <= Quantity',
-                    (items) => items ? items.every((i: OrderStockReleaseEntry) => (i.quantity >= i.deliveredQuantity)) : false)
+                    (items) => items ? items.every((i: OrderStockReleaseEntry) => (i.quantity >= (i.deliveredQuantity || 0))) : false)
                 .test('Summation', 'Sum of release quantities does not tally with overall quantity',
                     (items, ctx) => {
-                        const entrySum = ctx.parent.status === OrderStatus.Delivered ? +items?.map(i => i.deliveredQuantity).reduce((a, b) => a + b, 0) || 0
-                            : +items?.map(i => i.quantity).reduce((a, b) => a + b, 0) || 0;
+                        const entrySum = items && (ctx.parent.status === OrderStatus.Delivered
+                            ? (items.map(i => +i.deliveredQuantity).reduce((a, b) => a + b, 0) || 0)
+                            : (items.map(i => +i.quantity).reduce((a, b) => a + b, 0) || 0)) || 0;
                         return ctx.parent.quantity === entrySum;
                     }),
             bowserEntries: Yup.array()

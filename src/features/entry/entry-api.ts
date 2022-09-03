@@ -1,11 +1,12 @@
 import { coreApi } from "../../app/core-api";
 import { EntityCreateResult, PagedResult } from "../../app/types";
-import { EntriesFilter, Entry, EntryApproval, EntryListItem } from "./types";
+import { EntriesFilter, Entry, EntryApproval, EntryBalanceQty, EntryListItem } from "./types";
 
 export const entryApi = {
     createEntry,
     searchEntries,
-    approveEntry
+    approveEntry,
+    getBalanceQuantities
 }
 
 function createEntry(entry: Entry) {
@@ -18,4 +19,8 @@ function searchEntries(filter: EntriesFilter) {
 
 function approveEntry(approval: EntryApproval) {
     return coreApi.post<EntityCreateResult>('entries/approve', approval);
+}
+
+function getBalanceQuantities(entryNo: string) {
+    return coreApi.get<EntryBalanceQty>(`entries/${entryNo}/balance`);
 }

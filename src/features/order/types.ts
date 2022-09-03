@@ -1,4 +1,5 @@
 import { PagedFilter } from "../../app/types";
+import { EntryApprovalType } from "../entry/types";
 
 export interface OrdersFilter extends PagedFilter{
     customerId: string;
@@ -42,9 +43,10 @@ export interface Order {
 export interface OrderStockReleaseEntry {
     id: string;
     entryNo: string;
+    approvalType?: EntryApprovalType;
     obRef: string;
-    quantity: number;
-    deliveredQuantity: number
+    quantity: number;    
+    deliveredQuantity?: number
 }
 
 export interface BowserEntry {

@@ -12,6 +12,11 @@ export enum EntryApprovalType {
     Letter = 3
 }
 
+export enum EntryTransactionType {
+    Approval = 0,
+    Out = 1,
+}
+
 export interface EntriesFilter extends PagedFilter {
     customerId: string;
     entryNo: string;
@@ -43,12 +48,15 @@ export interface EntryListItem {
 }
 
 export interface EntryTransaction {
-    orderDate: string;
-    orderNo: string;
-    orderStatus: OrderStatus;
-    obRef: string;
+    transactionDate: string;
+    orderNo?: string;
+    orderStatus?: OrderStatus;
+    obRef?: string;
     quantity: number;
     deliveredQuantity: number;
+    approvalType: EntryApprovalType;
+    approvalRef?: string;
+    type: EntryTransactionType;
 }
 
 export interface EntryApproval {
@@ -57,4 +65,14 @@ export interface EntryApproval {
     approvalRef: string;
     quantity: number;
     approvalDate: string;
+}
+
+export interface EntryBalanceQty {
+    id: string;
+    entryNo: string;
+    remainingQty: number;
+    initialQty: number;
+    rebond: number;
+    xbond: number;
+    letter: number;
 }

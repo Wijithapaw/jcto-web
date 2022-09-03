@@ -1,7 +1,10 @@
-import { ChangeEvent, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardBody, CardHeader, Col, Input, Label, Row, Table } from "reactstrap";
 import { v4 as uuidv4 } from 'uuid';
 import AppIcon from "../../../components/AppIcon";
+import EntryApprovalTypeSelect from "../../entry/components/EntryApprovalTypeSelect";
+import { entryApi } from "../../entry/entry-api";
+import { EntryBalanceQty } from "../../entry/types";
 import { OrderStockReleaseEntry } from "../types"
 
 interface Props {
@@ -14,13 +17,15 @@ interface Props {
 }
 
 export default function StockReleaseEntriesTable({ items = [], onChange, error, touched, disabled, showDeliveredQty }: Props) {
+    const [balanceQty, setBalanceQty] = useState<EntryBalanceQty>();
+
     const addNewItem = () => {
         var newEntry: OrderStockReleaseEntry = {
             id: uuidv4(),
             entryNo: '',
             obRef: '',
             quantity: 0,
-            deliveredQuantity: 0
+            deliveredQuantity: showDeliveredQty ? 0 : undefined
         };
         const newEntries = [...items, newEntry];
         onChange(newEntries);
@@ -31,13 +36,20 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
         onChange(remItems);
     };
 
-    const updateItem = (id: string, e: ChangeEvent<HTMLInputElement>) => {
+    const updateItem = (id: string, e: any) => {
         const updatedItems = [...items];
         const item: any = updatedItems.find(i => i.id === id);
         item[e.target.name] = e.target.value;
 
         onChange(updatedItems);
     };
+
+    const getBalance = (entryNo: string) => {
+        entryApi.getBalanceQuantities(entryNo)
+            .then((val) => {
+                val && setBalanceQty(val);
+            })
+    }
 
     return <Card>
         <CardHeader>
@@ -69,6 +81,8 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
                 <thead>
                     <tr>
                         <td>Entry No</td>
+                        <td></td>
+                        <td>Approval Type</td>
                         <td>OB Ref.</td>
                         <td>Quantity</td>
                         {showDeliveredQty && <td>Delivered Quantity</td>}
@@ -77,7 +91,33 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
                 </thead>
                 <tbody>
                     {items.map((item) => <tr key={item.id}>
-                        <td><Input maxLength={20} value={item.entryNo} disabled={disabled} name="entryNo" onChange={(e) => updateItem(item.id, e)} /></td>
+                        <td>
+                            <Input
+                                maxLength={20}
+                                value={item.entryNo}
+                                disabled={disabled}
+                                name="entryNo"
+                                onBlur={(e) => getBalance(e.target.value)}
+                                onChange={(e) => updateItem(item.id, e)} />
+                        </td>
+                        <td>
+                            <Label>
+                                <small>
+                                    <small className="text-muted">
+                                        {`Bal: XB-${balanceQty?.xbond} | RB-${balanceQty?.rebond} | L-${balanceQty?.letter}`}
+                                    </small>
+                                </small>
+                            </Label>
+                        </td>
+                        <td>
+                            <EntryApprovalTypeSelect
+                                name="approvalType"
+                                disabled={disabled}
+                                selectedValue={item.approvalType}
+                                onChange={(val) => {
+                                    updateItem(item.id, { target: { name: 'approvalType', value: val } })
+                                }} />
+                        </td>
                         <td><Input maxLength={20} value={item.obRef} disabled={disabled} name="obRef" onChange={(e) => updateItem(item.id, e)} /></td>
                         <td><Input disabled={disabled} value={item.quantity} name="quantity" type="number" step="0.0001" onChange={(e) => updateItem(item.id, e)} /></td>
                         {showDeliveredQty && <td><Input disabled={disabled} value={item.deliveredQuantity} name="deliveredQuantity" type="number" step="0.0001" onChange={(e) => updateItem(item.id, e)} /></td>}
