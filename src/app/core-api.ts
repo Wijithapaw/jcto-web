@@ -3,7 +3,8 @@ import { API } from "aws-amplify";
 export const coreApi = {
     get,
     post,
-    put
+    put,
+    download
 }
 
 function handleError(err: any) {
@@ -28,4 +29,30 @@ function put<T>(path: string, data: any) {
     return API.put("jcto", path, { body: data })
         .then(data => data as T)
         .catch(handleError);
+}
+
+function download(path: string) {
+    return API.get("jcto", path, {
+        responseType: 'blob',
+        response: true
+    }).then((response) => {
+        const blob = new Blob([response.data])
+        const filename = 'wiji-test.xls';
+        saveFile(blob, filename);
+    });
+}
+
+function saveFile(blob: Blob, filename: string) {
+    const blobURL = window.URL.createObjectURL(blob)
+    const tempLink = document.createElement('a')
+    tempLink.style.display = 'none'
+    tempLink.href = blobURL
+    tempLink.setAttribute('download', filename)
+    if (typeof tempLink.download === 'undefined') {
+        tempLink.setAttribute('target', '_blank')
+    }
+    document.body.appendChild(tempLink)
+    tempLink.click()
+    document.body.removeChild(tempLink)
+    window.URL.revokeObjectURL(blobURL)
 }

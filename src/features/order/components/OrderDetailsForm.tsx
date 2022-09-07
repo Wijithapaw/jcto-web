@@ -35,6 +35,12 @@ export default function OrderDetailsForm({ orderId }: Props) {
 
     const isNewOrder = () => !editingOrderId;
 
+    const downloadStockRelease = () => {
+        orderApi.downloadStockRelease('123').then(() => {
+            showNotification(NotificationType.success, `Stock release downloaded successfully`);
+        })
+    }
+
     const validationSchema = useMemo(() => {
         return Yup.object().shape({
             orderDate: Yup.string().required('is required'),
@@ -265,6 +271,13 @@ export default function OrderDetailsForm({ orderId }: Props) {
                                 <FormGroup>
                                     <Button type="reset" onClick={() => resetForm()}>Reset</Button>
                                     <Button type="submit" className="ms-2" color="primary">Save</Button>
+                                </FormGroup>
+                            </Col>
+                            <Col>
+                                <FormGroup>
+                                    <Button type="button" className="ms-2" color="secondary" onClick={downloadStockRelease}>
+                                        Download Stock Release
+                                        </Button>
                                 </FormGroup>
                             </Col>
                         </Row>
