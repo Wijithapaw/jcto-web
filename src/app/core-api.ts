@@ -31,13 +31,12 @@ function put<T>(path: string, data: any) {
         .catch(handleError);
 }
 
-function download(path: string) {
+function download(path: string, filename: string) {
     return API.get("jcto", path, {
         responseType: 'blob',
         response: true
     }).then((response) => {
         const blob = new Blob([response.data])
-        const filename = 'wiji-test.xls';
         saveFile(blob, filename);
     });
 }

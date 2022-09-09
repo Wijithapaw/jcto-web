@@ -36,7 +36,7 @@ export default function OrderDetailsForm({ orderId }: Props) {
     const isNewOrder = () => !editingOrderId;
 
     const downloadStockRelease = () => {
-        orderApi.downloadStockRelease('123').then(() => {
+        orderApi.downloadStockRelease(editingOrderId!).then(() => {
             showNotification(NotificationType.success, `Stock release downloaded successfully`);
         })
     }

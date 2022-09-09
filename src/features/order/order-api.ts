@@ -27,5 +27,5 @@ function updateOrder(id: string, order: Order) {
 }
 
 function downloadStockRelease(orderId: string) {
-    return coreApi.download(`orders/${orderId}/stockrelease`);
+    return coreApi.download(`orders/${orderId}/stockrelease`, 'StockRelease.xlsx');
 }
