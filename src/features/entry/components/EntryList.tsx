@@ -1,5 +1,6 @@
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
-import { entriesSelector, entryFilterSelector, searchEntriesAsync } from "../entry-slice"
+import AppPaginator from "../../../components/AppPaginator";
+import { changeEntryFilter, entriesSelector, entryFilterSelector, searchEntriesAsync } from "../entry-slice"
 import EntryCard from "./EntryCard";
 
 export default function EntryList() {
@@ -12,7 +13,18 @@ export default function EntryList() {
         dispatch(searchEntriesAsync(filter));
     }
 
+    const handlePageChange = (page: number) => {
+        dispatch(changeEntryFilter({ page }));
+        dispatch(searchEntriesAsync({ ...filter, page }));
+    }
+
     return <>
         {entries.items.map(e => <EntryCard key={e.id} onUpdate={search} entry={e} />)}
+        <hr/>
+        <AppPaginator
+            page={filter.page}
+            pageSize={filter.pageSize}
+            onChange={handlePageChange}
+            total={entries.total} />
     </>
 }

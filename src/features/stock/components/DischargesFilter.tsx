@@ -1,17 +1,17 @@
 import { Button, Card, CardBody, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
 import { useSearchParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { changeEntryFilter, entryFilterSelector, searchEntriesAsync } from "../entry-slice";
+import { changeDischargesFilter, dischargesFilterSelector, searchDischargesAsync } from "../stock-slice";
 import CustomerSelect from "../../customer/components/CustomerSelect";
 import { FormEvent, useEffect, useState } from "react";
 import DateSelect2 from "../../../components/DateSelect2";
-import EntryDetailsForm from "./EntryDetailsForm";
 import ProductSelect from "../../customer/components/ProductSelect";
+import DischargeDetailsForm from "./DischargeDetailsForm";
 
-export default function EntryFilter() {
+export default function DischargesFilter() {
     const dispatch = useAppDispatch();
     const [searchParams, setSearchParams] = useSearchParams();
-    const filter = useAppSelector(entryFilterSelector);
+    const filter = useAppSelector(dischargesFilterSelector);
     const [showAddNew, setShowAddNew] = useState(false);
 
     useEffect(() => {
@@ -20,7 +20,7 @@ export default function EntryFilter() {
     }, [])
 
     const handleFilterChange = (field: string, value: any) => {
-        dispatch(changeEntryFilter({ [field]: value }));
+        dispatch(changeDischargesFilter({ [field]: value }));
     }
 
     const handleCustomerChange = (customerId: string) => {
@@ -30,7 +30,7 @@ export default function EntryFilter() {
 
     const handleSearch = (e: FormEvent) => {
         e.preventDefault();
-        dispatch(searchEntriesAsync(filter));
+        dispatch(searchDischargesAsync(filter));
     }
 
     return <Card>
@@ -59,16 +59,6 @@ export default function EntryFilter() {
                                     </Col>
                                 </FormGroup>
                             </Col>
-                            <Col>
-                                <FormGroup row>
-                                    <Label md="auto">Entry No.</Label>
-                                    <Col>
-                                        <Input type="text"
-                                            value={filter.entryNo}
-                                            onChange={(e) => handleFilterChange("entryNo", e.target.value)} />
-                                    </Col>
-                                </FormGroup>
-                            </Col>
                         </Row>
                         <Row>
                             <Col>
@@ -90,15 +80,6 @@ export default function EntryFilter() {
                                     </Col>
                                 </FormGroup>
                             </Col>
-                            <Col className="pt-2">
-                                <FormGroup check>
-                                    <Label for="cbxShowActiveOnly">Show Active Entries Only</Label>
-                                    <Input id="cbxShowActiveOnly"
-                                        type="checkbox"
-                                        checked={filter.activeEntriesOnly}
-                                        onChange={(e) => handleFilterChange("activeEntriesOnly", e.target.checked)} />
-                                </FormGroup>
-                            </Col>
                         </Row>
                     </Col>
                     <Col md="auto">
@@ -117,10 +98,10 @@ export default function EntryFilter() {
             </Form>
             <Modal isOpen={showAddNew} size="lg" toggle={() => setShowAddNew(false)} backdrop="static">
                 <ModalHeader toggle={() => setShowAddNew(false)}>
-                    New Entry
+                    New Discharge
                 </ModalHeader>
                 <ModalBody>
-                    <EntryDetailsForm customerId={filter.customerId} />
+                    <DischargeDetailsForm customerId={filter.customerId} />
                 </ModalBody>
             </Modal>
         </CardBody>

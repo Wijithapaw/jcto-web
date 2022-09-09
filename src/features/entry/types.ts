@@ -19,6 +19,7 @@ export enum EntryTransactionType {
 
 export interface EntriesFilter extends PagedFilter {
     customerId: string;
+    productId: string;
     entryNo: string;
     from: string;
     to: string;

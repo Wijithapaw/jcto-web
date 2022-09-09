@@ -2,78 +2,66 @@ import { useMemo } from "react";
 import { Button, Col, Form, FormGroup, Label, Row } from "reactstrap";
 import { Formik, Field } from 'formik';
 import * as Yup from 'yup';
-import { Entry, EntryStatus } from "../types";
-import { dateHelpers } from "../../../app/helpers";
+import { Discharge } from "../types";
+import { dateHelpers, validationHelpers } from "../../../app/helpers";
 import FormLabel from "../../../components/FormLabel";
 import DateSelect2 from "../../../components/DateSelect2";
 import ProductSelect from "../../customer/components/ProductSelect";
 import CustomerSelect from "../../customer/components/CustomerSelect";
-import { entryApi } from "../entry-api";
+import { stockApi } from "../stock-api";
 import { showNotification } from "../../../app/notification-service";
 import { NotificationType } from "../../../app/types";
 
-const digitsOnly = (value?: string) => /^\d+$/.test(value || '')
-
 interface Props {
-    entryId?: string;
+    dischargeId?: string;
     customerId?: string;
 }
 
-export default function EntryDetailsForm({ entryId, customerId }: Props) {
+export default function DischargeDetailsForm({  dischargeId, customerId }: Props) {
     const validationSchema = useMemo(() => {
         return Yup.object().shape({
-            entryNo: Yup.string()
+            toBondNo: Yup.string()
                 .max(20, ' is too Long!')
                 .required(' is required')
-                .test('Digits only', ' must have only digits', digitsOnly),
-            initialQuantity: Yup.number()
+                .test('Digits only', ' must have only digits', validationHelpers.digitsOnly),
+            quantity: Yup.number()
                 .required(' is required')
                 .test('dd', ' must be greater than 0', (value) => (value || 0) > 0),
-            entryDate: Yup.string().required(' is required'),
+            transactionDate: Yup.string().required(' is required'),
             productId: Yup.string().required(' is required'),
             customerId: Yup.string().required(' is required'),
         });
     }, [])
 
-    const entry = useMemo(() => {
-        if (entryId) {
+    const discharge = useMemo(() => {
+        if (dischargeId) {
             //todo
         } else {
-            const newEntry: Entry = {
-                customerId: customerId!,
-                customerName: '',
-                entryDate: dateHelpers.toIsoString(new Date()),
-                entryNo: '',
-                initialQuantity: 0,
+            const newDischarge: Discharge = {
+                customerId: customerId || '',
                 productId: '',
-                status: EntryStatus.Active
+                transactionDate: dateHelpers.toIsoString(new Date()),
+                toBondNo: '',
+                quantity: 0,
             };
-            return newEntry;
+            return newDischarge;
         }
-    }, [entryId]);
+    }, [dischargeId]);
 
-    return entry && <Formik initialValues={{ ...entry }}
+    return discharge && <Formik initialValues={{ ...discharge }}
         onSubmit={(values, { setSubmitting, resetForm }) => {
             setSubmitting(true);
 
-            const editingEntry: Entry = {
-                customerId: values.customerId,
-                customerName: '',
-                productId: values.productId,
-                entryDate: values.entryDate,
-                entryNo: values.entryNo,
-                initialQuantity: values.initialQuantity,
-                status: values.status
-            };
+            const editingDischarge = { ...values }
 
-            entryApi.createEntry(editingEntry)
+            stockApi.topup(editingDischarge)
                 .then(() => {
-                    showNotification(NotificationType.success, "Entry created successfully");
+                    showNotification(NotificationType.success, "Discharge created successfully");
                     resetForm();
                 }).finally(() => setSubmitting(false));
         }}
         onReset={(values, { resetForm, setValues }) => {
-            setValues({ ...entry })
+            setValues({ ...discharge })
         }}
         validationSchema={validationSchema}>
         {
@@ -99,8 +87,8 @@ export default function EntryDetailsForm({ entryId, customerId }: Props) {
                         </Col>
                         <Col>
                             <FormGroup>
-                                <FormLabel label="Entry No" touched={touched.entryNo} error={errors.entryNo} />
-                                <Field name="entryNo" type="text" className="form-control" />
+                                <FormLabel label="To Bond No" touched={touched.toBondNo} error={errors.toBondNo} />
+                                <Field name="toBondNo" type="text" className="form-control" />
                             </FormGroup>
                         </Col>
 
@@ -108,24 +96,14 @@ export default function EntryDetailsForm({ entryId, customerId }: Props) {
                     <Row>
                         <Col>
                             <FormGroup>
-                                <FormLabel label="Initial Quantity" touched={touched.initialQuantity} error={errors.initialQuantity} />
-                                <Field name="initialQuantity" type="number" className="form-control" />
+                                <FormLabel label="Discharge Date" touched={touched.transactionDate} error={errors.transactionDate} />
+                                <DateSelect2 value={values.transactionDate} onChange={(d) => setFieldValue('transactionDate', d, true)} />
                             </FormGroup>
                         </Col>
                         <Col>
                             <FormGroup>
-                                <FormLabel label="Entry Date" touched={touched.entryDate} error={errors.entryDate} />
-                                <DateSelect2 value={values.entryDate} onChange={(d) => setFieldValue('entryDate', d, true)} />
-                            </FormGroup>
-                        </Col>
-
-                        <Col md={2}>
-                            <FormGroup>
-                                <Label>Status</Label>
-                                <br />
-                                <b className={`${entry.status === EntryStatus.Active ? 'text-success' : 'text-secondary'}`}>
-                                    {`${entry.status === EntryStatus.Active ? 'Active' : 'Completed'}`}
-                                </b>
+                                <FormLabel label="Quantity" touched={touched.quantity} error={errors.quantity} />
+                                <Field name="quantity" type="number" className="form-control" />
                             </FormGroup>
                         </Col>
                     </Row>

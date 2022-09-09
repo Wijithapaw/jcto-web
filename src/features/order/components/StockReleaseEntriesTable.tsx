@@ -51,6 +51,23 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
             })
     }
 
+    const displayBalanceQtys = () => {
+        if (balanceQty) {
+            const balArr = [
+                { lable: 'XB', qty: balanceQty.xbond },
+                { lable: 'RB', qty: balanceQty.rebond },
+                { lable: 'L', qty: balanceQty.letter }
+            ];
+            const availableBalQty = balArr.filter(b => b.qty > 0);
+            if (availableBalQty.length > 0) {
+                return `Bal: ${availableBalQty.map(b => `${b.lable}-${b.qty}`).join(" | ")}`;
+            }
+            return `Bal: 0`
+        }
+
+        return '';
+    }
+
     return <Card>
         <CardHeader>
             <Row>
@@ -104,7 +121,7 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
                             <Label>
                                 <small>
                                     <small className="text-muted">
-                                        {`Bal: XB-${balanceQty?.xbond} | RB-${balanceQty?.rebond} | L-${balanceQty?.letter}`}
+                                        {displayBalanceQtys()}
                                     </small>
                                 </small>
                             </Label>

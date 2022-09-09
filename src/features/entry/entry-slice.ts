@@ -12,6 +12,7 @@ export interface EntryState {
 const initialState: EntryState = {
     entryFilter: {
         customerId: '',
+        productId: '',
         activeEntriesOnly: true,
         entryNo: '',
         from: '',

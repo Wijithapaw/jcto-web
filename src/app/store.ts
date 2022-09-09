@@ -4,6 +4,7 @@ import coreReducer from './core-slice';
 import customerReducer from '../features/customer/customer-slice';
 import entryReducer from '../features/entry/entry-slice';
 import orderReducer from '../features/order/order-slice';
+import stockReducer from '../features/stock/stock-slice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     counter: counterReducer,    
     entry: entryReducer,
     order: orderReducer,
+    stock: stockReducer
   },
 });
 
