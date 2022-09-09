@@ -22,8 +22,7 @@ export default function DischargeDetailsForm({  dischargeId, customerId }: Props
         return Yup.object().shape({
             toBondNo: Yup.string()
                 .max(20, ' is too Long!')
-                .required(' is required')
-                .test('Digits only', ' must have only digits', validationHelpers.digitsOnly),
+                .required(' is required'),
             quantity: Yup.number()
                 .required(' is required')
                 .test('dd', ' must be greater than 0', (value) => (value || 0) > 0),
