@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, useEffect } from "react";
 import { Card, CardBody, CardHeader, Col, Input, Label, Row, Table } from "reactstrap";
 import { v4 as uuidv4 } from 'uuid';
 import AppIcon from "../../../components/AppIcon";
@@ -17,7 +17,7 @@ export default function BowserDetailsTable({ items = [], onChange, error, touche
         var newEntry: BowserEntry = {
             id: uuidv4(),
             capacity: 0,
-            count: 0,            
+            count: 0,
         };
         const newEntries = [...items, newEntry];
         onChange(newEntries);
@@ -32,7 +32,6 @@ export default function BowserDetailsTable({ items = [], onChange, error, touche
         const updatedItems = [...items];
         const item: any = updatedItems.find(i => i.id === id);
         item[e.target.name] = e.target.value;
-
         onChange(updatedItems);
     };
 
@@ -67,13 +66,27 @@ export default function BowserDetailsTable({ items = [], onChange, error, touche
                 </thead>
                 <tbody>
                     {items.map((item) => <tr key={item.id}>
-                        <td><Input disabled={disabled} name="capacity" type="number" onChange={(e) => updateItem(item.id, e)} /></td>
-                        <td><Input disabled={disabled} name="count" type="number" onChange={(e) => updateItem(item.id, e)} /></td>
-                        {!disabled && <td className="align-middle"> <AppIcon icon="x"
-                            onClick={() => deleteItem(item.id)}
-                            className="text-danger"
-                            title="Delete" mode="button" />  </td>}
-
+                        <td>
+                            <Input disabled={disabled}
+                                value={item.capacity}
+                                name="capacity"
+                                type="number"
+                                onChange={(e) => updateItem(item.id, e)} />
+                        </td>
+                        <td>
+                            <Input
+                                disabled={disabled}
+                                value={item.count}
+                                name="count"
+                                type="number"
+                                onChange={(e) => updateItem(item.id, e)} />
+                        </td>
+                        {!disabled && <td className="align-middle">
+                            <AppIcon icon="x"
+                                onClick={() => deleteItem(item.id)}
+                                className="text-danger"
+                                title="Delete" mode="button" />
+                        </td>}
                     </tr>)}
                 </tbody>
             </Table>

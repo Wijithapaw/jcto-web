@@ -7,12 +7,13 @@ interface Props {
   selectedValue?: string;
   items: ListItem[];
   showEmptyRow?: boolean;
-  placeholder: string;
+  placeholder?: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  className?: string;
 }
 
-export default function Dropdown({ id, name, selectedValue = '', items, showEmptyRow = true, placeholder, onChange, disabled }: Props) {
+export default function Dropdown({ id, name, selectedValue = '', items, showEmptyRow = true, placeholder, onChange, disabled, className }: Props) {
   return <Input
     disabled={disabled}
     id={id}
@@ -20,6 +21,7 @@ export default function Dropdown({ id, name, selectedValue = '', items, showEmpt
     type="select"
     value={selectedValue}
     onChange={(e) => onChange(e.target.value)}
+    className={className}
   >
     {showEmptyRow && <option label={placeholder || ''} value='' />}
     {items.map(i => <option key={i.id} label={i.label} value={i.id} />)}

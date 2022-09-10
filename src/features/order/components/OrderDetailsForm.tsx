@@ -10,17 +10,19 @@ import CustomerSelect from "../../customer/components/CustomerSelect";
 import { showNotification } from "../../../app/notification-service";
 import { NotificationType } from "../../../app/types";
 import { BowserEntry, BuyerType, Order, OrderStatus, OrderStockReleaseEntry } from "../types";
-import OrderStatusSplitButton from "./OrderStatusSplitButton";
-import BuyerTypeSplitButton from "./BuyerTypeSplitButton";
+import OrderStatusSelect from "./OrderStatusSelect";
+import BuyerTypeSelect from "./BuyerTypeSelect";
 import StockReleaseEntriesTable from "./StockReleaseEntriesTable";
 import BowserDetailsTable from "./BowserDetailsTable";
 import { orderApi } from "../order-api";
+import AppIcon from "../../../components/AppIcon";
 
 interface Props {
     orderId?: string;
+    onUpdate?: () => void;
 }
 
-export default function OrderDetailsForm({ orderId }: Props) {
+export default function OrderDetailsForm({ orderId, onUpdate }: Props) {
     const [editingOrderId, setEditingOrderId] = useState(orderId);
     const [editingOrder, setEditingOrder] = useState<Order>();
 
@@ -36,7 +38,8 @@ export default function OrderDetailsForm({ orderId }: Props) {
     const isNewOrder = () => !editingOrderId;
 
     const downloadStockRelease = () => {
-        orderApi.downloadStockRelease(editingOrderId!).then(() => {
+        const fileName = `StockRelease_${dateHelpers.dateFormat(order.orderDate, 'YYYY_MM_DD')}_${order.orderNo}`;
+        orderApi.downloadStockRelease(editingOrderId!, fileName).then(() => {
             showNotification(NotificationType.success, `Stock release downloaded successfully`);
         })
     }
@@ -71,9 +74,7 @@ export default function OrderDetailsForm({ orderId }: Props) {
                     (items) => items ? items.every((i: OrderStockReleaseEntry) => (i.quantity >= (i.deliveredQuantity || 0))) : false)
                 .test('Summation', 'Sum of release quantities does not tally with overall quantity',
                     (items, ctx) => {
-                        const entrySum = items && (ctx.parent.status === OrderStatus.Delivered
-                            ? (items.map(i => +i.deliveredQuantity).reduce((a, b) => a + b, 0) || 0)
-                            : (items.map(i => +i.quantity).reduce((a, b) => a + b, 0) || 0)) || 0;
+                        const entrySum = items && items.map(i => i.quantity).reduce((a, b) => a + b, 0) || 0;
                         return ctx.parent.quantity === entrySum;
                     }),
             bowserEntries: Yup.array()
@@ -108,6 +109,7 @@ export default function OrderDetailsForm({ orderId }: Props) {
                 quantity: 0,
                 buyer: '',
                 obRefPrefix: '',
+                deliveredQuantity: undefined,
                 buyerType: BuyerType.Barge,
                 releaseEntries: [],
                 status: OrderStatus.Undelivered,
@@ -128,6 +130,7 @@ export default function OrderDetailsForm({ orderId }: Props) {
                 showNotification(NotificationType.success, `Order ${isNewOrder() ? 'Created' : 'Updated'} successfully`);
                 isNewOrder() ? setEditingOrderId(res.id)
                     : setEditingOrder({ ...editingOrder, concurrencyKey: res.concurrencyKey });
+                onUpdate && onUpdate();
             }).finally(() => setSubmitting(false));
         }}
         onReset={(values, { resetForm, setValues }) => {
@@ -193,11 +196,11 @@ export default function OrderDetailsForm({ orderId }: Props) {
                                     <Input disabled={disabled} maxLength={100} value={values.buyer} onChange={(e) => { setFieldValue('buyer', e.target.value); }} />
                                 </FormGroup>
                             </Col>
-                            <Col md={3}>
+                            <Col>
                                 <FormGroup>
                                     <FormLabel label="Buyer Type" />
                                     <br />
-                                    <BuyerTypeSplitButton
+                                    <BuyerTypeSelect
                                         disabled={disabled}
                                         value={values.buyerType}
                                         onChange={(s) => {
@@ -207,12 +210,13 @@ export default function OrderDetailsForm({ orderId }: Props) {
                                     />
                                 </FormGroup>
                             </Col>
-                            <Col md={3}>
+                            <Col>
                                 {!isNewOrder() &&
                                     <FormGroup>
                                         <FormLabel label="Status" touched={touched.status} error={errors.status} />
+                                        {values.status === OrderStatus.Delivered && <AppIcon icon="check" className="text-success ms-2" />}
                                         <br />
-                                        <OrderStatusSplitButton
+                                        <OrderStatusSelect
                                             value={values.status}
                                             onChange={(s) => {
                                                 if (s === OrderStatus.Undelivered && values.releaseEntries) {
@@ -220,12 +224,23 @@ export default function OrderDetailsForm({ orderId }: Props) {
                                                     entries.forEach(e => e.deliveredQuantity = 0);
                                                     setFieldTouched('releaseEntries')
                                                     setFieldValue('releaseEntries', entries);
+                                                    setFieldValue('deliveredQuantity', undefined);
                                                 }
                                                 setFieldValue('status', s);
                                             }}
                                         />
                                     </FormGroup>
                                 }
+                            </Col>
+                            <Col md={2}>
+                                {values.status === OrderStatus.Delivered &&
+                                    <FormGroup>
+                                        <FormLabel label="Delivered Quantity" />
+                                        <Input type="number"
+                                            step="0.0001"
+                                            disabled
+                                            value={values.deliveredQuantity || 0} />
+                                    </FormGroup>}
                             </Col>
                         </Row>
                         <Row>
@@ -240,6 +255,9 @@ export default function OrderDetailsForm({ orderId }: Props) {
                                         onChange={(e) => {
                                             setFieldTouched('releaseEntries')
                                             setFieldValue('releaseEntries', e);
+
+                                            var delQty = e.map(i => i.deliveredQuantity).reduce((a, b) => (a || 0) + (b || 0), 0);
+                                            setFieldValue('deliveredQuantity', delQty);
                                         }} />
                                 </FormGroup>
                             </Col>
@@ -273,11 +291,12 @@ export default function OrderDetailsForm({ orderId }: Props) {
                                     <Button type="submit" className="ms-2" color="primary">Save</Button>
                                 </FormGroup>
                             </Col>
-                            <Col>
+                            <Col className="text-end">
                                 <FormGroup>
-                                    <Button type="button" className="ms-2" color="secondary" onClick={downloadStockRelease}>
-                                        Download Stock Release
-                                        </Button>
+                                    <Button type="button" className="ms-2" color="link" onClick={downloadStockRelease}>
+                                        <AppIcon mode="button" icon="download" className="me-2" />
+                                        Stock Release
+                                    </Button>
                                 </FormGroup>
                             </Col>
                         </Row>

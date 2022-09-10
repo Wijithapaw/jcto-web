@@ -4,7 +4,8 @@ export const dateHelpers = {
     toDatetimeStr,
     toIsoString,
     strToDate,
-    toShortDateStr
+    toShortDateStr,
+    dateFormat
 }
 
 export const validationHelpers = {
@@ -13,6 +14,10 @@ export const validationHelpers = {
 
 function toDatetimeStr(date: Date | string) {
     return dayjs(date).format("DD/MM/YYYY h:mm A");
+}
+
+function dateFormat(date: Date | string, format: string) {
+    return dayjs(date).format(format);
 }
 
 function toIsoString(value?: Date) {
@@ -25,7 +30,7 @@ function strToDate(valueStr?: string) {
 
 function toShortDateStr(date: string) {
     return dayjs(date).format("DD/MM/YYYY");
-  }
+}
 
 function digitsOnly(value?: string) {
     return /^\d+$/.test(value || '')

@@ -1,13 +1,14 @@
-import { Button, Card, CardBody, Col, Form, FormGroup, FormText, Input, Label, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
+import { Button, Card, CardBody, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
 import { useSearchParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { changeOrderFilter, orderFilterSelector, searchOrdersAsync } from "../order-slice";
 import CustomerSelect from "../../customer/components/CustomerSelect";
 import { FormEvent, useEffect, useState } from "react";
 import DateSelect2 from "../../../components/DateSelect2";
-import OrderStatusSplitButton from "./OrderStatusSplitButton";
+import OrderStatusSelect from "./OrderStatusSelect";
 import ProductSelect from "../../customer/components/ProductSelect";
 import OrderDetailsForm from "./OrderDetailsForm";
+import BuyerTypeSelect from "./BuyerTypeSelect";
 
 export default function OrderFilter() {
     const dispatch = useAppDispatch();
@@ -31,6 +32,10 @@ export default function OrderFilter() {
 
     const handleSearch = (e: FormEvent) => {
         e.preventDefault();
+        dispatch(searchOrdersAsync(filter));
+    }
+
+    const refreshList = () => {
         dispatch(searchOrdersAsync(filter));
     }
 
@@ -70,9 +75,20 @@ export default function OrderFilter() {
                                     </Col>
                                 </FormGroup>
                             </Col>
+                            <Col>
+                                <FormGroup row>
+                                    <Label md="auto">Status</Label>
+                                    <Col>
+                                        <OrderStatusSelect
+                                            showAllOption
+                                            value={filter.status}
+                                            onChange={(status) => handleFilterChange("status", status)} />
+                                    </Col>
+                                </FormGroup>
+                            </Col>
                         </Row>
                         <Row>
-                            <Col>
+                            <Col md={6}>
                                 <FormGroup row>
                                     <Label md="auto">Date Range</Label>
                                     <Col>
@@ -92,12 +108,24 @@ export default function OrderFilter() {
                                 </FormGroup>
                             </Col>
                             <Col>
-                                <FormGroup>
-                                    <Label className="me-4">Status</Label>
-                                    <OrderStatusSplitButton
-                                        showAllOption
-                                        value={filter.status}
-                                        onChange={(status) => handleFilterChange("status", status)} />
+                                <FormGroup row>
+                                    <Label md="auto">Buyer Type</Label>
+                                    <Col>
+                                        <BuyerTypeSelect
+                                            showAllOption
+                                            value={filter.buyerType}
+                                            onChange={(b) => handleFilterChange("buyerType", b)} />
+                                    </Col>
+                                </FormGroup>
+                            </Col>
+                            <Col>
+                                <FormGroup row>
+                                    <Label md="auto">Buyer</Label>
+                                    <Col>
+                                        <Input
+                                            value={filter.buyer}
+                                            onChange={(e) => handleFilterChange("buyer", e.target.value)} />
+                                    </Col>
                                 </FormGroup>
                             </Col>
                         </Row>
@@ -121,7 +149,7 @@ export default function OrderFilter() {
                     New Order
                 </ModalHeader>
                 <ModalBody>
-                    <OrderDetailsForm />
+                    <OrderDetailsForm  onUpdate={refreshList}/>
                 </ModalBody>
             </Modal>
         </CardBody>

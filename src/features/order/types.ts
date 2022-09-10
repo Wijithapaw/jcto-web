@@ -1,6 +1,16 @@
 import { PagedFilter } from "../../app/types";
 import { EntryApprovalType } from "../entry/types";
 
+export enum OrderStatus {
+    Undelivered = 0,
+    Delivered = 1,
+}
+
+export enum BuyerType {
+    Barge = 0,
+    Bowser = 1,
+}
+
 export interface OrdersFilter extends PagedFilter{
     customerId: string;
     productId: string;
@@ -8,6 +18,8 @@ export interface OrdersFilter extends PagedFilter{
     to: string;
     status?: OrderStatus;
     orderNo: string;
+    buyer: string;
+    buyerType?: BuyerType;
 }
 
 export interface OrderListItem {
@@ -15,6 +27,7 @@ export interface OrderListItem {
     customer: string;
     product: string;
     quantity: number;
+    deliveredQuantity?: number;
     orderDate: string;
     orderNo: string;
     buyer: string;
@@ -30,6 +43,7 @@ export interface Order {
     buyer: string;
     status: OrderStatus;
     quantity: number;
+    deliveredQuantity?: number;
     obRefPrefix: string;
     tankNo: string;
     buyerType: BuyerType;
@@ -53,14 +67,4 @@ export interface BowserEntry {
     id: string;
     capacity: number;
     count: number;
-}
-
-export enum OrderStatus {
-    Undelivered = 0,
-    Delivered = 1,
-}
-
-export enum BuyerType {
-    Barge = 0,
-    Bowser = 1,
 }

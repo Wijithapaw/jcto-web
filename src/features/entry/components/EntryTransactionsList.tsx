@@ -40,7 +40,7 @@ export default function EntryTransactionsList({ items }: Props) {
                 <td>
                     {val.orderNo && <AppIcon size="xs"
                         className={`me-2 ${val.orderStatus === OrderStatus.Delivered ? 'text-success' : 'text-danger'}`}
-                        icon={val.orderStatus === OrderStatus.Delivered ? 'tick' : 'x'}
+                        icon={val.orderStatus === OrderStatus.Delivered ? 'check' : 'x'}
                     /> || val.orderStatus}
                     {val.orderNo}
                 </td>

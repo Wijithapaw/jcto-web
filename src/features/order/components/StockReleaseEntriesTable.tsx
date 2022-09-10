@@ -1,6 +1,7 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardBody, CardHeader, Col, Input, Label, Row, Table } from "reactstrap";
 import { v4 as uuidv4 } from 'uuid';
+import { IDictionary } from "../../../app/types";
 import AppIcon from "../../../components/AppIcon";
 import EntryApprovalTypeSelect from "../../entry/components/EntryApprovalTypeSelect";
 import { entryApi } from "../../entry/entry-api";
@@ -17,7 +18,13 @@ interface Props {
 }
 
 export default function StockReleaseEntriesTable({ items = [], onChange, error, touched, disabled, showDeliveredQty }: Props) {
-    const [balanceQty, setBalanceQty] = useState<EntryBalanceQty>();
+    const [balanceQtys, setBalanceQtys] = useState<IDictionary<EntryBalanceQty>>({});
+
+    useEffect(() => {
+        items.forEach(i => {
+            i.entryNo && getBalance(i.entryNo);
+        });
+    }, [items]);
 
     const addNewItem = () => {
         var newEntry: OrderStockReleaseEntry = {
@@ -39,7 +46,7 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
     const updateItem = (id: string, e: any) => {
         const updatedItems = [...items];
         const item: any = updatedItems.find(i => i.id === id);
-        item[e.target.name] = e.target.value;
+        item[e.target.name] = e.target.type === 'number' ? +e.target.value : e.target.value;
 
         onChange(updatedItems);
     };
@@ -47,16 +54,17 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
     const getBalance = (entryNo: string) => {
         entryApi.getBalanceQuantities(entryNo)
             .then((val) => {
-                val && setBalanceQty(val);
+                val && setBalanceQtys({...balanceQtys, [val.entryNo]: val});
             })
     }
 
-    const displayBalanceQtys = () => {
-        if (balanceQty) {
+    const displayBalanceQtys = (entryNo: string) => {
+        const balQty = entryNo && balanceQtys[entryNo];
+        if (balQty) {
             const balArr = [
-                { lable: 'XB', qty: balanceQty.xbond },
-                { lable: 'RB', qty: balanceQty.rebond },
-                { lable: 'L', qty: balanceQty.letter }
+                { lable: 'XB', qty: balQty.xbond },
+                { lable: 'RB', qty: balQty.rebond },
+                { lable: 'L', qty: balQty.letter }
             ];
             const availableBalQty = balArr.filter(b => b.qty > 0);
             if (availableBalQty.length > 0) {
@@ -118,10 +126,10 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
                                 onChange={(e) => updateItem(item.id, e)} />
                         </td>
                         <td>
-                            <Label>
+                            <Label className="text-nowrap">
                                 <small>
                                     <small className="text-muted">
-                                        {displayBalanceQtys()}
+                                        {displayBalanceQtys(item.entryNo)}
                                     </small>
                                 </small>
                             </Label>

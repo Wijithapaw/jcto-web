@@ -16,6 +16,7 @@ const initialState: OrderState = {
         from: '',
         to: '',
         orderNo: '',
+        buyer: '',
         page: 1,
         pageSize: 10,
     },

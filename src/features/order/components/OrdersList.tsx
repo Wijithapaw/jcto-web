@@ -20,6 +20,10 @@ export default function OrdersList() {
         dispatch(searchOrdersAsync({ ...filter, page }));
     }
 
+    const refreshList = () => {
+        dispatch(searchOrdersAsync(filter));
+    }
+
     return <>
         <Table responsive>
             <thead>
@@ -30,21 +34,28 @@ export default function OrdersList() {
                     <th>Product</th>
                     <th className="text-center">Buyer Type</th>
                     <th>Buyer</th>
-                    <th className="text-end">Quantity</th>
-                    <th className="text-center">Status</th>
+                    <th className="text-end">Qty</th>
+                    <th className="text-end">Del. Qty</th>
                     <td />
                 </tr>
             </thead>
             <tbody>
                 {orders.items.map(val => (<tr key={val.id}>
                     <td>{dateHelpers.toShortDateStr(val.orderDate)}</td>
-                    <td>{val.orderNo}</td>
+                    <td>
+                        <AppIcon
+                            className={`${val.status === OrderStatus.Delivered ? 'text-success' : 'text-danger'} me-2`}
+                            icon={val.status === OrderStatus.Delivered ? 'check' : 'x'}
+                            title={val.status === OrderStatus.Delivered ? 'Delivered' : 'Undelivered'}
+                        />
+                        {val.orderNo}
+                    </td>
                     <td>{val.customer}</td>
                     <td>{val.product}</td>
                     <td className="text-center">{val.buyerType === BuyerType.Barge ? 'Barge' : 'Bowser'}</td>
                     <td>{val.buyer}</td>
                     <td className="text-end">{val.quantity.toFixed(4)}</td>
-                    <td className="text-center">{val.status === OrderStatus.Delivered ? 'Delivered' : 'Undelivered'}</td>
+                    <td className="text-end">{val.deliveredQuantity?.toFixed(4)}</td>
                     <td className="text-end">
                         <AppIcon icon="eye"
                             mode="button"
@@ -64,7 +75,7 @@ export default function OrdersList() {
                 Order Details
             </ModalHeader>
             <ModalBody>
-                <OrderDetailsForm orderId={selectedOrderId} />
+                <OrderDetailsForm orderId={selectedOrderId} onUpdate={refreshList} />
             </ModalBody>
         </Modal>
     </>
