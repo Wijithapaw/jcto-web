@@ -20,11 +20,11 @@ interface Props {
 export default function StockReleaseEntriesTable({ items = [], onChange, error, touched, disabled, showDeliveredQty }: Props) {
     const [balanceQtys, setBalanceQtys] = useState<IDictionary<EntryBalanceQty>>({});
 
-    useEffect(() => {
+    const refreshBalances = () => {
         items.forEach(i => {
             i.entryNo && getBalance(i.entryNo);
         });
-    }, [items]);
+    }
 
     const addNewItem = () => {
         var newEntry: OrderStockReleaseEntry = {
@@ -54,7 +54,7 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
     const getBalance = (entryNo: string) => {
         entryApi.getBalanceQuantities(entryNo)
             .then((val) => {
-                val && setBalanceQtys({...balanceQtys, [val.entryNo]: val});
+                val && setBalanceQtys({ ...balanceQtys, [val.entryNo]: val });
             })
     }
 
@@ -88,12 +88,12 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
                 {
                     !disabled && <Col className="text-end" xs="auto">
                         <AppIcon icon="sync"
-                            onClick={() => console.log('auto fill')}
+                            onClick={refreshBalances}
                             className="text-success"
                             title="Auto fill"
                             mode="button" />
                         <AppIcon icon="plus"
-                            onClick={() => addNewItem()}
+                            onClick={addNewItem}
                             className="text-primary ms-2"
                             title="Add new"
                             mode="button" />

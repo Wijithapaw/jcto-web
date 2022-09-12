@@ -32,7 +32,6 @@ export default function OrdersList() {
                     <th>Order No.</th>
                     <th>Customer</th>
                     <th>Product</th>
-                    <th className="text-center">Buyer Type</th>
                     <th>Buyer</th>
                     <th className="text-end">Qty</th>
                     <th className="text-end">Del. Qty</th>
@@ -52,8 +51,11 @@ export default function OrdersList() {
                     </td>
                     <td>{val.customer}</td>
                     <td>{val.product}</td>
-                    <td className="text-center">{val.buyerType === BuyerType.Barge ? 'Barge' : 'Bowser'}</td>
-                    <td>{val.buyer}</td>
+                    <td>
+                        <AppIcon className="me-2"
+                            title={`${val.buyerType === BuyerType.Barge ? 'Barge' : 'Bowser'}`}
+                            icon={`${val.buyerType === BuyerType.Barge ? 'ship' : 'truck'}`} />
+                        {val.buyer}</td>
                     <td className="text-end">{val.quantity.toFixed(4)}</td>
                     <td className="text-end">{val.deliveredQuantity?.toFixed(4)}</td>
                     <td className="text-end">

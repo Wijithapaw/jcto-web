@@ -87,7 +87,7 @@ function App() {
     window.onunhandledrejection = (err) => {
       const { status, errorMessage } = err.reason;
       switch (status) {
-        case 400: showNotification(NotificationType.warning, errorMessage); break;
+        case 400: showNotification(NotificationType.error, errorMessage); break;
         case 409: dispatch(setGlobalError(errorMessage)); break;
         case 500: showNotification(NotificationType.error, errorMessage); break;
         default:
@@ -114,7 +114,7 @@ function App() {
         <Route path="/orders" element={<PrivateRoute><OrdersPage /></PrivateRoute>} />
         <Route path="/entries" element={<PrivateRoute><EntryListPage /></PrivateRoute>} />
         <Route path="/discharges" element={<PrivateRoute><DischargesListPage /></PrivateRoute>} />
-        <Route path="/" element={<Navigate to={authenticated ? "/orders" : "/"} />} />
+        <Route path="/" element={<Navigate to={authenticated ? "/customers" : "/"} />} />
       </Routes> : null
     }
   </MainLayout>

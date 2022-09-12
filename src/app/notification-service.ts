@@ -16,7 +16,9 @@ export function showNotification(type: NotificationType, message: string, title?
 
     store.dispatch(showToast(notification));
 
+    const timeout = type === NotificationType.error ? 10000 : 5000;
+
     setTimeout(() => {
         store.dispatch(dismissToast(id));
-    }, 5000);
+    }, timeout);
 }
