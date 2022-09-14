@@ -21,6 +21,7 @@ export interface EntriesFilter extends PagedFilter {
     customerId: string;
     productId: string;
     entryNo: string;
+    toBondNo: string;
     from: string;
     to: string;
     activeEntriesOnly: boolean;
@@ -29,10 +30,8 @@ export interface EntriesFilter extends PagedFilter {
 export interface Entry {
     entryNo: string;
     initialQuantity: number;
-    productId: string;
+    toBondNo: string;
     entryDate: string;
-    customerId: string;
-    customerName: string;
     status: EntryStatus;
 }
 
@@ -44,6 +43,7 @@ export interface EntryListItem {
     remainingQuantity: number;
     entryDate: string;
     entryNo: string;
+    toBondNo: string;
     status: EntryStatus;
     transactions: EntryTransaction[];
 }

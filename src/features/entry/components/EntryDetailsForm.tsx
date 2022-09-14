@@ -6,32 +6,27 @@ import { Entry, EntryStatus } from "../types";
 import { dateHelpers } from "../../../app/helpers";
 import FormLabel from "../../../components/FormLabel";
 import DateSelect2 from "../../../components/DateSelect2";
-import ProductSelect from "../../customer/components/ProductSelect";
-import CustomerSelect from "../../customer/components/CustomerSelect";
 import { entryApi } from "../entry-api";
 import { showNotification } from "../../../app/notification-service";
 import { NotificationType } from "../../../app/types";
 
-const digitsOnly = (value?: string) => /^\d+$/.test(value || '')
-
 interface Props {
     entryId?: string;
-    customerId?: string;
 }
 
-export default function EntryDetailsForm({ entryId, customerId }: Props) {
+export default function EntryDetailsForm({ entryId }: Props) {
     const validationSchema = useMemo(() => {
         return Yup.object().shape({
             entryNo: Yup.string()
                 .max(20, ' is too Long!')
-                .required(' is required')
-                .test('Digits only', ' must have only digits', digitsOnly),
+                .required(' is required'),
+            toBondNo: Yup.string()
+                .max(20, ' is too Long!')
+                .required(' is required'),
             initialQuantity: Yup.number()
                 .required(' is required')
                 .test('dd', ' must be greater than 0', (value) => (value || 0) > 0),
             entryDate: Yup.string().required(' is required'),
-            productId: Yup.string().required(' is required'),
-            customerId: Yup.string().required(' is required'),
         });
     }, [])
 
@@ -40,12 +35,10 @@ export default function EntryDetailsForm({ entryId, customerId }: Props) {
             //todo
         } else {
             const newEntry: Entry = {
-                customerId: customerId!,
-                customerName: '',
+                toBondNo: '',
                 entryDate: dateHelpers.toIsoString(new Date()),
                 entryNo: '',
                 initialQuantity: 0,
-                productId: '',
                 status: EntryStatus.Active
             };
             return newEntry;
@@ -56,15 +49,7 @@ export default function EntryDetailsForm({ entryId, customerId }: Props) {
         onSubmit={(values, { setSubmitting, resetForm }) => {
             setSubmitting(true);
 
-            const editingEntry: Entry = {
-                customerId: values.customerId,
-                customerName: '',
-                productId: values.productId,
-                entryDate: values.entryDate,
-                entryNo: values.entryNo,
-                initialQuantity: values.initialQuantity,
-                status: values.status
-            };
+            const editingEntry = { ...values };
 
             entryApi.createEntry(editingEntry)
                 .then(() => {
@@ -85,16 +70,8 @@ export default function EntryDetailsForm({ entryId, customerId }: Props) {
                     <Row>
                         <Col>
                             <FormGroup>
-                                <FormLabel label="Customer" touched={touched.customerId} error={errors.customerId} />
-                                <CustomerSelect
-                                    selectedValue={values.customerId}
-                                    onChange={(id) => setFieldValue('customerId', id, true)} />
-                            </FormGroup>
-                        </Col>
-                        <Col>
-                            <FormGroup>
-                                <FormLabel label="Product" touched={touched.productId} error={errors.productId} />
-                                <ProductSelect selectedValue={values.productId} onChange={(p) => setFieldValue('productId', p, true)} />
+                                <FormLabel label="To Bond No" touched={touched.toBondNo} error={errors.toBondNo} />
+                                <Field name="toBondNo" type="text" className="form-control" />
                             </FormGroup>
                         </Col>
                         <Col>
@@ -103,29 +80,18 @@ export default function EntryDetailsForm({ entryId, customerId }: Props) {
                                 <Field name="entryNo" type="text" className="form-control" />
                             </FormGroup>
                         </Col>
-
                     </Row>
                     <Row>
-                        <Col>
-                            <FormGroup>
-                                <FormLabel label="Initial Quantity" touched={touched.initialQuantity} error={errors.initialQuantity} />
-                                <Field name="initialQuantity" type="number" className="form-control" />
-                            </FormGroup>
-                        </Col>
                         <Col>
                             <FormGroup>
                                 <FormLabel label="Entry Date" touched={touched.entryDate} error={errors.entryDate} />
                                 <DateSelect2 value={values.entryDate} onChange={(d) => setFieldValue('entryDate', d, true)} />
                             </FormGroup>
                         </Col>
-
-                        <Col md={2}>
+                        <Col>
                             <FormGroup>
-                                <Label>Status</Label>
-                                <br />
-                                <b className={`${entry.status === EntryStatus.Active ? 'text-success' : 'text-secondary'}`}>
-                                    {`${entry.status === EntryStatus.Active ? 'Active' : 'Completed'}`}
-                                </b>
+                                <FormLabel label="Initial Quantity" touched={touched.initialQuantity} error={errors.initialQuantity} />
+                                <Field name="initialQuantity" type="number" className="form-control" />
                             </FormGroup>
                         </Col>
                     </Row>
@@ -136,9 +102,18 @@ export default function EntryDetailsForm({ entryId, customerId }: Props) {
                                 <Button type="submit" className="ms-2" color="primary">Save</Button>
                             </FormGroup>
                         </Col>
+                        {
+                            entryId &&
+                            <Col xs="auto">
+                                Status:
+                                <b className={`${entry.status === EntryStatus.Active ? 'text-success' : 'text-secondary'} ms-2`}>
+                                    {`${entry.status === EntryStatus.Active ? 'Active' : 'Completed'}`}
+                                </b>
+                            </Col>
+                        }
                     </Row>
                 </Form>
             )
         }
-    </Formik> || null;
+    </Formik > || null;
 }

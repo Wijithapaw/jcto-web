@@ -3,7 +3,7 @@ import { Card, CardBody, CardHeader, Col, Label, Modal, ModalBody, ModalHeader, 
 import { dateHelpers } from "../../../app/helpers";
 import AppIcon from "../../../components/AppIcon";
 import { OrderStatus } from "../../order/types";
-import { EntryApprovalType, EntryListItem, EntryStatus, EntryTransactionType } from "../types";
+import { EntryListItem, EntryStatus, EntryTransactionType } from "../types";
 import EntryApprovalForm from "./EntryApprovalForm";
 import EntryTransactionsList from "./EntryTransactionsList";
 
@@ -66,6 +66,7 @@ export default function EntryCard({ entry, onUpdate }: Props) {
                 </Col>
             </Row>
             <Row>
+                <Col xs="auto"><CardLabel label="To Bond No" value={entry.toBondNo} /></Col>
                 <Col xs="auto"><CardLabel label="Customer" value={entry.customer} /></Col>
                 <Col><CardLabel label="Product" value={entry.product} /></Col>
                 <Col xs="auto">

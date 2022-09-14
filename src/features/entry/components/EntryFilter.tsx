@@ -61,7 +61,7 @@ export default function EntryFilter() {
                             </Col>
                             <Col>
                                 <FormGroup row>
-                                    <Label md="auto">Entry No.</Label>
+                                    <Label md="auto">Entry No</Label>
                                     <Col>
                                         <Input type="text"
                                             value={filter.entryNo}
@@ -90,7 +90,17 @@ export default function EntryFilter() {
                                     </Col>
                                 </FormGroup>
                             </Col>
-                            <Col className="pt-2">
+                            <Col md={4}>
+                                <FormGroup row>
+                                    <Label md="auto">To Bond No</Label>
+                                    <Col>
+                                        <Input type="text"
+                                            value={filter.toBondNo}
+                                            onChange={(e) => handleFilterChange("toBondNo", e.target.value)} />
+                                    </Col>
+                                </FormGroup>
+                            </Col>
+                            <Col className="pt-2" md="auto">
                                 <FormGroup check>
                                     <Label for="cbxShowActiveOnly">Show Active Entries Only</Label>
                                     <Input id="cbxShowActiveOnly"
@@ -120,7 +130,7 @@ export default function EntryFilter() {
                     New Entry
                 </ModalHeader>
                 <ModalBody>
-                    <EntryDetailsForm customerId={filter.customerId} />
+                    <EntryDetailsForm  />
                 </ModalBody>
             </Modal>
         </CardBody>
