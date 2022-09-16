@@ -1,5 +1,4 @@
 import { Button, Card, CardBody, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
-import { useSearchParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { changeOrderFilter, orderFilterSelector, searchOrdersAsync } from "../order-slice";
 import CustomerSelect from "../../customer/components/CustomerSelect";
@@ -12,13 +11,11 @@ import BuyerTypeSelect from "./BuyerTypeSelect";
 
 export default function OrderFilter() {
     const dispatch = useAppDispatch();
-    const [searchParams, setSearchParams] = useSearchParams();
     const filter = useAppSelector(orderFilterSelector);
     const [showAddNew, setShowAddNew] = useState(false);
 
     useEffect(() => {
-        const customerId = searchParams.get("customerId");
-        customerId && handleCustomerChange(customerId);
+        dispatch(searchOrdersAsync(filter));
     }, [])
 
     const handleFilterChange = (field: string, value: any) => {
@@ -27,7 +24,6 @@ export default function OrderFilter() {
 
     const handleCustomerChange = (customerId: string) => {
         handleFilterChange("customerId", customerId);
-        setSearchParams({ customerId });
     }
 
     const handleSearch = (e: FormEvent) => {

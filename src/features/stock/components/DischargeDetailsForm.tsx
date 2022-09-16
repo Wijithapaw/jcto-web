@@ -15,9 +15,10 @@ import { NotificationType } from "../../../app/types";
 interface Props {
     dischargeId?: string;
     customerId?: string;
+    onUpdate?: () => void;
 }
 
-export default function DischargeDetailsForm({  dischargeId, customerId }: Props) {
+export default function DischargeDetailsForm({  dischargeId, customerId, onUpdate }: Props) {
     const validationSchema = useMemo(() => {
         return Yup.object().shape({
             toBondNo: Yup.string()
@@ -57,6 +58,7 @@ export default function DischargeDetailsForm({  dischargeId, customerId }: Props
                 .then(() => {
                     showNotification(NotificationType.success, "Discharge created successfully");
                     resetForm();
+                    onUpdate && onUpdate();
                 }).finally(() => setSubmitting(false));
         }}
         onReset={(values, { resetForm, setValues }) => {

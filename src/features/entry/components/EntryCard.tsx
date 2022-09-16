@@ -62,7 +62,10 @@ export default function EntryCard({ entry, onUpdate }: Props) {
                     <CardLabel label="Initial Qty" value={entry.initialQuantity.toFixed(4)} />
                 </Col>
                 <Col className="text-end" xs="auto">
-                    <CardLabel label="Balance Qty" value={`${entry.remainingQuantity.toFixed(4)} [Aprv: ${approvedBalQty.toFixed(4)}]`} />
+                    <CardLabel label="Balance Qty" value={entry.remainingQuantity.toFixed(4)} />
+                </Col>
+                <Col className="text-end" xs="auto">
+                    <CardLabel label="Appr. Balance Qty" value={approvedBalQty.toFixed(4)} />
                 </Col>
             </Row>
             <Row>

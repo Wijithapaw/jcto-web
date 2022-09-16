@@ -115,7 +115,7 @@ export default function CustomerStocks() {
                 </th>
                 {products.map(productCode => {
                     return <Fragment key={productCode.id}>
-                        <th colSpan={2}>
+                        <th colSpan={2} className="text-center">
                             {((productStockSummary[productCode.id]?.remainingStock || 0)
                                 + (productStockSummary[productCode.id]?.undeliveredStock || 0)).toFixed(4)}
                         </th>

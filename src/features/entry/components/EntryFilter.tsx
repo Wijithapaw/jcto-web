@@ -17,6 +17,7 @@ export default function EntryFilter() {
     useEffect(() => {
         const customerId = searchParams.get("customerId");
         customerId && handleCustomerChange(customerId);
+        dispatch(searchEntriesAsync(customerId ? { ...filter, customerId } : filter));
     }, [])
 
     const handleFilterChange = (field: string, value: any) => {
@@ -130,7 +131,7 @@ export default function EntryFilter() {
                     New Entry
                 </ModalHeader>
                 <ModalBody>
-                    <EntryDetailsForm  />
+                    <EntryDetailsForm onUpdate={() => dispatch(searchEntriesAsync(filter))} />
                 </ModalBody>
             </Modal>
         </CardBody>

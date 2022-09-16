@@ -12,9 +12,10 @@ import { NotificationType } from "../../../app/types";
 
 interface Props {
     entryId?: string;
+    onUpdate?: () => void;
 }
 
-export default function EntryDetailsForm({ entryId }: Props) {
+export default function EntryDetailsForm({ entryId, onUpdate }: Props) {
     const validationSchema = useMemo(() => {
         return Yup.object().shape({
             entryNo: Yup.string()
@@ -55,6 +56,7 @@ export default function EntryDetailsForm({ entryId }: Props) {
                 .then(() => {
                     showNotification(NotificationType.success, "Entry created successfully");
                     resetForm();
+                    onUpdate && onUpdate();
                 }).finally(() => setSubmitting(false));
         }}
         onReset={(values, { resetForm, setValues }) => {
@@ -90,7 +92,7 @@ export default function EntryDetailsForm({ entryId }: Props) {
                         </Col>
                         <Col>
                             <FormGroup>
-                                <FormLabel label="Initial Quantity" touched={touched.initialQuantity} error={errors.initialQuantity} />
+                                <FormLabel label="Quantity" touched={touched.initialQuantity} error={errors.initialQuantity} />
                                 <Field name="initialQuantity" type="number" className="form-control" />
                             </FormGroup>
                         </Col>

@@ -10,13 +10,11 @@ import DischargeDetailsForm from "./DischargeDetailsForm";
 
 export default function DischargesFilter() {
     const dispatch = useAppDispatch();
-    const [searchParams, setSearchParams] = useSearchParams();
     const filter = useAppSelector(dischargesFilterSelector);
     const [showAddNew, setShowAddNew] = useState(false);
 
     useEffect(() => {
-        const customerId = searchParams.get("customerId");
-        customerId && handleCustomerChange(customerId);
+        dispatch(searchDischargesAsync(filter));
     }, [])
 
     const handleFilterChange = (field: string, value: any) => {
@@ -25,7 +23,6 @@ export default function DischargesFilter() {
 
     const handleCustomerChange = (customerId: string) => {
         handleFilterChange("customerId", customerId);
-        setSearchParams({ customerId });
     }
 
     const handleSearch = (e: FormEvent) => {
@@ -101,7 +98,7 @@ export default function DischargesFilter() {
                     New Discharge
                 </ModalHeader>
                 <ModalBody>
-                    <DischargeDetailsForm customerId={filter.customerId} />
+                    <DischargeDetailsForm customerId={filter.customerId} onUpdate={() => dispatch(searchDischargesAsync(filter))} />
                 </ModalBody>
             </Modal>
         </CardBody>
