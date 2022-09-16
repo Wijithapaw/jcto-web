@@ -77,3 +77,20 @@ export interface EntryBalanceQty {
     xbond: number;
     letter: number;
 }
+
+export interface EntryRemaningApproval {
+    id: string;
+    entryNo: string;
+    approvalType: EntryApprovalType;
+    approvalRef: string;
+    remainingQty: number;
+}
+
+export function getApprovalType(approvalType: EntryApprovalType) {
+    switch (approvalType) {
+        case EntryApprovalType.Rebond: return 'Rebond';
+        case EntryApprovalType.Xbond: return 'Xbond';
+        case EntryApprovalType.Letter: return 'Letter';
+        default: return '';
+    }
+}

@@ -33,6 +33,7 @@ export interface OrderListItem {
     buyer: string;
     buyerType: BuyerType;
     status: OrderStatus;
+    taxPaid: boolean;
 }
 
 export interface Order {
@@ -52,12 +53,13 @@ export interface Order {
     bowserEntries?: BowserEntry[];
     remarks?: string;
     concurrencyKey?: string;
+    taxPaid: boolean;
 }
 
 export interface OrderStockReleaseEntry {
     id: string;
     entryNo: string;
-    approvalType?: EntryApprovalType;
+    approvalId: string;
     obRef: string;
     quantity: number;    
     deliveredQuantity?: number

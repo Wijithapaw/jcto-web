@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardBody, CardHeader, Col, Input, Label, Row, Table } from "reactstrap";
 import { v4 as uuidv4 } from 'uuid';
 import { IDictionary } from "../../../app/types";
 import AppIcon from "../../../components/AppIcon";
-import EntryApprovalTypeSelect from "../../entry/components/EntryApprovalTypeSelect";
 import { entryApi } from "../../entry/entry-api";
-import { EntryBalanceQty } from "../../entry/types";
+import { EntryBalanceQty, EntryRemaningApproval } from "../../entry/types";
 import { OrderStockReleaseEntry } from "../types"
+import RemainingApprovalsSelect from "./RemainingApprovalsSelect";
 
 interface Props {
     items?: OrderStockReleaseEntry[];
@@ -19,11 +19,18 @@ interface Props {
 
 export default function StockReleaseEntriesTable({ items = [], onChange, error, touched, disabled, showDeliveredQty }: Props) {
     const [balanceQtys, setBalanceQtys] = useState<IDictionary<EntryBalanceQty>>({});
+    const [remApprovals, setRemApprovals] = useState<IDictionary<EntryRemaningApproval[]>>({});
+    const [approvalsLoaded, setApprovalsLoaded] = useState(false);
 
-    const refreshBalances = () => {
-        items.forEach(i => {
-            i.entryNo && getBalance(i.entryNo);
-        });
+    useEffect(() => {
+        if (!approvalsLoaded && items.length > 0) {
+            items.forEach(i => getRemainingApprovals(i.entryNo));
+            setApprovalsLoaded(true);
+        }
+    }, [items])
+
+    const refreshBalances = (entryNo: string) => {
+        getRemainingApprovals(entryNo);
     }
 
     const addNewItem = () => {
@@ -32,6 +39,7 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
             entryNo: '',
             obRef: '',
             quantity: 0,
+            approvalId: '',
             deliveredQuantity: showDeliveredQty ? 0 : undefined
         };
         const newEntries = [...items, newEntry];
@@ -51,29 +59,13 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
         onChange(updatedItems);
     };
 
-    const getBalance = (entryNo: string) => {
-        entryApi.getBalanceQuantities(entryNo)
-            .then((val) => {
-                val && setBalanceQtys({ ...balanceQtys, [val.entryNo]: val });
+    const getRemainingApprovals = (entryNo: string) => {
+        entryNo && entryApi.getRemainingApprovals(entryNo)
+            .then((aprvs) => {
+                if (aprvs.length > 0) {
+                    setRemApprovals({ ...remApprovals, [aprvs[0].entryNo]: aprvs });
+                }
             })
-    }
-
-    const displayBalanceQtys = (entryNo: string) => {
-        const balQty = entryNo && balanceQtys[entryNo];
-        if (balQty) {
-            const balArr = [
-                { lable: 'XB', qty: balQty.xbond },
-                { lable: 'RB', qty: balQty.rebond },
-                { lable: 'L', qty: balQty.letter }
-            ];
-            const availableBalQty = balArr.filter(b => b.qty > 0);
-            if (availableBalQty.length > 0) {
-                return `Bal: ${availableBalQty.map(b => `${b.lable}-${b.qty}`).join(" | ")}`;
-            }
-            return `Bal: 0`
-        }
-
-        return '';
     }
 
     return <Card>
@@ -87,11 +79,6 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
                 </Col>
                 {
                     !disabled && <Col className="text-end" xs="auto">
-                        <AppIcon icon="sync"
-                            onClick={refreshBalances}
-                            className="text-success"
-                            title="Auto fill"
-                            mode="button" />
                         <AppIcon icon="plus"
                             onClick={addNewItem}
                             className="text-primary ms-2"
@@ -107,7 +94,7 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
                     <tr>
                         <td>Entry No</td>
                         <td></td>
-                        <td>Approval Type</td>
+                        <td width="30%">Approval</td>
                         <td>OB Ref.</td>
                         <td>Quantity</td>
                         {showDeliveredQty && <td>Delivered Quantity</td>}
@@ -122,25 +109,28 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
                                 value={item.entryNo}
                                 disabled={disabled}
                                 name="entryNo"
-                                onBlur={(e) => getBalance(e.target.value)}
+                                onBlur={(e) => getRemainingApprovals(e.target.value)}
                                 onChange={(e) => updateItem(item.id, e)} />
+
                         </td>
                         <td>
                             <Label className="text-nowrap">
-                                <small>
-                                    <small className="text-muted">
-                                        {displayBalanceQtys(item.entryNo)}
-                                    </small>
-                                </small>
+                                <AppIcon icon="sync"
+                                    onClick={() => refreshBalances(item.entryNo)}
+                                    className="text-success mt-2"
+                                    title="Auto fill"
+                                    size="sm"
+                                    mode="button" />
                             </Label>
                         </td>
                         <td>
-                            <EntryApprovalTypeSelect
-                                name="approvalType"
+                            <RemainingApprovalsSelect
+                                name="approvalId"
                                 disabled={disabled}
-                                selectedValue={item.approvalType}
+                                selectedValue={item.approvalId}
+                                options={remApprovals[item.entryNo] || []}
                                 onChange={(val) => {
-                                    updateItem(item.id, { target: { name: 'approvalType', value: val } })
+                                    updateItem(item.id, { target: { name: 'approvalId', value: val } })
                                 }} />
                         </td>
                         <td><Input maxLength={20} value={item.obRef} disabled={disabled} name="obRef" onChange={(e) => updateItem(item.id, e)} /></td>

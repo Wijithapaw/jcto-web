@@ -2,19 +2,10 @@ import { Table } from "reactstrap";
 import { dateHelpers } from "../../../app/helpers";
 import AppIcon from "../../../components/AppIcon";
 import { OrderStatus } from "../../order/types";
-import { EntryApprovalType, EntryTransaction, EntryTransactionType } from "../types";
+import { EntryTransaction, EntryTransactionType, getApprovalType } from "../types";
 
 interface Props {
     items: EntryTransaction[]
-}
-
-function getApprovalType(approvalType: EntryApprovalType) {
-    switch (approvalType) {
-        case EntryApprovalType.Rebond: return 'Rebond';
-        case EntryApprovalType.Xbond: return 'Xbond';
-        case EntryApprovalType.Letter: return 'Letter';
-        default: return '';
-    }
 }
 
 export default function EntryTransactionsList({ items }: Props) {
@@ -23,8 +14,7 @@ export default function EntryTransactionsList({ items }: Props) {
             <tr>
                 <th>Date</th>
                 <th>Type</th>
-                <th>Approval Type</th>
-                <th>Approval Ref</th>
+                <th>Approval</th>
                 <th>Order No.</th>
                 <th>OB Ref</th>
                 <th className="text-end">Qty</th>
@@ -35,8 +25,7 @@ export default function EntryTransactionsList({ items }: Props) {
             {items.map((val, i) => (<tr key={i} className={val.type === EntryTransactionType.Approval ? `text-success` : ''}>
                 <td>{dateHelpers.toShortDateStr(val.transactionDate)}</td>
                 <td>{val.type === EntryTransactionType.Approval ? 'Approval' : 'Order'} </td>
-                <td>{getApprovalType(val.approvalType)}</td>
-                <td>{val.approvalRef}</td>
+                <td>{`${getApprovalType(val.approvalType)} ${val.approvalRef ? `(${val.approvalRef})` : ''}`}</td>
                 <td>
                     {val.orderNo && <AppIcon size="xs"
                         className={`me-2 ${val.orderStatus === OrderStatus.Delivered ? 'text-success' : 'text-danger'}`}

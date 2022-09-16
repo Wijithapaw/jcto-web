@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Button, Col, Form, FormGroup, Input, Row } from "reactstrap";
+import { Button, Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { dateHelpers, validationHelpers } from "../../../app/helpers";
@@ -66,7 +66,7 @@ export default function OrderDetailsForm({ orderId, onUpdate }: Props) {
                 .test('NotEmpty', 'must have entries', (items) => items && items.length > 0 || false)
                 .test('FillAll', 'must fill all the fields',
                     (items, ctx) => items ? items.every((i: OrderStockReleaseEntry) => {
-                        var valid = i.entryNo && i.obRef && i.quantity > 0 && i.approvalType
+                        var valid = i.entryNo && i.obRef && i.quantity > 0 && i.approvalId
                             && (ctx.parent.status === OrderStatus.Undelivered || i.deliveredQuantity && i.deliveredQuantity > 0)
                         return valid;
                     }) : false)
@@ -114,12 +114,14 @@ export default function OrderDetailsForm({ orderId, onUpdate }: Props) {
                 releaseEntries: [],
                 status: OrderStatus.Undelivered,
                 bowserEntries: [],
+                taxPaid: false,
+                remarks: ''
             };
             return newOrder;
         }
     }, [editingOrder]);
 
-    return order && <Formik
+    return <Formik
         initialValues={{ ...order }}
         enableReinitialize
         onSubmit={(values, { setSubmitting, resetForm }) => {
@@ -132,9 +134,6 @@ export default function OrderDetailsForm({ orderId, onUpdate }: Props) {
                     : setEditingOrder({ ...editingOrder, concurrencyKey: res.concurrencyKey });
                 onUpdate && onUpdate();
             }).finally(() => setSubmitting(false));
-        }}
-        onReset={(values, { resetForm, setValues }) => {
-            setValues({ ...order })
         }}
         validationSchema={validationSchema}>
         {
@@ -282,12 +281,19 @@ export default function OrderDetailsForm({ orderId, onUpdate }: Props) {
                                     <FormLabel label="Remarks" />
                                     <Input disabled={disabled} type="textarea" value={values.remarks} onChange={(e) => setFieldValue('remarks', e.target.value)} />
                                 </FormGroup>
+                                <FormGroup check>
+                                    <Label for="cbxTaxPaid">Tax Paid</Label>
+                                    <Input id="cbxTaxPaid"
+                                        type="checkbox"
+                                        checked={values.taxPaid}
+                                        onChange={(e) => setFieldValue("taxPaid", e.target.checked)} />
+                                </FormGroup>
                             </Col>
                         </Row>
                         <Row>
                             <Col>
                                 <FormGroup>
-                                    <Button type="reset" onClick={() => resetForm()}>Reset</Button>
+                                    <Button type="button" onClick={() => resetForm()}>Reset</Button>
                                     <Button type="submit" className="ms-2" color="primary">Save</Button>
                                 </FormGroup>
                             </Col>
