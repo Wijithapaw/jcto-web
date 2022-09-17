@@ -16,6 +16,8 @@ import StockReleaseEntriesTable from "./StockReleaseEntriesTable";
 import BowserDetailsTable from "./BowserDetailsTable";
 import { orderApi } from "../order-api";
 import AppIcon from "../../../components/AppIcon";
+import { useAppSelector } from "../../../app/hooks";
+import { customerListItemsSelector } from "../../customer/customer-slice";
 
 interface Props {
     orderId?: string;
@@ -25,6 +27,17 @@ interface Props {
 export default function OrderDetailsForm({ orderId, onUpdate }: Props) {
     const [editingOrderId, setEditingOrderId] = useState(orderId);
     const [editingOrder, setEditingOrder] = useState<Order>();
+    const [nextOrderNo, setNextOrderNo] = useState<number>();
+
+    const customers = useAppSelector(customerListItemsSelector);
+
+    const isNewOrder = () => !editingOrderId;
+
+    useEffect(() => {
+        if (isNewOrder()) {
+            orderApi.getNextOrderNo(dateHelpers.toIsoString(new Date())).then((val) => setNextOrderNo(val));
+        }
+    }, [])
 
     useEffect(() => {
         setEditingOrderId(orderId);
@@ -34,8 +47,23 @@ export default function OrderDetailsForm({ orderId, onUpdate }: Props) {
         editingOrderId && orderApi.getOrder(editingOrderId)
             .then(order => setEditingOrder(order));
     }, [editingOrderId])
+    
+    const refreshCustomerObPrefix = (customerId: string, setValues: any) => {
+        if (isNewOrder()) {
+            const year = new Date().getFullYear();
+            const customer = customers.find(c => c.id == customerId);
+            if (customer) {
+                var obPrefix = `${customer.label}/${year}`;
+                setValues('obRefPrefix', obPrefix)
+            }
+        }
+    }
 
-    const isNewOrder = () => !editingOrderId;
+    const refreshNextOrderNo = (date: string, setValues: any) => {
+        if (isNewOrder()) {
+            orderApi.getNextOrderNo(date).then((val) => setValues('orderNo', val));
+        }
+    }
 
     const downloadStockRelease = () => {
         const fileName = `StockRelease_${dateHelpers.dateFormat(order.orderDate, 'YYYY_MM_DD')}_${order.orderNo}`;
@@ -55,18 +83,16 @@ export default function OrderDetailsForm({ orderId, onUpdate }: Props) {
                 .required('is required')
                 .max(20, "length must be < 20")
                 .test('Digits only', 'must have only digits', validationHelpers.digitsOnly),
-            orderNo: Yup.string()
-                .required(' is required')
-                .max(20, "length must be < 20")
-                .test('Digits only', 'must have only digits', validationHelpers.digitsOnly),
+            orderNo: Yup.number()
+                .required('is required').min(1, 'must be > 0'),
             quantity: Yup.number()
-                .required(' is required')
-                .test('dd', ' must be > 0', (value) => (value || 0) > 0),
+                .required('is required')
+                .test('dd', 'must be > 0', (value) => (value || 0) > 0),
             releaseEntries: Yup.array()
                 .test('NotEmpty', 'must have entries', (items) => items && items.length > 0 || false)
                 .test('FillAll', 'must fill all the fields',
                     (items, ctx) => items ? items.every((i: OrderStockReleaseEntry) => {
-                        var valid = i.entryNo && i.obRef && i.quantity > 0 && i.approvalId
+                        const valid = i.entryNo && i.obRef && i.quantity > 0 && i.approvalId
                             && (ctx.parent.status === OrderStatus.Undelivered || i.deliveredQuantity && i.deliveredQuantity > 0)
                         return valid;
                     }) : false)
@@ -104,7 +130,7 @@ export default function OrderDetailsForm({ orderId, onUpdate }: Props) {
                 orderDate: dateHelpers.toIsoString(new Date()),
                 productId: '',
                 customerId: '',
-                orderNo: '',
+                orderNo: nextOrderNo,
                 tankNo: '',
                 quantity: 0,
                 buyer: '',
@@ -119,7 +145,7 @@ export default function OrderDetailsForm({ orderId, onUpdate }: Props) {
             };
             return newOrder;
         }
-    }, [editingOrder]);
+    }, [editingOrder, nextOrderNo]);
 
     return <Formik
         initialValues={{ ...order }}
@@ -148,19 +174,27 @@ export default function OrderDetailsForm({ orderId, onUpdate }: Props) {
                             <Col md={3}>
                                 <FormGroup>
                                     <FormLabel label="Date" touched={touched.orderDate} error={errors.orderDate} />
-                                    <DateSelect2 disabled={disabled} value={values.orderDate} onChange={(d) => setFieldValue('orderDate', d)} />
+                                    <DateSelect2 disabled={disabled} value={values.orderDate}
+                                        onChange={(d) => {
+                                            setFieldValue('orderDate', d);
+                                            refreshNextOrderNo(d, setFieldValue);
+                                        }} />
                                 </FormGroup>
                             </Col>
                             <Col md={2}>
                                 <FormGroup>
                                     <FormLabel label="Order No." touched={touched.orderNo} error={errors.orderNo} />
-                                    <Input disabled={disabled} maxLength={20} value={values.orderNo} onChange={(e) => setFieldValue('orderNo', e.target.value)} />
+                                    <Input type="number" disabled={disabled} value={values.orderNo} onChange={(e) => setFieldValue('orderNo', e.target.value)} />
                                 </FormGroup>
                             </Col>
                             <Col md={3}>
                                 <FormGroup>
                                     <FormLabel label="Customer" touched={touched.customerId} error={errors.customerId} />
-                                    <CustomerSelect disabled={disabled} selectedValue={values.customerId} onChange={(c) => setFieldValue('customerId', c)} />
+                                    <CustomerSelect disabled={disabled} selectedValue={values.customerId}
+                                        onChange={(c) => {
+                                            refreshCustomerObPrefix(c, setFieldValue);
+                                            setFieldValue('customerId', c);
+                                        }} />
                                 </FormGroup>
                             </Col>
                             <Col md={2}>

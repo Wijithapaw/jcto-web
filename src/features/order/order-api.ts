@@ -7,7 +7,8 @@ export const orderApi = {
     getOrder,
     updateOrder,
     searchOrder,
-    downloadStockRelease
+    downloadStockRelease,
+    getNextOrderNo
 }
 
 function createOrder(order: Order) {
@@ -28,4 +29,8 @@ function updateOrder(id: string, order: Order) {
 
 function downloadStockRelease(orderId: string, fileName: string) {
     return coreApi.download(`orders/${orderId}/stockrelease`, `${fileName}.xlsx`);
+}
+
+function getNextOrderNo(date: string) {
+    return coreApi.get<number>(`orders/NextOrderNo`, { date });
 }

@@ -45,12 +45,13 @@ export interface EntryListItem {
     entryNo: string;
     toBondNo: string;
     status: EntryStatus;
+    index: number;
     transactions: EntryTransaction[];
 }
 
 export interface EntryTransaction {
     transactionDate: string;
-    orderNo?: string;
+    orderNo?: number;
     orderStatus?: OrderStatus;
     obRef?: string;
     quantity: number;

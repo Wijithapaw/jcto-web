@@ -25,7 +25,7 @@ export default function EntryTransactionsList({ items }: Props) {
             {items.map((val, i) => (<tr key={i} className={val.type === EntryTransactionType.Approval ? `text-success` : ''}>
                 <td>{dateHelpers.toShortDateStr(val.transactionDate)}</td>
                 <td>{val.type === EntryTransactionType.Approval ? 'Approval' : 'Order'} </td>
-                <td>{`${getApprovalType(val.approvalType)} ${val.approvalRef ? `(${val.approvalRef})` : ''}`}</td>
+                <td>{`${getApprovalType(val.approvalType)} ${val.approvalRef ? `-${val.approvalRef}` : ''}`}</td>
                 <td>
                     {val.orderNo && <AppIcon size="xs"
                         className={`me-2 ${val.orderStatus === OrderStatus.Delivered ? 'text-success' : 'text-danger'}`}

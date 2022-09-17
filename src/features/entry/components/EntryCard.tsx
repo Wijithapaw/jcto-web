@@ -70,8 +70,9 @@ export default function EntryCard({ entry, onUpdate }: Props) {
             </Row>
             <Row>
                 <Col xs="auto"><CardLabel label="To Bond No" value={entry.toBondNo} /></Col>
+                <Col xs="auto"><CardLabel label="Index" value={entry.index} /></Col>
                 <Col xs="auto"><CardLabel label="Customer" value={entry.customer} /></Col>
-                <Col><CardLabel label="Product" value={entry.product} /></Col>
+                <Col><CardLabel label="Product" value={entry.product} /></Col>                
                 <Col xs="auto">
                     <Label>
                         <b className="me-1">Status</b>

@@ -17,7 +17,7 @@ export interface OrdersFilter extends PagedFilter{
     from: string;
     to: string;
     status?: OrderStatus;
-    orderNo: string;
+    orderNo?: number;
     buyer: string;
     buyerType?: BuyerType;
 }
@@ -29,7 +29,7 @@ export interface OrderListItem {
     quantity: number;
     deliveredQuantity?: number;
     orderDate: string;
-    orderNo: string;
+    orderNo: number;
     buyer: string;
     buyerType: BuyerType;
     status: OrderStatus;
@@ -40,7 +40,7 @@ export interface Order {
     customerId: string;
     productId: string;
     orderDate: string;
-    orderNo: string;
+    orderNo?: number;
     buyer: string;
     status: OrderStatus;
     quantity: number;
