@@ -4,12 +4,13 @@ import { v4 as uuidv4 } from 'uuid';
 import { IDictionary } from "../../../app/types";
 import AppIcon from "../../../components/AppIcon";
 import { entryApi } from "../../entry/entry-api";
-import { EntryBalanceQty, EntryRemaningApproval } from "../../entry/types";
+import { EntryRemaningApproval } from "../../entry/types";
 import { OrderStockReleaseEntry } from "../types"
 import RemainingApprovalsSelect from "./RemainingApprovalsSelect";
 
 interface Props {
     items?: OrderStockReleaseEntry[];
+    orderId?: string;
     onChange: (e: OrderStockReleaseEntry[]) => void;
     error?: string;
     touched?: boolean;
@@ -17,8 +18,7 @@ interface Props {
     showDeliveredQty: boolean;
 }
 
-export default function StockReleaseEntriesTable({ items = [], onChange, error, touched, disabled, showDeliveredQty }: Props) {
-    const [balanceQtys, setBalanceQtys] = useState<IDictionary<EntryBalanceQty>>({});
+export default function StockReleaseEntriesTable({ items = [], orderId, onChange, error, touched, disabled, showDeliveredQty }: Props) {
     const [remApprovals, setRemApprovals] = useState<IDictionary<EntryRemaningApproval[]>>({});
     const [approvalsLoaded, setApprovalsLoaded] = useState(false);
 
@@ -28,6 +28,10 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
             setApprovalsLoaded(true);
         }
     }, [items])
+
+    useEffect(() => {
+        orderId && items.forEach(i => getRemainingApprovals(i.entryNo));
+    }, [orderId])
 
     const refreshBalances = (entryNo: string) => {
         getRemainingApprovals(entryNo);
@@ -60,7 +64,7 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
     };
 
     const getRemainingApprovals = (entryNo: string) => {
-        entryNo && entryApi.getRemainingApprovals(entryNo)
+        entryNo && entryApi.getRemainingApprovals(entryNo, orderId)
             .then((aprvs) => {
                 if (aprvs.length > 0) {
                     setRemApprovals({ ...remApprovals, [aprvs[0].entryNo]: aprvs });
@@ -95,7 +99,7 @@ export default function StockReleaseEntriesTable({ items = [], onChange, error, 
                         <td>Entry No</td>
                         <td></td>
                         <td width="30%">Approval</td>
-                        <td>OB Ref.</td>
+                        <td>OB Ref <small className="text-muted ms-1"><small><i>[leave empty to auto gen]</i></small></small></td>
                         <td>Quantity</td>
                         {showDeliveredQty && <td>Delivered Quantity</td>}
                         {!disabled && <td></td>}

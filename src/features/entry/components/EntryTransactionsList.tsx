@@ -15,7 +15,6 @@ export default function EntryTransactionsList({ items }: Props) {
                 <th>Date</th>
                 <th>Type</th>
                 <th>Approval</th>
-                <th>Order No.</th>
                 <th>OB Ref</th>
                 <th className="text-end">Qty</th>
                 <th className="text-end">Delivered Qty</th>
@@ -24,15 +23,15 @@ export default function EntryTransactionsList({ items }: Props) {
         <tbody>
             {items.map((val, i) => (<tr key={i} className={val.type === EntryTransactionType.Approval ? `text-success` : ''}>
                 <td>{dateHelpers.toShortDateStr(val.transactionDate)}</td>
-                <td>{val.type === EntryTransactionType.Approval ? 'Approval' : 'Order'} </td>
-                <td>{`${getApprovalType(val.approvalType)} ${val.approvalRef ? `-${val.approvalRef}` : ''}`}</td>
                 <td>
-                    {val.orderNo && <AppIcon size="xs"
-                        className={`me-2 ${val.orderStatus === OrderStatus.Delivered ? 'text-success' : 'text-danger'}`}
-                        icon={val.orderStatus === OrderStatus.Delivered ? 'check' : 'x'}
-                    /> || val.orderStatus}
-                    {val.orderNo}
+                    {val.type === EntryTransactionType.Approval ? 'Approval'
+                        : <> {`Order-${val.orderNo}`} <AppIcon size="xs"
+                            className={`me-2 ${val.orderStatus === OrderStatus.Delivered ? 'text-success' : 'text-danger'}`}
+                            icon={val.orderStatus === OrderStatus.Delivered ? 'check' : 'x'}
+                        /></>
+                    }
                 </td>
+                <td>{`${getApprovalType(val.approvalType)} ${val.approvalRef ? `-${val.approvalRef}` : ''}`}</td>
                 <td>{val.obRef}</td>
                 <td className="text-end">{Math.abs(val.quantity).toFixed(4)}</td>
                 <td className="text-end">

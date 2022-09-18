@@ -24,7 +24,7 @@ export interface EntriesFilter extends PagedFilter {
     toBondNo: string;
     from: string;
     to: string;
-    activeEntriesOnly: boolean;
+    active?: boolean;
 }
 
 export interface Entry {

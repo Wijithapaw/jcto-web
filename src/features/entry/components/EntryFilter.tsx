@@ -7,6 +7,7 @@ import { FormEvent, useEffect, useState } from "react";
 import DateSelect2 from "../../../components/DateSelect2";
 import EntryDetailsForm from "./EntryDetailsForm";
 import ProductSelect from "../../customer/components/ProductSelect";
+import { ThreewaySplitButton } from "../../../components/ThreewaySplitButton";
 
 export default function EntryFilter() {
     const dispatch = useAppDispatch();
@@ -101,13 +102,15 @@ export default function EntryFilter() {
                                     </Col>
                                 </FormGroup>
                             </Col>
-                            <Col className="pt-2" md="auto">
-                                <FormGroup check>
-                                    <Label for="cbxShowActiveOnly">Show Active Entries Only</Label>
-                                    <Input id="cbxShowActiveOnly"
-                                        type="checkbox"
-                                        checked={filter.activeEntriesOnly}
-                                        onChange={(e) => handleFilterChange("activeEntriesOnly", e.target.checked)} />
+                            <Col md="auto">
+                                <FormGroup>
+                                    <ThreewaySplitButton
+                                        allLabel="All"
+                                        trueLabel="Active"
+                                        falseLabel="Completed"
+                                        selectedValue={filter.active}
+                                        onChange={(val) => handleFilterChange("active", val)}
+                                    />
                                 </FormGroup>
                             </Col>
                         </Row>

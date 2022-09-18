@@ -26,6 +26,6 @@ function getBalanceQuantities(entryNo: string) {
     return coreApi.get<EntryBalanceQty>(`entries/${entryNo}/balance`);
 }
 
-function getRemainingApprovals(entryNo: string) {
-    return coreApi.get<EntryRemaningApproval[]>(`entries/${entryNo}/RemainingApprovals`);
+function getRemainingApprovals(entryNo: string, excludeOrderId?: string) {
+    return coreApi.get<EntryRemaningApproval[]>(`entries/${entryNo}/RemainingApprovals`, { excludeOrderId });
 }

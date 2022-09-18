@@ -13,7 +13,7 @@ const initialState: EntryState = {
     entryFilter: {
         customerId: '',
         productId: '',
-        activeEntriesOnly: true,
+        active: true,
         entryNo: '',
         toBondNo: '',
         from: '',

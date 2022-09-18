@@ -90,9 +90,9 @@ export default function OrderDetailsForm({ orderId, onUpdate }: Props) {
                 .test('dd', 'must be > 0', (value) => (value || 0) > 0),
             releaseEntries: Yup.array()
                 .test('NotEmpty', 'must have entries', (items) => items && items.length > 0 || false)
-                .test('FillAll', 'must fill all the fields',
+                .test('FillAll', 'must fill all required fields',
                     (items, ctx) => items ? items.every((i: OrderStockReleaseEntry) => {
-                        const valid = i.entryNo && i.obRef && i.quantity > 0 && i.approvalId
+                        const valid = i.entryNo && i.quantity > 0 && i.approvalId
                             && (ctx.parent.status === OrderStatus.Undelivered || i.deliveredQuantity && i.deliveredQuantity > 0)
                         return valid;
                     }) : false)
@@ -280,6 +280,7 @@ export default function OrderDetailsForm({ orderId, onUpdate }: Props) {
                             <Col>
                                 <FormGroup>
                                     <StockReleaseEntriesTable
+                                        orderId={editingOrderId}
                                         showDeliveredQty={values.status === OrderStatus.Delivered}
                                         disabled={disabled}
                                         touched={touched.releaseEntries}
