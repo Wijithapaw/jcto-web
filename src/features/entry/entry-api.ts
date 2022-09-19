@@ -4,22 +4,42 @@ import { EntriesFilter, Entry, EntryApproval, EntryBalanceQty, EntryListItem, En
 
 export const entryApi = {
     createEntry,
+    updateEntry,
     searchEntries,
     approveEntry,
     getBalanceQuantities,
-    getRemainingApprovals
+    getRemainingApprovals,
+    getEntry,
+    deleteEntry,
+    deleteApproval
 }
 
 function createEntry(entry: Entry) {
     return coreApi.post<EntityCreateResult>('entries', entry);
 }
 
+function updateEntry(id: string, entry: Entry) {
+    return coreApi.put<EntityCreateResult>(`entries/${id}`, entry);
+}
+
 function searchEntries(filter: EntriesFilter) {
     return coreApi.get<PagedResult<EntryListItem>>(`entries`, filter);
 }
 
+function getEntry(id: string) {
+    return coreApi.get<Entry>(`entries/${id}`);
+}
+
+function deleteEntry(id: string) {
+    return coreApi.del(`entries/${id}`);
+}
+
 function approveEntry(approval: EntryApproval) {
-    return coreApi.post<EntityCreateResult>('entries/approve', approval);
+    return coreApi.post<EntityCreateResult>('entries/approval', approval);
+}
+
+function deleteApproval(id: string) {
+    return coreApi.del(`entries/approval/${id}`);
 }
 
 function getBalanceQuantities(entryNo: string) {

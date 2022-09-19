@@ -174,7 +174,7 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete }: Props)
         }}
         validationSchema={validationSchema}>
         {
-            ({ errors, touched, handleSubmit, values, setFieldValue, resetForm, setFieldTouched, validateForm }) => {
+            ({ errors, touched, handleSubmit, values, setFieldValue, resetForm, setFieldTouched, validateForm, isSubmitting }) => {
                 var disabled = editingOrder && (editingOrder.status === OrderStatus.Delivered);
                 return (
                     <Form onSubmit={e => {
@@ -341,7 +341,7 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete }: Props)
                                 <FormGroup>
                                     {editingOrder && !disabled && <Button type="button"  className="me-2" color="danger" onClick={handleDelete}>Delete</Button>}
                                     <Button type="button" onClick={() => resetForm()}>Reset</Button>
-                                    <Button type="submit" className="ms-2" color="primary">Save</Button>
+                                    <Button type="submit" isabled={isSubmitting} className="ms-2" color="primary">Save</Button>
                                 </FormGroup>
                             </Col>
                             <Col className="text-end">

@@ -134,7 +134,13 @@ export default function EntryFilter() {
                     New Entry
                 </ModalHeader>
                 <ModalBody>
-                    <EntryDetailsForm onUpdate={() => dispatch(searchEntriesAsync(filter))} />
+                    <EntryDetailsForm
+                        onUpdate={() => dispatch(searchEntriesAsync(filter))}
+                        onDelete={() => {
+                            dispatch(searchEntriesAsync(filter));
+                            setShowAddNew(false);
+                        }}
+                    />
                 </ModalBody>
             </Modal>
         </CardBody>

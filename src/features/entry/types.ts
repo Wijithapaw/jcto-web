@@ -33,6 +33,7 @@ export interface Entry {
     toBondNo: string;
     entryDate: string;
     status: EntryStatus;
+    concurrencyKey?: string;
 }
 
 export interface EntryListItem {

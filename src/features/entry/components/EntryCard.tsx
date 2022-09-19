@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { Card, CardBody, CardHeader, Col, Label, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
 import { dateHelpers } from "../../../app/helpers";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import AppIcon from "../../../components/AppIcon";
 import { OrderStatus } from "../../order/types";
+import { entryFilterSelector, searchEntriesAsync } from "../entry-slice";
 import { EntryListItem, EntryStatus, EntryTransactionType } from "../types";
 import EntryApprovalForm from "./EntryApprovalForm";
+import EntryDetailsForm from "./EntryDetailsForm";
 import EntryTransactionsList from "./EntryTransactionsList";
 
 interface Props {
@@ -24,6 +27,9 @@ export default function EntryCard({ entry, onUpdate }: Props) {
     const [showApproval, setShowApproval] = useState(false);
     const [approvedQty, setApprovedQty] = useState(0);
     const [approvedBalQty, setApprovedBalQty] = useState(0);
+    const [editingEntryId, setEditingEntryId] = useState<string>();
+    const dispatch = useAppDispatch();
+    const filter = useAppSelector(entryFilterSelector);
 
     useEffect(() => {
         const apprQty = entry.transactions
@@ -44,8 +50,17 @@ export default function EntryCard({ entry, onUpdate }: Props) {
     return <Card className="mb-2 mt-2">
         <CardHeader>
             <Row>
-                <Col xs="auto"><CardLabel label="Entry No" value={entry.entryNo} /></Col>
-                <Col><CardLabel label="Entry Date" value={dateHelpers.toShortDateStr(entry.entryDate)} /></Col>
+                <Col xs="auto">
+                    <CardLabel label="Entry No" value={entry.entryNo} />
+                    <AppIcon icon="pencil"
+                        title="Add Approal"
+                        className="ms-1 me-1"
+                        mode="button"
+                        onClick={() => setEditingEntryId(entry.id)} />
+                </Col>
+                <Col>
+                    <CardLabel label="Entry Date" value={dateHelpers.toShortDateStr(entry.entryDate)} />
+                </Col>
                 <Col className="text-end" xs="auto">
                     <Label>
                         <b className="me-1">Approved Qty
@@ -72,12 +87,12 @@ export default function EntryCard({ entry, onUpdate }: Props) {
                 <Col xs="auto"><CardLabel label="To Bond No" value={entry.toBondNo} /></Col>
                 <Col xs="auto"><CardLabel label="Index" value={entry.index} /></Col>
                 <Col xs="auto"><CardLabel label="Customer" value={entry.customer} /></Col>
-                <Col><CardLabel label="Product" value={entry.product} /></Col>                
+                <Col><CardLabel label="Product" value={entry.product} /></Col>
                 <Col xs="auto">
                     <Label>
                         <b className="me-1">Status</b>
                     </Label>
-                    <span className={`${entry.status === EntryStatus.Active ? 'text-success' : 'text-secondary'}`}>
+                    <span className={`${entry.status === EntryStatus.Active ? 'text-success' : 'text-danger'}`}>
                         {entry.status === EntryStatus.Active ? 'Active' : 'Completed'}
                     </span>
                 </Col>
@@ -92,6 +107,19 @@ export default function EntryCard({ entry, onUpdate }: Props) {
             </ModalHeader>
             <ModalBody>
                 <EntryApprovalForm entryId={entry.id} onUpdate={onUpdate} />
+            </ModalBody>
+        </Modal>
+        <Modal isOpen={!!editingEntryId} size="lg" toggle={() => setEditingEntryId(undefined)} backdrop="static">
+            <ModalHeader toggle={() => setEditingEntryId(undefined)}>
+                New Entry
+            </ModalHeader>
+            <ModalBody>
+                <EntryDetailsForm entryId={editingEntryId}
+                    onUpdate={() => dispatch(searchEntriesAsync(filter))}
+                    onDelete={() => {
+                        dispatch(searchEntriesAsync(filter));
+                        setEditingEntryId(undefined);
+                    }} />
             </ModalBody>
         </Modal>
     </Card>
