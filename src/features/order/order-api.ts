@@ -6,6 +6,7 @@ export const orderApi = {
     createOrder,
     getOrder,
     updateOrder,
+    deleteOrder,
     searchOrder,
     downloadStockRelease,
     getNextOrderNo
@@ -25,6 +26,10 @@ function searchOrder(filter: OrdersFilter) {
 
 function updateOrder(id: string, order: Order) {
     return coreApi.put<EntityCreateResult>(`orders/${id}`, order);
+}
+
+function deleteOrder(id: string) {
+    return coreApi.del(`orders/${id}`);
 }
 
 function downloadStockRelease(orderId: string, fileName: string) {

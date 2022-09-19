@@ -77,7 +77,11 @@ export default function OrdersList() {
                 Order Details
             </ModalHeader>
             <ModalBody>
-                <OrderDetailsForm orderId={selectedOrderId} onUpdate={refreshList} />
+                <OrderDetailsForm orderId={selectedOrderId} onUpdate={refreshList}
+                    onDelete={() => {
+                        refreshList();
+                        setSelectedOrderId(undefined);
+                    }} />
             </ModalBody>
         </Modal>
     </>

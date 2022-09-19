@@ -145,7 +145,11 @@ export default function OrderFilter() {
                     New Order
                 </ModalHeader>
                 <ModalBody>
-                    <OrderDetailsForm  onUpdate={refreshList}/>
+                    <OrderDetailsForm onUpdate={refreshList}
+                        onDelete={() => {
+                            refreshList();
+                            setShowAddNew(false);
+                        }} />
                 </ModalBody>
             </Modal>
         </CardBody>

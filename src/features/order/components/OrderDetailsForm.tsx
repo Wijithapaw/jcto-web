@@ -22,9 +22,10 @@ import { customerListItemsSelector } from "../../customer/customer-slice";
 interface Props {
     orderId?: string;
     onUpdate?: () => void;
+    onDelete?: () => void;
 }
 
-export default function OrderDetailsForm({ orderId, onUpdate }: Props) {
+export default function OrderDetailsForm({ orderId, onUpdate, onDelete }: Props) {
     const [editingOrderId, setEditingOrderId] = useState(orderId);
     const [editingOrder, setEditingOrder] = useState<Order>();
     const [nextOrderNo, setNextOrderNo] = useState<number>();
@@ -47,7 +48,7 @@ export default function OrderDetailsForm({ orderId, onUpdate }: Props) {
         editingOrderId && orderApi.getOrder(editingOrderId)
             .then(order => setEditingOrder(order));
     }, [editingOrderId])
-    
+
     const refreshCustomerObPrefix = (customerId: string, setValues: any) => {
         if (isNewOrder()) {
             const year = new Date().getFullYear();
@@ -68,8 +69,18 @@ export default function OrderDetailsForm({ orderId, onUpdate }: Props) {
     const downloadStockRelease = () => {
         const fileName = `StockRelease_${dateHelpers.dateFormat(order.orderDate, 'YYYY_MM_DD')}_${order.orderNo}`;
         orderApi.downloadStockRelease(editingOrderId!, fileName).then(() => {
-            showNotification(NotificationType.success, `Stock release downloaded successfully`);
+            showNotification(NotificationType.success, `Stock release downloaded`);
         })
+    }
+
+    const handleDelete = () => {
+        if (editingOrder && window.confirm("Are you sure you want to delete the order?")) {
+            orderApi.deleteOrder(editingOrderId!)
+                .then(() => {
+                    showNotification(NotificationType.success, "Order deleted");
+                    onDelete && onDelete();
+                })
+        }
     }
 
     const validationSchema = useMemo(() => {
@@ -328,6 +339,7 @@ export default function OrderDetailsForm({ orderId, onUpdate }: Props) {
                         <Row>
                             <Col>
                                 <FormGroup>
+                                    {editingOrder && !disabled && <Button type="button"  className="me-2" color="danger" onClick={handleDelete}>Delete</Button>}
                                     <Button type="button" onClick={() => resetForm()}>Reset</Button>
                                     <Button type="submit" className="ms-2" color="primary">Save</Button>
                                 </FormGroup>

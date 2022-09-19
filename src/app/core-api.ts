@@ -4,6 +4,7 @@ export const coreApi = {
     get,
     post,
     put,
+    del,
     download
 }
 
@@ -28,6 +29,11 @@ function post<T>(path: string, data: any) {
 function put<T>(path: string, data: any) {
     return API.put("jcto", path, { body: data })
         .then(data => data as T)
+        .catch(handleError);
+}
+
+function del(path: string) {
+    return API.del("jcto", path, {})
         .catch(handleError);
 }
 
