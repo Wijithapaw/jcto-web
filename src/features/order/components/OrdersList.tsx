@@ -35,6 +35,9 @@ export default function OrdersList() {
                     <th>Buyer</th>
                     <th className="text-end">Qty</th>
                     <th className="text-end">Del. Qty</th>
+                    <th className="text-center">Issue Commenced</th>
+                    <th className="text-center">Issue Completed</th>
+                    <th></th>
                     <td />
                 </tr>
             </thead>
@@ -58,6 +61,8 @@ export default function OrdersList() {
                         {val.buyer}</td>
                     <td className="text-end">{val.quantity.toFixed(4)}</td>
                     <td className="text-end">{val.deliveredQuantity?.toFixed(4)}</td>
+                    <td className="text-center">{val.issueStartTime && dateHelpers.toDatetimeStr(val.issueStartTime)}</td>
+                    <td className="text-center">{val.issueEndTime && dateHelpers.toDatetimeStr(val.issueEndTime)}</td>
                     <td className="text-end">
                         <AppIcon icon="eye"
                             mode="button"

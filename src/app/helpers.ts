@@ -13,7 +13,7 @@ export const validationHelpers = {
 }
 
 function toDatetimeStr(date: Date | string) {
-    return dayjs(date).format("DD/MM/YYYY h:mm A");
+    return dayjs(date).format("DD/MM/YYYY hh:mm A");
 }
 
 function dateFormat(date: Date | string, format: string) {
@@ -21,7 +21,7 @@ function dateFormat(date: Date | string, format: string) {
 }
 
 function toIsoString(value?: Date) {
-    return value ? value.toLocaleDateString('en-CA') : ''
+    return value ? dayjs(value).format("YYYY-MM-DDTHH:mm:ss") : ''
 }
 
 function strToDate(valueStr?: string) {

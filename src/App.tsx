@@ -14,7 +14,6 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 import OrdersPage from './features/order/components/OrdersPage';
 import EntryListPage from './features/entry/components/EntryListPage';
 import { getCustomerListItemsAsync, getProductsListItemsAsync } from './features/customer/customer-slice';
-import DischargesListPage from './features/stock/components/DischargesListPage';
 
 library.add(fas);
 
@@ -112,8 +111,7 @@ function App() {
       authenticated ? <Routes>
         <Route path="/customers" element={<PrivateRoute><CustomersPage /></PrivateRoute>} />
         <Route path="/orders" element={<PrivateRoute><OrdersPage /></PrivateRoute>} />
-        <Route path="/entries" element={<PrivateRoute><EntryListPage /></PrivateRoute>} />
-        <Route path="/discharges" element={<PrivateRoute><DischargesListPage /></PrivateRoute>} />
+        <Route path="/discharges" element={<PrivateRoute><EntryListPage /></PrivateRoute>} />
         <Route path="/" element={<Navigate to={authenticated ? "/customers" : "/"} />} />
       </Routes> : null
     }

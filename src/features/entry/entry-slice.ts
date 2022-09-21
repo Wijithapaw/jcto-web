@@ -15,7 +15,6 @@ const initialState: EntryState = {
         productId: '',
         active: true,
         entryNo: '',
-        toBondNo: '',
         from: '',
         to: '',
         page: 1,

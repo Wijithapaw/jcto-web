@@ -63,7 +63,7 @@ export default function EntryFilter() {
                             </Col>
                             <Col>
                                 <FormGroup row>
-                                    <Label md="auto">Entry No</Label>
+                                    <Label md="auto">Tobond No</Label>
                                     <Col>
                                         <Input type="text"
                                             value={filter.entryNo}
@@ -89,16 +89,6 @@ export default function EntryFilter() {
                                             isClearable
                                             onChange={(d) => handleFilterChange("to", d)}
                                             placeHolder="To" />
-                                    </Col>
-                                </FormGroup>
-                            </Col>
-                            <Col md={4}>
-                                <FormGroup row>
-                                    <Label md="auto">To Bond No</Label>
-                                    <Col>
-                                        <Input type="text"
-                                            value={filter.toBondNo}
-                                            onChange={(e) => handleFilterChange("toBondNo", e.target.value)} />
                                     </Col>
                                 </FormGroup>
                             </Col>

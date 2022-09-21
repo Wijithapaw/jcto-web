@@ -8,7 +8,6 @@ import AppToast from "./components/AppToast";
 const routes = [
     { path: '/customers', title: 'Customers' },
     { path: '/discharges', title: 'Discharges' },
-    { path: '/entries', title: 'Entries' },
     { path: '/orders', title: 'Orders' },    
 ];
 

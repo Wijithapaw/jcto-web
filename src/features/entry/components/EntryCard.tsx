@@ -51,7 +51,7 @@ export default function EntryCard({ entry, onUpdate }: Props) {
         <CardHeader>
             <Row>
                 <Col xs="auto">
-                    <CardLabel label="Entry No" value={entry.entryNo} />
+                    <CardLabel label="Tobond No" value={entry.entryNo} />
                     <AppIcon icon="pencil"
                         title="Add Approal"
                         className="ms-1 me-1"
@@ -84,8 +84,7 @@ export default function EntryCard({ entry, onUpdate }: Props) {
                 </Col>
             </Row>
             <Row>
-                <Col xs="auto"><CardLabel label="To Bond No" value={entry.toBondNo} /></Col>
-                <Col xs="auto"><CardLabel label="Index" value={entry.index} /></Col>
+                <Col xs="auto"><CardLabel label="Internal Ref. No" value={entry.index} /></Col>
                 <Col xs="auto"><CardLabel label="Customer" value={entry.customer} /></Col>
                 <Col><CardLabel label="Product" value={entry.product} /></Col>
                 <Col xs="auto">

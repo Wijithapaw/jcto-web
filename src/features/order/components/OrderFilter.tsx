@@ -8,13 +8,22 @@ import OrderStatusSelect from "./OrderStatusSelect";
 import ProductSelect from "../../customer/components/ProductSelect";
 import OrderDetailsForm from "./OrderDetailsForm";
 import BuyerTypeSelect from "./BuyerTypeSelect";
+import { useSearchParams } from "react-router-dom";
 
 export default function OrderFilter() {
     const dispatch = useAppDispatch();
+    const [searchParams, setSearchParams] = useSearchParams();
     const filter = useAppSelector(orderFilterSelector);
     const [showAddNew, setShowAddNew] = useState(false);
+    const [approvalId, setApprovalId] = useState<string>();
 
     useEffect(() => {
+        const apprId = searchParams.get("approvalId");
+        if (apprId) {
+            setApprovalId(apprId);
+            setShowAddNew(true);
+        }
+        searchParams.delete("approvalId");
         dispatch(searchOrdersAsync(filter));
     }, [])
 
@@ -140,8 +149,16 @@ export default function OrderFilter() {
                     </Col>
                 </Row>
             </Form>
-            <Modal isOpen={showAddNew} size="xl" toggle={() => setShowAddNew(false)} backdrop="static">
-                <ModalHeader toggle={() => setShowAddNew(false)}>
+            <Modal isOpen={showAddNew} size="xl"
+                toggle={() => {
+                    setShowAddNew(false);
+                    setApprovalId(undefined)
+                }}
+                backdrop="static">
+                <ModalHeader toggle={() => {
+                    setShowAddNew(false);
+                    setApprovalId(undefined);
+                }}>
                     New Order
                 </ModalHeader>
                 <ModalBody>

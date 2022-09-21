@@ -34,6 +34,8 @@ export interface OrderListItem {
     buyerType: BuyerType;
     status: OrderStatus;
     taxPaid: boolean;
+    issueStartTime?: string;
+    issueEndTime?: string;
 }
 
 export interface Order {
@@ -54,6 +56,8 @@ export interface Order {
     remarks?: string;
     concurrencyKey?: string;
     taxPaid: boolean;
+    issueStartTime?: string;
+    issueEndTime?: string;
 }
 
 export interface OrderStockReleaseEntry {

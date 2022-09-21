@@ -9,18 +9,20 @@ interface Props {
   placeHolder?: string;
   isClearable?: boolean;
   disabled?: boolean;
+  timeSelect?: boolean;
 }
 
-export default function DateSelect({ value, onChange, placeHolder, isClearable, disabled }: Props) {
+export default function DateSelect({ value, onChange, placeHolder, isClearable, disabled, timeSelect }: Props) {
   return <DatePicker selected={value}
     disabled={disabled}
     placeholderText={placeHolder}
     className="form-control"
-    dateFormat="yyyy-MM-dd"
+    dateFormat={timeSelect? 'dd/MM/yyyy h:mm aa': 'dd/MM/yyyy'}
     dropdownMode="select"
     showMonthDropdown
     showYearDropdown
     useShortMonthInDropdown
     isClearable={isClearable}
-    onChange={onChange} />
+    showTimeSelect={timeSelect}
+    onChange={onChange} />    
 }

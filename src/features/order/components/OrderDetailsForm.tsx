@@ -152,7 +152,7 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete }: Props)
                 status: OrderStatus.Undelivered,
                 bowserEntries: [],
                 taxPaid: false,
-                remarks: ''
+                remarks: '',
             };
             return newOrder;
         }
@@ -234,12 +234,6 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete }: Props)
                                     <Input disabled={disabled} maxLength={20} value={values.tankNo} onChange={(e) => setFieldValue('tankNo', e.target.value)} />
                                 </FormGroup>
                             </Col>
-                            <Col md={2}>
-                                <FormGroup>
-                                    <FormLabel label="Buyer" touched={touched.buyer} error={errors.buyer} />
-                                    <Input disabled={disabled} maxLength={100} value={values.buyer} onChange={(e) => { setFieldValue('buyer', e.target.value); }} />
-                                </FormGroup>
-                            </Col>
                             <Col>
                                 <FormGroup>
                                     <FormLabel label="Buyer Type" />
@@ -254,6 +248,12 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete }: Props)
                                     />
                                 </FormGroup>
                             </Col>
+                            <Col md={2}>
+                                <FormGroup>
+                                    <FormLabel label="Buyer" touched={touched.buyer} error={errors.buyer} />
+                                    <Input disabled={disabled} maxLength={100} value={values.buyer} onChange={(e) => { setFieldValue('buyer', e.target.value); }} />
+                                </FormGroup>
+                            </Col>                            
                             <Col>
                                 {!isNewOrder() &&
                                     <FormGroup>
@@ -287,6 +287,28 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete }: Props)
                                     </FormGroup>}
                             </Col>
                         </Row>
+                        {values.status === OrderStatus.Delivered &&
+                            <Row>
+                                <Col>
+                                    <FormGroup>
+                                        <FormLabel label="Issuing Commenced Time" touched={touched.issueStartTime} error={errors.issueStartTime} />
+                                        <DateSelect2 disabled={disabled} value={values.issueStartTime} timeSelect
+                                            onChange={(d) => {
+                                                setFieldValue('issueStartTime', d);
+                                            }} />
+                                    </FormGroup>
+                                </Col>
+                                <Col>
+                                    <FormGroup>
+                                        <FormLabel label="Issuing Completed Time" touched={touched.issueEndTime} error={errors.issueEndTime} />
+                                        <DateSelect2 disabled={disabled} value={values.issueEndTime} timeSelect
+                                            onChange={(d) => {
+                                                setFieldValue('issueEndTime', d);
+                                            }} />
+                                    </FormGroup>
+                                </Col>
+                            </Row>
+                        }
                         <Row>
                             <Col>
                                 <FormGroup>
@@ -339,7 +361,7 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete }: Props)
                         <Row>
                             <Col>
                                 <FormGroup>
-                                    {editingOrder && !disabled && <Button type="button"  className="me-2" color="danger" onClick={handleDelete}>Delete</Button>}
+                                    {editingOrder && !disabled && <Button type="button" className="me-2" color="danger" onClick={handleDelete}>Delete</Button>}
                                     <Button type="button" onClick={() => resetForm()}>Reset</Button>
                                     <Button type="submit" isabled={isSubmitting} className="ms-2" color="primary">Save</Button>
                                 </FormGroup>

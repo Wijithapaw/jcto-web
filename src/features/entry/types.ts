@@ -21,16 +21,16 @@ export interface EntriesFilter extends PagedFilter {
     customerId: string;
     productId: string;
     entryNo: string;
-    toBondNo: string;
     from: string;
     to: string;
     active?: boolean;
 }
 
 export interface Entry {
+    productId: string;
+    customerId: string;
     entryNo: string;
     initialQuantity: number;
-    toBondNo: string;
     entryDate: string;
     status: EntryStatus;
     concurrencyKey?: string;
@@ -51,6 +51,7 @@ export interface EntryListItem {
 }
 
 export interface EntryTransaction {
+    id?: string;
     transactionDate: string;
     orderNo?: number;
     orderStatus?: OrderStatus;

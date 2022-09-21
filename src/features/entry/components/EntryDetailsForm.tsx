@@ -9,6 +9,8 @@ import DateSelect2 from "../../../components/DateSelect2";
 import { entryApi } from "../entry-api";
 import { showNotification } from "../../../app/notification-service";
 import { NotificationType } from "../../../app/types";
+import CustomerSelect from "../../customer/components/CustomerSelect";
+import ProductSelect from "../../customer/components/ProductSelect";
 
 interface Props {
     entryId?: string;
@@ -46,13 +48,12 @@ export default function EntryDetailsForm({ entryId, onUpdate, onDelete }: Props)
             entryNo: Yup.string()
                 .max(20, ' is too Long!')
                 .required(' is required'),
-            toBondNo: Yup.string()
-                .max(20, ' is too Long!')
-                .required(' is required'),
             initialQuantity: Yup.number()
                 .required(' is required')
                 .test('dd', ' must be greater than 0', (value) => (value || 0) > 0),
             entryDate: Yup.string().required(' is required'),
+            productId: Yup.string().required(' is required'),
+            customerId: Yup.string().required(' is required'),
         });
     }, [])
 
@@ -61,7 +62,8 @@ export default function EntryDetailsForm({ entryId, onUpdate, onDelete }: Props)
             return { ...editingEntry };
         } else {
             const newEntry: Entry = {
-                toBondNo: '',
+                customerId: '',
+                productId: '',
                 entryDate: dateHelpers.toIsoString(new Date()),
                 entryNo: '',
                 initialQuantity: 0,
@@ -99,13 +101,21 @@ export default function EntryDetailsForm({ entryId, onUpdate, onDelete }: Props)
                     <Row>
                         <Col>
                             <FormGroup>
-                                <FormLabel label="To Bond No" touched={touched.toBondNo} error={errors.toBondNo} />
-                                <Field disabled={!!editingEntryId} name="toBondNo" type="text" className="form-control" />
+                                <FormLabel label="Customer" touched={touched.customerId} error={errors.customerId} />
+                                <CustomerSelect
+                                    selectedValue={values.customerId}
+                                    onChange={(id) => setFieldValue('customerId', id, true)} />
                             </FormGroup>
                         </Col>
                         <Col>
                             <FormGroup>
-                                <FormLabel label="Entry No" touched={touched.entryNo} error={errors.entryNo} />
+                                <FormLabel label="Product" touched={touched.productId} error={errors.productId} />
+                                <ProductSelect selectedValue={values.productId} onChange={(p) => setFieldValue('productId', p, true)} />
+                            </FormGroup>
+                        </Col>
+                        <Col>
+                            <FormGroup>
+                                <FormLabel label="ToBond No" touched={touched.entryNo} error={errors.entryNo} />
                                 <Field name="entryNo" type="text" className="form-control" />
                             </FormGroup>
                         </Col>

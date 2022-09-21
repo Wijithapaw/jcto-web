@@ -50,7 +50,7 @@ export default function CustomerStocks() {
     }
 
     const handleCustomerSelect = (customerId: string) => {
-        navigate({ pathname: '/entries', search: `?${createSearchParams({ customerId })}` })
+        navigate({ pathname: '/discharges', search: `?${createSearchParams({ customerId })}` })
     }
 
     return <Table bordered style={{ textAlign: 'right' }} responsive>
