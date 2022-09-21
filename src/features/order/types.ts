@@ -11,7 +11,7 @@ export enum BuyerType {
     Bowser = 1,
 }
 
-export interface OrdersFilter extends PagedFilter{
+export interface OrdersFilter extends PagedFilter {
     customerId: string;
     productId: string;
     from: string;
@@ -65,7 +65,7 @@ export interface OrderStockReleaseEntry {
     entryNo: string;
     approvalId: string;
     obRef: string;
-    quantity: number;    
+    quantity: number;
     deliveredQuantity?: number
 }
 

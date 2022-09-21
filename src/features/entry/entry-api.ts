@@ -1,6 +1,6 @@
 import { coreApi } from "../../app/core-api";
 import { EntityCreateResult, PagedResult } from "../../app/types";
-import { EntriesFilter, Entry, EntryApproval, EntryBalanceQty, EntryListItem, EntryRemaningApproval } from "./types";
+import { EntriesFilter, Entry, EntryApproval, EntryApprovalSummary, EntryBalanceQty, EntryListItem, EntryRemaningApproval } from "./types";
 
 export const entryApi = {
     createEntry,
@@ -11,7 +11,8 @@ export const entryApi = {
     getRemainingApprovals,
     getEntry,
     deleteEntry,
-    deleteApproval
+    deleteApproval,
+    getApprovalSummary
 }
 
 function createEntry(entry: Entry) {
@@ -32,6 +33,10 @@ function getEntry(id: string) {
 
 function deleteEntry(id: string) {
     return coreApi.del(`entries/${id}`);
+}
+
+function getApprovalSummary(id: string) {
+    return coreApi.get<EntryApprovalSummary>(`entries/approval/${id}/summary`);
 }
 
 function approveEntry(approval: EntryApproval) {

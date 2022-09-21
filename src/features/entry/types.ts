@@ -89,6 +89,13 @@ export interface EntryRemaningApproval {
     remainingQty: number;
 }
 
+export interface EntryApprovalSummary {
+    customerId: string;
+    productId: string;
+    approvalId: string;
+    tobondNo: string;
+}
+
 export function getApprovalType(approvalType: EntryApprovalType) {
     switch (approvalType) {
         case EntryApprovalType.Rebond: return 'Rebond';

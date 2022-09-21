@@ -20,8 +20,8 @@ function dateFormat(date: Date | string, format: string) {
     return dayjs(date).format(format);
 }
 
-function toIsoString(value?: Date) {
-    return value ? dayjs(value).format("YYYY-MM-DDTHH:mm:ss") : ''
+function toIsoString(value?: Date, includeTime?: boolean) {
+    return value ? dayjs(value).format(includeTime ? "YYYY-MM-DDTHH:mm:ss" : "YYYY-MM-DD") : ''
 }
 
 function strToDate(valueStr?: string) {

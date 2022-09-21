@@ -22,8 +22,10 @@ export default function OrderFilter() {
         if (apprId) {
             setApprovalId(apprId);
             setShowAddNew(true);
-        }
-        searchParams.delete("approvalId");
+            
+            searchParams.delete("approvalId");
+            setSearchParams(searchParams);
+        }        
         dispatch(searchOrdersAsync(filter));
     }, [])
 
@@ -163,6 +165,7 @@ export default function OrderFilter() {
                 </ModalHeader>
                 <ModalBody>
                     <OrderDetailsForm onUpdate={refreshList}
+                        approvalId={approvalId}
                         onDelete={() => {
                             refreshList();
                             setShowAddNew(false);

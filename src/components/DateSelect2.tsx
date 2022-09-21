@@ -15,7 +15,7 @@ export default function DateSelect2({ value, onChange, placeHolder, isClearable,
     disabled={disabled}
     value={dateHelpers.strToDate(value)}
     isClearable={isClearable}
-    onChange={(d) => onChange && onChange(dateHelpers.toIsoString(d))}
+    onChange={(d) => onChange && onChange(dateHelpers.toIsoString(d, timeSelect))}
     timeSelect={timeSelect}
     placeHolder={placeHolder} />
 }

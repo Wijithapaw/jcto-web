@@ -18,17 +18,22 @@ import { orderApi } from "../order-api";
 import AppIcon from "../../../components/AppIcon";
 import { useAppSelector } from "../../../app/hooks";
 import { customerListItemsSelector } from "../../customer/customer-slice";
+import { entryApi } from "../../entry/entry-api";
+import { EntryApprovalSummary } from "../../entry/types";
+import { v4 as uuidv4 } from 'uuid';
 
 interface Props {
     orderId?: string;
     onUpdate?: () => void;
     onDelete?: () => void;
+    approvalId?: string;
 }
 
-export default function OrderDetailsForm({ orderId, onUpdate, onDelete }: Props) {
+export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approvalId }: Props) {
     const [editingOrderId, setEditingOrderId] = useState(orderId);
     const [editingOrder, setEditingOrder] = useState<Order>();
     const [nextOrderNo, setNextOrderNo] = useState<number>();
+    const [approval, setApproval] = useState<EntryApprovalSummary>();
 
     const customers = useAppSelector(customerListItemsSelector);
 
@@ -41,6 +46,16 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete }: Props)
     }, [])
 
     useEffect(() => {
+        if (isNewOrder() && approvalId) {
+            entryApi.getApprovalSummary(approvalId)
+                .then((approval) => {
+                    console.log('approval', approval);
+                    setApproval(approval);
+                });
+        }
+    }, [approvalId])
+
+    useEffect(() => {
         setEditingOrderId(orderId);
     }, [orderId]);
 
@@ -49,14 +64,19 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete }: Props)
             .then(order => setEditingOrder(order));
     }, [editingOrderId])
 
+    const creatObPrefix = (customerId: string) => {
+        const customer = customers.find(c => c.id == customerId);
+        if (customer) {
+            const year = new Date().getFullYear();
+            var obPrefix = `${customer.label}/${year}`;
+            return obPrefix;
+        }
+        return '';
+    }
+
     const refreshCustomerObPrefix = (customerId: string, setValues: any) => {
         if (isNewOrder()) {
-            const year = new Date().getFullYear();
-            const customer = customers.find(c => c.id == customerId);
-            if (customer) {
-                var obPrefix = `${customer.label}/${year}`;
-                setValues('obRefPrefix', obPrefix)
-            }
+            setValues('obRefPrefix', creatObPrefix(customerId))
         }
     }
 
@@ -129,7 +149,17 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete }: Props)
                             return isValid;
                         }
                         return true;
-                    })
+                    }),
+            issueStartTime: Yup.string()
+                .when("status", {
+                    is: OrderStatus.Delivered,
+                    then: Yup.string().required('is required').nullable()
+                }),
+            issueEndTime: Yup.string()
+                .when("status", {
+                    is: OrderStatus.Delivered,
+                    then: Yup.string().required('is required').nullable()
+                })
         });
     }, [])
 
@@ -154,9 +184,23 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete }: Props)
                 taxPaid: false,
                 remarks: '',
             };
+
+            if (approval) {
+                newOrder.customerId = approval.customerId;
+                newOrder.productId = approval.productId;
+                newOrder.obRefPrefix = creatObPrefix(approval.customerId);
+                newOrder.releaseEntries = [{
+                    approvalId: approval.approvalId,
+                    entryNo: approval.tobondNo,
+                    id: uuidv4(),
+                    obRef: '',
+                    quantity: 0
+                }]
+            }
+
             return newOrder;
         }
-    }, [editingOrder, nextOrderNo]);
+    }, [editingOrder, nextOrderNo, approval]);
 
     return <Formik
         initialValues={{ ...order }}
@@ -253,7 +297,7 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete }: Props)
                                     <FormLabel label="Buyer" touched={touched.buyer} error={errors.buyer} />
                                     <Input disabled={disabled} maxLength={100} value={values.buyer} onChange={(e) => { setFieldValue('buyer', e.target.value); }} />
                                 </FormGroup>
-                            </Col>                            
+                            </Col>
                             <Col>
                                 {!isNewOrder() &&
                                     <FormGroup>
@@ -269,6 +313,8 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete }: Props)
                                                     setFieldTouched('releaseEntries')
                                                     setFieldValue('releaseEntries', entries);
                                                     setFieldValue('deliveredQuantity', undefined);
+                                                    setFieldValue('issueStartTime', undefined);
+                                                    setFieldValue('issueEndTime', undefined);
                                                 }
                                                 setFieldValue('status', s);
                                             }}
