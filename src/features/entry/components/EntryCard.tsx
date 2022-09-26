@@ -70,17 +70,17 @@ export default function EntryCard({ entry, onUpdate }: Props) {
                                 mode="button"
                                 onClick={() => setShowApproval(true)} />:
                         </b>
-                        {approvedQty.toFixed(4)}
+                        {approvedQty.toFixed(3)}
                     </Label>
                 </Col>
                 <Col className="text-end" xs="auto">
-                    <CardLabel label="Initial Qty" value={entry.initialQuantity.toFixed(4)} />
+                    <CardLabel label="Initial Qty" value={entry.initialQuantity.toFixed(3)} />
                 </Col>
                 <Col className="text-end" xs="auto">
-                    <CardLabel label="Balance Qty" value={entry.remainingQuantity.toFixed(4)} />
+                    <CardLabel label="Balance Qty" value={entry.remainingQuantity.toFixed(3)} />
                 </Col>
                 <Col className="text-end" xs="auto">
-                    <CardLabel label="Appr. Balance Qty" value={approvedBalQty.toFixed(4)} />
+                    <CardLabel label="Appr. Balance Qty" value={approvedBalQty.toFixed(3)} />
                 </Col>
             </Row>
             <Row>

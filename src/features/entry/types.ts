@@ -60,7 +60,9 @@ export interface EntryTransaction {
     deliveredQuantity: number;
     approvalType: EntryApprovalType;
     approvalRef?: string;
+    approvalId?: string;
     type: EntryTransactionType;
+    balance?: number;
 }
 
 export interface EntryApproval {

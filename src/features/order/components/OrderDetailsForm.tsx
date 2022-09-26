@@ -150,12 +150,12 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approval
                         }
                         return true;
                     }),
-            issueStartTime: Yup.string()
+            issueStartTime: Yup.string().nullable()
                 .when("status", {
                     is: OrderStatus.Delivered,
                     then: Yup.string().required('is required').nullable()
                 }),
-            issueEndTime: Yup.string()
+            issueEndTime: Yup.string().nullable()
                 .when("status", {
                     is: OrderStatus.Delivered,
                     then: Yup.string().required('is required').nullable()
@@ -261,7 +261,7 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approval
                             <Col md={2}>
                                 <FormGroup>
                                     <FormLabel label="Quantity" touched={touched.quantity} error={errors.quantity} />
-                                    <Input type="number" step="0.0001" disabled={disabled} value={values.quantity} onChange={(e) => setFieldValue('quantity', e.target.value)} />
+                                    <Input type="number" step="0.001" disabled={disabled} value={values.quantity} onChange={(e) => setFieldValue('quantity', e.target.value)} />
                                 </FormGroup>
                             </Col>
                         </Row>

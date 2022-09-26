@@ -17,12 +17,12 @@ export default function DateSelect({ value, onChange, placeHolder, isClearable, 
     disabled={disabled}
     placeholderText={placeHolder}
     className="form-control"
-    dateFormat={timeSelect? 'dd/MM/yyyy h:mm aa': 'dd/MM/yyyy'}
+    dateFormat={timeSelect? 'dd/MM/yyyy HH:mm': 'dd/MM/yyyy'}
     dropdownMode="select"
     showMonthDropdown
     showYearDropdown
     useShortMonthInDropdown
     isClearable={isClearable}
-    showTimeSelect={timeSelect}
+    showTimeSelect={timeSelect}     
     onChange={onChange} />    
 }

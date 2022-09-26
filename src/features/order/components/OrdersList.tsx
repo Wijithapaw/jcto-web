@@ -59,8 +59,8 @@ export default function OrdersList() {
                             title={`${val.buyerType === BuyerType.Barge ? 'Barge' : 'Bowser'}`}
                             icon={`${val.buyerType === BuyerType.Barge ? 'ship' : 'truck'}`} />
                         {val.buyer}</td>
-                    <td className="text-end">{val.quantity.toFixed(4)}</td>
-                    <td className="text-end">{val.deliveredQuantity?.toFixed(4)}</td>
+                    <td className="text-end">{val.quantity.toFixed(3)}</td>
+                    <td className="text-end">{val.deliveredQuantity?.toFixed(3)}</td>
                     <td className="text-center">{val.issueStartTime && dateHelpers.toDatetimeStr(val.issueStartTime)}</td>
                     <td className="text-center">{val.issueEndTime && dateHelpers.toDatetimeStr(val.issueEndTime)}</td>
                     <td className="text-end">

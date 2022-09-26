@@ -38,7 +38,7 @@ export default function CustomerStocks() {
             .map(s => s.remainingStock)
             .reduce((a, b) => a + b, 0);
 
-        return +total.toFixed(4);
+        return +total.toFixed(3);
     }
 
     const getUndeliveredStokcs = (productCode: string) => {
@@ -46,7 +46,7 @@ export default function CustomerStocks() {
             .filter(s => s.productId === productCode)
             .map(s => s.undeliveredStock)
             .reduce((a, b) => a + b, 0);
-        return +total.toFixed(4);
+        return +total.toFixed(3);
     }
 
     const handleCustomerSelect = (customerId: string) => {
@@ -85,10 +85,10 @@ export default function CustomerStocks() {
                         const productStock = customerStock.stocks.find(s => s.productId == productCode.id);
                         return <Fragment key={productCode.id}>
                             <td>
-                                {productStock?.remainingStock.toFixed(4)}
+                                {productStock?.remainingStock.toFixed(3)}
                             </td>
                             <td>
-                                {productStock?.undeliveredStock.toFixed(4)}
+                                {productStock?.undeliveredStock.toFixed(3)}
                             </td>
                         </Fragment>
                     })}
@@ -101,10 +101,10 @@ export default function CustomerStocks() {
                 {products.map(productCode => {
                     return <Fragment key={productCode.id}>
                         <th>
-                            {productStockSummary[productCode.id]?.remainingStock.toFixed(4)}
+                            {productStockSummary[productCode.id]?.remainingStock.toFixed(3)}
                         </th>
                         <th>
-                            {productStockSummary[productCode.id]?.undeliveredStock.toFixed(4)}
+                            {productStockSummary[productCode.id]?.undeliveredStock.toFixed(3)}
                         </th>
                     </Fragment>
                 })}
@@ -117,7 +117,7 @@ export default function CustomerStocks() {
                     return <Fragment key={productCode.id}>
                         <th colSpan={2} className="text-center">
                             {((productStockSummary[productCode.id]?.remainingStock || 0)
-                                + (productStockSummary[productCode.id]?.undeliveredStock || 0)).toFixed(4)}
+                                + (productStockSummary[productCode.id]?.undeliveredStock || 0)).toFixed(3)}
                         </th>
                     </Fragment>
                 })}

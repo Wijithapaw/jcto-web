@@ -39,7 +39,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "npm run build && aws s3 sync build/ s3://jcto-web --delete --profile jct"
+    "invalidate-cf": "aws cloudfront create-invalidation --distribution-id E38G2HQILN13KY --paths /* --profile jct",
+    "deploy": "npm run build && aws s3 sync build/ s3://jcto-web --delete --profile jct && npm run invalidate-cf"
   },
   "eslintConfig": {
     "extends": [
