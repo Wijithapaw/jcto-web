@@ -9,6 +9,7 @@ import { EntryListItem, EntryStatus, EntryTransactionType } from "../types";
 import EntryApprovalForm from "./EntryApprovalForm";
 import EntryDetailsForm from "./EntryDetailsForm";
 import EntryTransactionsList from "./EntryTransactionsList";
+import RebondToForm from "./RebondToForm";
 
 interface Props {
     entry: EntryListItem;
@@ -25,8 +26,8 @@ function CardLabel({ label, value }: CardLabelProps) {
 
 export default function EntryCard({ entry, onUpdate }: Props) {
     const [showApproval, setShowApproval] = useState(false);
+    const [showRebondTo, setShowRebondTo] = useState(false);
     const [approvedQty, setApprovedQty] = useState(0);
-    const [approvedBalQty, setApprovedBalQty] = useState(0);
     const [editingEntryId, setEditingEntryId] = useState<string>();
     const dispatch = useAppDispatch();
     const filter = useAppSelector(entryFilterSelector);
@@ -37,14 +38,6 @@ export default function EntryCard({ entry, onUpdate }: Props) {
             .map(t => t.quantity)
             .reduce((a, b) => a + b, 0);
         setApprovedQty(apprQty);
-
-        const delQuy = entry.transactions
-            .filter(t => t.type == EntryTransactionType.Out)
-            .map(t => t.orderStatus === OrderStatus.Delivered ? t.deliveredQuantity : t.quantity)
-            .reduce((a, b) => a + b, 0);
-        setApprovedQty(apprQty);
-
-        setApprovedBalQty(apprQty + delQuy);
     }, [entry])
 
     return <Card className="mb-2 mt-2">
@@ -79,14 +72,18 @@ export default function EntryCard({ entry, onUpdate }: Props) {
                 <Col className="text-end" xs="auto">
                     <CardLabel label="Balance Qty" value={entry.remainingQuantity.toFixed(3)} />
                 </Col>
-                <Col className="text-end" xs="auto">
-                    <CardLabel label="Appr. Balance Qty" value={approvedBalQty.toFixed(3)} />
-                </Col>
             </Row>
             <Row>
                 <Col xs="auto"><CardLabel label="Internal Ref. No" value={entry.index} /></Col>
                 <Col xs="auto"><CardLabel label="Customer" value={entry.customer} /></Col>
                 <Col><CardLabel label="Product" value={entry.product} /></Col>
+                <Col xs="auto">
+                    <AppIcon icon="shuffle"
+                        title="Rebond to another customer"
+                        className="ms-1 me-1"
+                        onClick={() => setShowRebondTo(true)}
+                        mode="button" />
+                </Col>
                 <Col xs="auto">
                     <Label>
                         <b className="me-1">Status</b>
@@ -119,6 +116,17 @@ export default function EntryCard({ entry, onUpdate }: Props) {
                         dispatch(searchEntriesAsync(filter));
                         setEditingEntryId(undefined);
                     }} />
+            </ModalBody>
+        </Modal>
+        <Modal isOpen={showRebondTo} size="md" toggle={() => setShowRebondTo(false)} backdrop="static">
+            <ModalHeader toggle={() => setShowRebondTo(false)}>
+                Rebond To
+            </ModalHeader>
+            <ModalBody>
+                <RebondToForm entryId={entry.id} onUpdate={() => {
+                    onUpdate && onUpdate();
+                    setShowRebondTo(false);
+                }} />
             </ModalBody>
         </Modal>
     </Card>

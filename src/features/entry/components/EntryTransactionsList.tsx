@@ -13,15 +13,19 @@ interface Props {
 export default function EntryTransactionsList({ items }: Props) {
     const itemsFormated = useMemo(() => {
         const formated: EntryTransaction[] = [];
-        items.filter(i => i.type == EntryTransactionType.Approval).forEach(approval => {
-            const outgoing = items.filter(i => i.approvalId == approval.id);
-            const totalOut = outgoing
-                .map(e => e.orderStatus == OrderStatus.Delivered ? e.deliveredQuantity : e.quantity)
-                .reduce((a,b) => a + b, 0);
-            const balanceQty = approval.quantity + totalOut;
+        items.filter(i => i.type != EntryTransactionType.Out).forEach(approval => {
+            if (approval.type == EntryTransactionType.Approval) {
+                const outgoing = items.filter(i => i.approvalId == approval.id);
+                const totalOut = outgoing
+                    .map(e => e.orderStatus == OrderStatus.Delivered ? e.deliveredQuantity : e.quantity)
+                    .reduce((a, b) => a + b, 0);
+                const balanceQty = approval.quantity + totalOut;
 
-            formated.push({...approval, balance: balanceQty });
-            formated.push(...outgoing);
+                formated.push({ ...approval, balance: balanceQty });
+                formated.push(...outgoing);
+            } else {
+                formated.push(approval);
+            }
         });
         return formated;
     }, [items])
@@ -40,18 +44,19 @@ export default function EntryTransactionsList({ items }: Props) {
             </tr>
         </thead>
         <tbody>
-            {itemsFormated.map((val, i) => (<tr key={i} className={val.type === EntryTransactionType.Approval ? `text-success` : ''}>
+            {itemsFormated.map((val, i) => (<tr key={i} className={val.type === EntryTransactionType.RebondTo ? 'text-warning' : val.type === EntryTransactionType.Approval ? `text-success` : ''}>
                 <td>{dateHelpers.toShortDateStr(val.transactionDate)}</td>
                 <td>
-                    {val.type === EntryTransactionType.Approval ? `Approval (Bal: ${val.balance})`
-                        : <> {`Order-${val.orderNo}`} <AppIcon size="xs"
-                            className={`me-2 ${val.orderStatus === OrderStatus.Delivered ? 'text-success' : 'text-danger'}`}
-                            icon={val.orderStatus === OrderStatus.Delivered ? 'check' : 'x'}
-                        /></>
+                    {val.type === EntryTransactionType.RebondTo ? `Rebonded To -> ${val.rebondedTo || ''}`
+                        : val.type === EntryTransactionType.Approval ? `Approval (Bal: ${val.balance})`
+                            : <> {`Order-${val.orderNo}`} <AppIcon size="xs"
+                                className={`me-2 ${val.orderStatus === OrderStatus.Delivered ? 'text-success' : 'text-danger'}`}
+                                icon={val.orderStatus === OrderStatus.Delivered ? 'check' : 'x'}
+                            /></>
                     }
                 </td>
                 <td>
-                    {`${getApprovalType(val.approvalType)} ${val.approvalRef ? `-${val.approvalRef}` : ''}`}
+                    {`${getApprovalType(val.approvalType)}${val.approvalRef ? ` - ${val.approvalRef}` : ''}`}
                     {
                         val.type === EntryTransactionType.Approval && <AppIcon
                             className="ms-2 text-primary"

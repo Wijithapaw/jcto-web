@@ -15,6 +15,7 @@ export enum EntryApprovalType {
 export enum EntryTransactionType {
     Approval = 0,
     Out = 1,
+    RebondTo = 2
 }
 
 export interface EntriesFilter extends PagedFilter {
@@ -34,6 +35,14 @@ export interface Entry {
     entryDate: string;
     status: EntryStatus;
     concurrencyKey?: string;
+}
+
+export interface EntryRebondToDto {
+    customerId: string;
+    entryId: string;
+    quantity: number;
+    date: string;
+    rebondNo: string;
 }
 
 export interface EntryListItem {
@@ -63,6 +72,7 @@ export interface EntryTransaction {
     approvalId?: string;
     type: EntryTransactionType;
     balance?: number;
+    rebondedTo?: string;
 }
 
 export interface EntryApproval {
