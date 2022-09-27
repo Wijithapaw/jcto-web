@@ -76,7 +76,7 @@ export default function EntryTransactionsList({ items, onUpdate }: Props) {
                 <td>
                     {`${getApprovalType(val.approvalType)}${val.approvalRef ? ` - ${val.approvalRef}` : ''}`}
                     {
-                        val.type === EntryTransactionType.Approval && <AppIcon
+                        val.type === EntryTransactionType.Approval && val.balance && <AppIcon
                             className="ms-2 text-primary"
                             icon="arrow-alt-circle-right"
                             title="Create order"
