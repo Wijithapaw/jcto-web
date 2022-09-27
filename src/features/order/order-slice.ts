@@ -17,7 +17,7 @@ const initialState: OrderState = {
         to: '',
         buyer: '',
         page: 1,
-        pageSize: 20,
+        pageSize: 10,
     },
     orders: { total: 0, items: [] }
 };
