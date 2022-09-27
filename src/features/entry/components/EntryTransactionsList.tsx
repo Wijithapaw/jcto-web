@@ -1,5 +1,5 @@
 import { Table } from "reactstrap";
-import { dateHelpers, numberFormatHelpers } from "../../../app/helpers";
+import { dateHelpers, numbersHelpers } from "../../../app/helpers";
 import AppIcon from "../../../components/AppIcon";
 import { OrderStatus } from "../../order/types";
 import { EntryTransaction, EntryTransactionType, getApprovalType } from "../types";
@@ -61,7 +61,7 @@ export default function EntryTransactionsList({ items, onUpdate }: Props) {
                 <td>{dateHelpers.toShortDateStr(val.transactionDate)}</td>
                 <td>
                     {val.type === EntryTransactionType.RebondTo ? `Rebonded To -> ${val.rebondedTo || ''}`
-                        : val.type === EntryTransactionType.Approval ? `Approval (Bal: ${numberFormatHelpers.toDisplayStr(val.balance || 0)})`
+                        : val.type === EntryTransactionType.Approval ? `Approval (Bal: ${numbersHelpers.toDisplayStr(val.balance || 0)})`
                             : <> {`Order-${val.orderNo}`} <AppIcon size="xs"
                                 className={`me-2 ${val.orderStatus === OrderStatus.Delivered ? 'text-success' : 'text-danger'}`}
                                 icon={val.orderStatus === OrderStatus.Delivered ? 'check' : 'x'}
@@ -88,9 +88,9 @@ export default function EntryTransactionsList({ items, onUpdate }: Props) {
                     }
                 </td>
                 <td>{val.obRef}</td>
-                <td className="text-end">{Math.abs(val.quantity).toFixed(3)}</td>
+                <td className="text-end">{numbersHelpers.toDisplayStr(Math.abs(val.quantity))}</td>
                 <td className="text-end">
-                    {val.deliveredQuantity && Math.abs(val.deliveredQuantity).toFixed(3)}
+                    {val.deliveredQuantity && numbersHelpers.toDisplayStr(Math.abs(val.deliveredQuantity))}
                 </td>
             </tr>))}
         </tbody>

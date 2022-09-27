@@ -12,7 +12,7 @@ export const validationHelpers = {
     digitsOnly
 }
 
-export const numberFormatHelpers = {
+export const numbersHelpers = {
     toDisplayStr
 }
 
@@ -41,5 +41,5 @@ function digitsOnly(value?: string) {
 }
 
 function toDisplayStr(value: number) {
-    return value.toFixed(3)
+    return value === 0 ? 0 : value.toFixed(3);
 }

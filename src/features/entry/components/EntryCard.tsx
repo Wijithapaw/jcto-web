@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Card, CardBody, CardHeader, Col, Label, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
-import { dateHelpers } from "../../../app/helpers";
+import { dateHelpers, numbersHelpers } from "../../../app/helpers";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import AppIcon from "../../../components/AppIcon";
 import { entryFilterSelector, searchEntriesAsync } from "../entry-slice";
@@ -62,14 +62,14 @@ export default function EntryCard({ entry, onUpdate }: Props) {
                                 mode="button"
                                 onClick={() => setShowApproval(true)} />:
                         </b>
-                        {approvedQty.toFixed(3)}
+                        {numbersHelpers.toDisplayStr(approvedQty)}
                     </Label>
                 </Col>
                 <Col className="text-end" xs="auto">
-                    <CardLabel label="Initial Qty" value={entry.initialQuantity.toFixed(3)} />
+                    <CardLabel label="Initial Qty" value={numbersHelpers.toDisplayStr(entry.initialQuantity)} />
                 </Col>
                 <Col className="text-end" xs="auto">
-                    <CardLabel label="Balance Qty" value={entry.remainingQuantity.toFixed(3)} />
+                    <CardLabel label="Balance Qty" value={numbersHelpers.toDisplayStr(entry.remainingQuantity)} />
                 </Col>
             </Row>
             <Row>

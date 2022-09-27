@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Modal, ModalBody, ModalHeader, Table } from "reactstrap";
-import { dateHelpers } from "../../../app/helpers";
+import { dateHelpers, numbersHelpers } from "../../../app/helpers";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import AppIcon from "../../../components/AppIcon";
 import AppPaginator from "../../../components/AppPaginator";
@@ -59,8 +59,8 @@ export default function OrdersList() {
                             title={`${val.buyerType === BuyerType.Barge ? 'Barge' : 'Bowser'}`}
                             icon={`${val.buyerType === BuyerType.Barge ? 'ship' : 'truck'}`} />
                         {val.buyer}</td>
-                    <td className="text-end">{val.quantity.toFixed(3)}</td>
-                    <td className="text-end">{val.deliveredQuantity?.toFixed(3)}</td>
+                    <td className="text-end">{numbersHelpers.toDisplayStr(val.quantity)}</td>
+                    <td className="text-end">{val.deliveredQuantity && numbersHelpers.toDisplayStr(val.deliveredQuantity)}</td>
                     <td className="text-center">{val.issueStartTime && dateHelpers.toDatetimeStr(val.issueStartTime)}</td>
                     <td className="text-center">{val.issueEndTime && dateHelpers.toDatetimeStr(val.issueEndTime)}</td>
                     <td className="text-end">

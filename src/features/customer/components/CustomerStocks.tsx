@@ -5,6 +5,7 @@ import { IDictionary } from "../../../app/types";
 import { customerStocksSelector, getCustomerStocksAsync, productsListItemsSelector } from "../customer-slice"
 import { ProductStock } from "../types";
 import { createSearchParams, useNavigate } from 'react-router-dom'
+import { numbersHelpers } from "../../../app/helpers";
 
 export default function CustomerStocks() {
     const navigate = useNavigate();
@@ -38,7 +39,7 @@ export default function CustomerStocks() {
             .map(s => s.remainingStock)
             .reduce((a, b) => a + b, 0);
 
-        return +total.toFixed(3);
+        return total;
     }
 
     const getUndeliveredStokcs = (productCode: string) => {
@@ -46,7 +47,7 @@ export default function CustomerStocks() {
             .filter(s => s.productId === productCode)
             .map(s => s.undeliveredStock)
             .reduce((a, b) => a + b, 0);
-        return +total.toFixed(3);
+        return total;
     }
 
     const handleCustomerSelect = (customerId: string) => {
@@ -85,10 +86,10 @@ export default function CustomerStocks() {
                         const productStock = customerStock.stocks.find(s => s.productId == productCode.id);
                         return <Fragment key={productCode.id}>
                             <td>
-                                {productStock?.remainingStock.toFixed(3)}
+                                {numbersHelpers.toDisplayStr(productStock?.remainingStock || 0)}
                             </td>
                             <td>
-                                {productStock?.undeliveredStock.toFixed(3)}
+                                {numbersHelpers.toDisplayStr(productStock?.undeliveredStock || 0)}
                             </td>
                         </Fragment>
                     })}
@@ -101,10 +102,10 @@ export default function CustomerStocks() {
                 {products.map(productCode => {
                     return <Fragment key={productCode.id}>
                         <th>
-                            {productStockSummary[productCode.id]?.remainingStock.toFixed(3)}
+                            {numbersHelpers.toDisplayStr(productStockSummary[productCode.id]?.remainingStock || 0)}
                         </th>
                         <th>
-                            {productStockSummary[productCode.id]?.undeliveredStock.toFixed(3)}
+                            {numbersHelpers.toDisplayStr(productStockSummary[productCode.id]?.undeliveredStock || 0)}
                         </th>
                     </Fragment>
                 })}
@@ -116,8 +117,8 @@ export default function CustomerStocks() {
                 {products.map(productCode => {
                     return <Fragment key={productCode.id}>
                         <th colSpan={2} className="text-center">
-                            {((productStockSummary[productCode.id]?.remainingStock || 0)
-                                + (productStockSummary[productCode.id]?.undeliveredStock || 0)).toFixed(3)}
+                            {numbersHelpers.toDisplayStr((productStockSummary[productCode.id]?.remainingStock || 0)
+                                + (productStockSummary[productCode.id]?.undeliveredStock || 0))}
                         </th>
                     </Fragment>
                 })}
