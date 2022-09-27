@@ -113,7 +113,7 @@ export interface EntryApprovalSummary {
 export function getApprovalType(approvalType: EntryApprovalType) {
     switch (approvalType) {
         case EntryApprovalType.Rebond: return 'Rebond';
-        case EntryApprovalType.Xbond: return 'Xbond';
+        case EntryApprovalType.Xbond: return 'Ex Bond';
         case EntryApprovalType.Letter: return 'Letter';
         default: return '';
     }

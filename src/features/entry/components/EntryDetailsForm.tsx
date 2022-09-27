@@ -113,7 +113,7 @@ export default function EntryDetailsForm({ entryId, onUpdate, onDelete }: Props)
                         </Col>
                         <Col>
                             <FormGroup>
-                                <FormLabel label="ToBond No" touched={touched.entryNo} error={errors.entryNo} />
+                                <FormLabel label="To Bond" touched={touched.entryNo} error={errors.entryNo} />
                                 <Field name="entryNo" type="text" className="form-control" />
                             </FormGroup>
                         </Col>

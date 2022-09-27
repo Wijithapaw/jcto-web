@@ -43,7 +43,7 @@ export default function EntryCard({ entry, onUpdate }: Props) {
         <CardHeader>
             <Row>
                 <Col xs="auto">
-                    <CardLabel label="Tobond No" value={entry.entryNo} />
+                    <CardLabel label="To Bond" value={entry.entryNo} />
                     <AppIcon icon="pencil"
                         title="Add Approal"
                         className="ms-1 me-1"

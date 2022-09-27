@@ -63,7 +63,7 @@ export default function EntryFilter() {
                             </Col>
                             <Col>
                                 <FormGroup row>
-                                    <Label md="auto">Tobond No</Label>
+                                    <Label md="auto">To Bond</Label>
                                     <Col>
                                         <Input type="text"
                                             value={filter.entryNo}

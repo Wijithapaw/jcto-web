@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import { ListItem } from "../../../app/types";
 import Dropdown from "../../../components/Dropdown";
-import { EntryApprovalType } from "../types";
+import { EntryApprovalType, getApprovalType } from "../types";
 
 const allApprovalTypes: ListItem[] = [
-    { id: EntryApprovalType.Rebond.toString(), label: 'Rebond' },
-    { id: EntryApprovalType.Xbond.toString(), label: 'Xbond' },
-    { id: EntryApprovalType.Letter.toString(), label: 'Letter' }
+    { id: EntryApprovalType.Rebond.toString(), label: getApprovalType(EntryApprovalType.Rebond) },
+    { id: EntryApprovalType.Xbond.toString(), label: getApprovalType(EntryApprovalType.Xbond) },
+    { id: EntryApprovalType.Letter.toString(), label: getApprovalType(EntryApprovalType.Letter) }
 ];
 
 interface Props {
