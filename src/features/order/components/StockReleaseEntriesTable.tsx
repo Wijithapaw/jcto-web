@@ -67,7 +67,7 @@ export default function StockReleaseEntriesTable({ items = [], orderId, onChange
         entryNo && entryApi.getRemainingApprovals(entryNo, orderId)
             .then((aprvs) => {
                 if (aprvs.length > 0) {
-                    setRemApprovals({ ...remApprovals, [aprvs[0].entryNo]: aprvs });
+                    setRemApprovals((prevState) => ({ ...prevState, [aprvs[0].entryNo]: aprvs }))
                 }
             })
     }

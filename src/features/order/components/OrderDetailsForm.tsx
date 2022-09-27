@@ -49,7 +49,6 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approval
         if (isNewOrder() && approvalId) {
             entryApi.getApprovalSummary(approvalId)
                 .then((approval) => {
-                    console.log('approval', approval);
                     setApproval(approval);
                 });
         }

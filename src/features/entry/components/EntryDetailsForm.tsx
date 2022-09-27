@@ -78,8 +78,6 @@ export default function EntryDetailsForm({ entryId, onUpdate, onDelete }: Props)
         onSubmit={(values, { setSubmitting, resetForm }) => {
             setSubmitting(true);
             const editingEntry = { ...values };
-            console.log('editingEntryId', editingEntryId);
-
             const promise = !editingEntryId ? entryApi.createEntry(editingEntry) : entryApi.updateEntry(editingEntryId!, editingEntry);
             promise.then((res) => {
                 showNotification(NotificationType.success, `Entry ${!editingEntryId ? 'created' : 'updated'}`);
