@@ -56,6 +56,7 @@ export interface EntryListItem {
     toBondNo: string;
     status: EntryStatus;
     index: number;
+    rebondedFromCustomer: string;
     transactions: EntryTransaction[];
 }
 
@@ -73,6 +74,7 @@ export interface EntryTransaction {
     type: EntryTransactionType;
     balance?: number;
     rebondedTo?: string;
+    canDelete?: boolean;
 }
 
 export interface EntryApproval {

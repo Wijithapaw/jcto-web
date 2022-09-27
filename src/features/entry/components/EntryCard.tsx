@@ -3,7 +3,6 @@ import { Card, CardBody, CardHeader, Col, Label, Modal, ModalBody, ModalHeader, 
 import { dateHelpers } from "../../../app/helpers";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import AppIcon from "../../../components/AppIcon";
-import { OrderStatus } from "../../order/types";
 import { entryFilterSelector, searchEntriesAsync } from "../entry-slice";
 import { EntryListItem, EntryStatus, EntryTransactionType } from "../types";
 import EntryApprovalForm from "./EntryApprovalForm";
@@ -77,6 +76,11 @@ export default function EntryCard({ entry, onUpdate }: Props) {
                 <Col xs="auto"><CardLabel label="Internal Ref. No" value={entry.index} /></Col>
                 <Col xs="auto"><CardLabel label="Customer" value={entry.customer} /></Col>
                 <Col><CardLabel label="Product" value={entry.product} /></Col>
+                {
+                    entry.rebondedFromCustomer && <Col xs="auto" className="text-success">
+                        <CardLabel label="Rebond From" value={entry.rebondedFromCustomer} />
+                    </Col>
+                }
                 <Col xs="auto">
                     <AppIcon icon="shuffle"
                         title="Rebond to another customer"
@@ -95,7 +99,7 @@ export default function EntryCard({ entry, onUpdate }: Props) {
             </Row>
         </CardHeader>
         <CardBody>
-            <EntryTransactionsList items={entry.transactions} />
+            <EntryTransactionsList items={entry.transactions} onUpdate={onUpdate} />
         </CardBody>
         <Modal isOpen={showApproval} size="md" toggle={() => setShowApproval(false)} backdrop="static">
             <ModalHeader toggle={() => setShowApproval(false)}>

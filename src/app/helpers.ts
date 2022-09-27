@@ -12,8 +12,12 @@ export const validationHelpers = {
     digitsOnly
 }
 
+export const numberFormatHelpers = {
+    toDisplayStr
+}
+
 function toDatetimeStr(date: Date | string) {
-    return dayjs(date).format("DD/MM/YYYY hh:mm A");
+    return dayjs(date).format("DD/MM/YYYY HH:mm");
 }
 
 function dateFormat(date: Date | string, format: string) {
@@ -34,4 +38,8 @@ function toShortDateStr(date: string) {
 
 function digitsOnly(value?: string) {
     return /^\d+$/.test(value || '')
+}
+
+function toDisplayStr(value: number) {
+    return value.toFixed(3)
 }

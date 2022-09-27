@@ -1,16 +1,19 @@
 import { Table } from "reactstrap";
-import { dateHelpers } from "../../../app/helpers";
+import { dateHelpers, numberFormatHelpers } from "../../../app/helpers";
 import AppIcon from "../../../components/AppIcon";
 import { OrderStatus } from "../../order/types";
 import { EntryTransaction, EntryTransactionType, getApprovalType } from "../types";
 import { createSearchParams, useNavigate } from 'react-router-dom'
 import { useMemo } from "react";
+import { entryApi } from "../entry-api";
+import { NotificationType, showNotification } from "../../../app/notification-service";
 
 interface Props {
-    items: EntryTransaction[]
+    items: EntryTransaction[];
+    onUpdate?: () => void;
 }
 
-export default function EntryTransactionsList({ items }: Props) {
+export default function EntryTransactionsList({ items, onUpdate }: Props) {
     const itemsFormated = useMemo(() => {
         const formated: EntryTransaction[] = [];
         items.filter(i => i.type != EntryTransactionType.Out).forEach(approval => {
@@ -21,7 +24,7 @@ export default function EntryTransactionsList({ items }: Props) {
                     .reduce((a, b) => a + b, 0);
                 const balanceQty = approval.quantity + totalOut;
 
-                formated.push({ ...approval, balance: balanceQty });
+                formated.push({ ...approval, balance: balanceQty, canDelete: (outgoing.length == 0) });
                 formated.push(...outgoing);
             } else {
                 formated.push(approval);
@@ -29,6 +32,16 @@ export default function EntryTransactionsList({ items }: Props) {
         });
         return formated;
     }, [items])
+
+
+    const handleDeleteApproval = (id: string) => {
+        if (window.confirm("Are you sure you want to delete the approval?")) {
+            entryApi.deleteApproval(id).then(() => {
+                showNotification(NotificationType.success, "Approval deleted");
+                onUpdate && onUpdate();
+            });
+        }
+    }
 
     const navigate = useNavigate();
 
@@ -48,12 +61,17 @@ export default function EntryTransactionsList({ items }: Props) {
                 <td>{dateHelpers.toShortDateStr(val.transactionDate)}</td>
                 <td>
                     {val.type === EntryTransactionType.RebondTo ? `Rebonded To -> ${val.rebondedTo || ''}`
-                        : val.type === EntryTransactionType.Approval ? `Approval (Bal: ${val.balance})`
+                        : val.type === EntryTransactionType.Approval ? `Approval (Bal: ${numberFormatHelpers.toDisplayStr(val.balance || 0)})`
                             : <> {`Order-${val.orderNo}`} <AppIcon size="xs"
                                 className={`me-2 ${val.orderStatus === OrderStatus.Delivered ? 'text-success' : 'text-danger'}`}
                                 icon={val.orderStatus === OrderStatus.Delivered ? 'check' : 'x'}
                             /></>
                     }
+                    {val.type === EntryTransactionType.Approval && val.canDelete && <AppIcon icon="trash"
+                        title="Delete approval"
+                        className="ms-1 text-danger"
+                        onClick={() => handleDeleteApproval(val.id!)}
+                        mode="button" />}
                 </td>
                 <td>
                     {`${getApprovalType(val.approvalType)}${val.approvalRef ? ` - ${val.approvalRef}` : ''}`}

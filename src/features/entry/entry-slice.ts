@@ -18,7 +18,7 @@ const initialState: EntryState = {
         from: '',
         to: '',
         page: 1,
-        pageSize: 100
+        pageSize: 10
     },
     entries: { items: [], total: 0 }
 };
