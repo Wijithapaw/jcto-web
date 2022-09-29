@@ -32,7 +32,9 @@ export default function EntryFilter() {
 
     const handleSearch = (e: FormEvent) => {
         e.preventDefault();
-        dispatch(searchEntriesAsync(filter));
+
+        handleFilterChange('page', 1);
+        dispatch(searchEntriesAsync({...filter, page: 1}));
     }
 
     return <Card>

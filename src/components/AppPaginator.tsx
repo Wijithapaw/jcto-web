@@ -109,7 +109,7 @@ export default function AppPaginator({ page, total, onChange, pageSize }: Props)
       </Pagination>
     </Col>
     <Col className="text-end">
-      {`${pagerConfig.pageStart} - ${pagerConfig.pageEnd} [Page ${pagerConfig.activePage} of ${pagerConfig.totalPages}]`}
+      {`${pagerConfig.pageStart} - ${pagerConfig.pageEnd} of ${total} records [Page ${pagerConfig.activePage} of ${pagerConfig.totalPages}]`}
     </Col>
   </Row>
 }

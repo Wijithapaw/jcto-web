@@ -76,7 +76,7 @@ export default function EntryTransactionsList({ items, onUpdate }: Props) {
                 <td>
                     {`${getApprovalType(val.approvalType)}${val.approvalRef ? ` - ${val.approvalRef}` : ''}`}
                     {
-                        val.type === EntryTransactionType.Approval && val.balance && <AppIcon
+                        (val.type === EntryTransactionType.Approval && val.balance && val.balance > 0) ? <AppIcon
                             className="ms-2 text-primary"
                             icon="arrow-alt-circle-right"
                             title="Create order"
@@ -84,7 +84,7 @@ export default function EntryTransactionsList({ items, onUpdate }: Props) {
                             onClick={() => {
                                 navigate({ pathname: '/orders', search: `?${createSearchParams({ approvalId: val.id || 'test' })}` })
                             }}
-                        />
+                        /> : null
                     }
                 </td>
                 <td>{val.obRef}</td>
