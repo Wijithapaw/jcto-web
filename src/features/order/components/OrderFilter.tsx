@@ -39,7 +39,9 @@ export default function OrderFilter() {
 
     const handleSearch = (e: FormEvent) => {
         e.preventDefault();
-        dispatch(searchOrdersAsync(filter));
+
+        handleFilterChange('page', 1);
+        dispatch(searchOrdersAsync({...filter, page: 1}));
     }
 
     const refreshList = () => {
