@@ -8,6 +8,7 @@ import { useMemo, useState } from "react";
 import { entryApi } from "../entry-api";
 import { NotificationType, showNotification } from "../../../app/notification-service";
 import EntryApprovalForm from "./EntryApprovalForm";
+import OrderStatusIcon from "../../order/components/OrderStatusIcon";
 
 interface Props {
     items: EntryTransaction[];
@@ -60,15 +61,16 @@ export default function EntryTransactionsList({ items, onUpdate }: Props) {
             </tr>
         </thead>
         <tbody>
-            {itemsFormated.map((val, i) => (<tr key={i} className={val.type === EntryTransactionType.RebondTo ? 'text-warning' : val.type === EntryTransactionType.Approval ? `text-success` : ''}>
+            {itemsFormated.map((val, i) => (<tr key={i}
+                className={val.type === EntryTransactionType.RebondTo ? 'text-warning'
+                    : val.type === EntryTransactionType.Approval ? `text-success`
+                        : val.orderStatus === OrderStatus.Cancelled ? 'text-muted'
+                            : ''}>
                 <td>{dateHelpers.toShortDateStr(val.transactionDate)}</td>
                 <td>
                     {val.type === EntryTransactionType.RebondTo ? `Rebonded To -> ${val.rebondedTo || ''}`
                         : val.type === EntryTransactionType.Approval ? `Approval (Bal: ${numbersHelpers.toDisplayStr(val.balance || 0)})`
-                            : <> {`Order-${val.orderNo}`} <AppIcon size="xs"
-                                className={`me-2 ${val.orderStatus === OrderStatus.Delivered ? 'text-success' : 'text-danger'}`}
-                                icon={val.orderStatus === OrderStatus.Delivered ? 'check' : 'x'}
-                            /></>
+                            : <> {`Order-${val.orderNo}`} <OrderStatusIcon status={val.orderStatus!} /> </>
                     }
                     {val.type === EntryTransactionType.Approval && <AppIcon icon="pencil"
                         title="Edit approval"

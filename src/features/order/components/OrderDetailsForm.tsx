@@ -93,11 +93,22 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approval
     }
 
     const handleDelete = () => {
-        if (editingOrder && window.confirm("Are you sure you want to delete the order?")) {
+        if (editingOrder && window.confirm("Are you sure you want to delete the order? This action is not reversible.")) {
             orderApi.deleteOrder(editingOrderId!)
                 .then(() => {
                     showNotification(NotificationType.success, "Order deleted");
                     onDelete && onDelete();
+                })
+        }
+    }
+
+    const handleCancel = () => {
+        if (editingOrder && window.confirm("Are you sure you want to cancel the order? This action is not reversible.")) {
+            orderApi.cancelOrder(editingOrderId!)
+                .then(() => {
+                    showNotification(NotificationType.success, "Order canceled");
+                    setEditingOrder({ ...editingOrder, status: OrderStatus.Cancelled });
+                    onUpdate && onUpdate();
                 })
         }
     }
@@ -217,8 +228,8 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approval
         }}
         validationSchema={validationSchema}>
         {
-            ({ errors, touched, handleSubmit, values, setFieldValue, resetForm, setFieldTouched, validateForm, isSubmitting }) => {
-                var disabled = editingOrder && (editingOrder.status === OrderStatus.Delivered);
+            ({ errors, dirty, touched, handleSubmit, values, setFieldValue, resetForm, setFieldTouched, validateForm, isSubmitting }) => {
+                var disabled = editingOrder && (editingOrder.status !== OrderStatus.Undelivered);
                 return (
                     <Form onSubmit={e => {
                         e.preventDefault();
@@ -304,6 +315,7 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approval
                                         {values.status === OrderStatus.Delivered && <AppIcon icon="check" className="text-success ms-2" />}
                                         <br />
                                         <OrderStatusSelect
+                                            disabled={editingOrder?.status === OrderStatus.Cancelled}
                                             value={values.status}
                                             onChange={(s) => {
                                                 if (s === OrderStatus.Undelivered && values.releaseEntries) {
@@ -407,8 +419,9 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approval
                             <Col>
                                 <FormGroup>
                                     {editingOrder && !disabled && <Button type="button" className="me-2" color="danger" onClick={handleDelete}>Delete</Button>}
-                                    <Button type="button" onClick={() => resetForm()}>Reset</Button>
-                                    <Button type="submit" isabled={isSubmitting} className="ms-2" color="primary">Save</Button>
+                                    {editingOrder && !disabled && <Button type="button" className="me-2" color="warning" onClick={handleCancel}>Cancel</Button>}
+                                    <Button type="button" disabled={!dirty} onClick={() => resetForm()}>Reset</Button>
+                                    <Button type="submit" disabled={isSubmitting || editingOrder?.status == OrderStatus.Cancelled} className="ms-2" color="primary">Save</Button>
                                 </FormGroup>
                             </Col>
                             <Col className="text-end">

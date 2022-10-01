@@ -4,6 +4,7 @@ import { EntryApprovalType } from "../entry/types";
 export enum OrderStatus {
     Undelivered = 0,
     Delivered = 1,
+    Cancelled = 2,
 }
 
 export enum BuyerType {

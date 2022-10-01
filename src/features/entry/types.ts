@@ -15,7 +15,8 @@ export enum EntryApprovalType {
 export enum EntryTransactionType {
     Approval = 0,
     Out = 1,
-    RebondTo = 2
+    RebondTo = 2,
+    Reversal = 3
 }
 
 export interface EntriesFilter extends PagedFilter {

@@ -7,6 +7,7 @@ import AppPaginator from "../../../components/AppPaginator";
 import { changeOrderFilter, orderFilterSelector, ordersSelector, searchOrdersAsync } from "../order-slice"
 import { BuyerType, OrderStatus } from "../types";
 import OrderDetailsForm from "./OrderDetailsForm";
+import OrderStatusIcon from "./OrderStatusIcon";
 
 export default function OrdersList() {
     const dispatch = useAppDispatch();
@@ -45,11 +46,7 @@ export default function OrdersList() {
                 {orders.items.map(val => (<tr key={val.id}>
                     <td>{dateHelpers.toShortDateStr(val.orderDate)}</td>
                     <td>
-                        <AppIcon
-                            className={`${val.status === OrderStatus.Delivered ? 'text-success' : 'text-danger'} me-2`}
-                            icon={val.status === OrderStatus.Delivered ? 'check' : 'x'}
-                            title={val.status === OrderStatus.Delivered ? 'Delivered' : 'Undelivered'}
-                        />
+                        <OrderStatusIcon status={val.status} />
                         {val.orderNo}
                     </td>
                     <td>{val.customer}</td>

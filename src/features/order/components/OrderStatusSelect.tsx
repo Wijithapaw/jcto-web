@@ -8,13 +8,15 @@ interface Props {
     onChange: (val?: OrderStatus) => void;
     showAllOption?: boolean;
     className?: string;
+    disabled?: boolean;
 }
 
-export default function OrderStatusSelect({ value, onChange, showAllOption, className }: Props) {
+export default function OrderStatusSelect({ value, onChange, showAllOption, className, disabled }: Props) {
     const orderStatus = useMemo(() => {
         var types: ListItem[] = [
             { id: OrderStatus.Undelivered.toString(), label: 'Undelivered' },
-            { id: OrderStatus.Delivered.toString(), label: 'Delivered' }
+            { id: OrderStatus.Delivered.toString(), label: 'Delivered' },
+            { id: OrderStatus.Cancelled.toString(), label: 'Cancelled' }
         ];
         return types;
     }, [])
@@ -24,5 +26,6 @@ export default function OrderStatusSelect({ value, onChange, showAllOption, clas
         showEmptyRow={showAllOption || false}
         onChange={(val) => onChange(val ? +val as OrderStatus : undefined)}
         selectedValue={value?.toString() || ''}
+        disabled={disabled}
     />
 }
