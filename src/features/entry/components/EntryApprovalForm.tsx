@@ -1,9 +1,9 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button, Col, Form, FormGroup, Label, Row } from "reactstrap";
 import { Formik, Field } from 'formik';
 import * as Yup from 'yup';
 import { EntryApproval, EntryApprovalType } from "../types";
-import { dateHelpers, validationHelpers } from "../../../app/helpers";
+import { dateHelpers } from "../../../app/helpers";
 import FormLabel from "../../../components/FormLabel";
 import DateSelect2 from "../../../components/DateSelect2";
 import ApprovalTypeSelect from "./EntryApprovalTypeSelect";
@@ -17,6 +17,8 @@ interface Props {
 }
 
 export default function EntryApprovalForm({ entryId, id, onUpdate }: Props) {
+    const [editingApproval, setEditingApproval] = useState<EntryApproval>();
+
     const validationSchema = useMemo(() => {
         return Yup.object().shape({
             quantity: Yup.number()
@@ -31,9 +33,16 @@ export default function EntryApprovalForm({ entryId, id, onUpdate }: Props) {
         });
     }, [])
 
+    useEffect(() => {
+        id && entryApi.getEntryApproval(id)
+            .then((a) => {
+                setEditingApproval(a);
+            })
+    }, [id])
+
     const approval = useMemo(() => {
-        if (id) {
-            //todo
+        if (editingApproval) {
+            return { ...editingApproval };
         } else {
             const newApproval: EntryApproval = {
                 approvalDate: dateHelpers.toIsoString(new Date()),
@@ -44,7 +53,7 @@ export default function EntryApprovalForm({ entryId, id, onUpdate }: Props) {
             };
             return newApproval;
         }
-    }, [id]);
+    }, [editingApproval]);
 
     return approval && <Formik
         initialValues={{ ...approval }}
@@ -52,13 +61,20 @@ export default function EntryApprovalForm({ entryId, id, onUpdate }: Props) {
         onSubmit={(values, { setSubmitting, resetForm }) => {
             setSubmitting(true);
             const approval = { ...values }
-
-            entryApi.approveEntry(approval)
-                .then(() => {
-                    showNotification(NotificationType.success, "Added entry approval successfully");
-                    resetForm();
-                    onUpdate && onUpdate();
-                }).finally(() => setSubmitting(false));
+            if (editingApproval) {
+                entryApi.updateApproval(id!, approval)
+                    .then(() => {
+                        showNotification(NotificationType.success, "Entry approval updated successfully");
+                        onUpdate && onUpdate();
+                    }).finally(() => setSubmitting(false));
+            } else {
+                entryApi.approveEntry(approval)
+                    .then(() => {
+                        showNotification(NotificationType.success, "Added entry approval successfully");
+                        resetForm();
+                        onUpdate && onUpdate();
+                    }).finally(() => setSubmitting(false));
+            }
         }}
         onReset={(values, { resetForm, setValues }) => {
             setValues({ ...approval })

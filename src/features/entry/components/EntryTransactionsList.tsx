@@ -1,12 +1,13 @@
-import { Table } from "reactstrap";
+import { Modal, ModalBody, ModalHeader, Table } from "reactstrap";
 import { dateHelpers, numbersHelpers } from "../../../app/helpers";
 import AppIcon from "../../../components/AppIcon";
 import { OrderStatus } from "../../order/types";
 import { EntryTransaction, EntryTransactionType, getApprovalType } from "../types";
 import { createSearchParams, useNavigate } from 'react-router-dom'
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { entryApi } from "../entry-api";
 import { NotificationType, showNotification } from "../../../app/notification-service";
+import EntryApprovalForm from "./EntryApprovalForm";
 
 interface Props {
     items: EntryTransaction[];
@@ -14,6 +15,8 @@ interface Props {
 }
 
 export default function EntryTransactionsList({ items, onUpdate }: Props) {
+    const [edidingApprovalId, setEditingApprovalId] = useState<string>()
+
     const itemsFormated = useMemo(() => {
         const formated: EntryTransaction[] = [];
         items.filter(i => i.type != EntryTransactionType.Out).forEach(approval => {
@@ -67,9 +70,15 @@ export default function EntryTransactionsList({ items, onUpdate }: Props) {
                                 icon={val.orderStatus === OrderStatus.Delivered ? 'check' : 'x'}
                             /></>
                     }
+                    {val.type === EntryTransactionType.Approval && <AppIcon icon="pencil"
+                        title="Edit approval"
+                        className="ms-2"
+                        color="black"
+                        onClick={() => setEditingApprovalId(val.id!)}
+                        mode="button" />}
                     {val.type === EntryTransactionType.Approval && val.canDelete && <AppIcon icon="trash"
                         title="Delete approval"
-                        className="ms-1 text-danger"
+                        className="ms-2 text-danger"
                         onClick={() => handleDeleteApproval(val.id!)}
                         mode="button" />}
                 </td>
@@ -94,5 +103,14 @@ export default function EntryTransactionsList({ items, onUpdate }: Props) {
                 </td>
             </tr>))}
         </tbody>
-    </Table> : <span className="text-muted"><i>No stock releases</i></span>} </>
+    </Table> : <span className="text-muted"><i>No stock releases</i></span>}
+        <Modal isOpen={!!edidingApprovalId} size="md" toggle={() => setEditingApprovalId(undefined)} backdrop="static">
+            <ModalHeader toggle={() => setEditingApprovalId(undefined)}>
+                Edit Approval
+            </ModalHeader>
+            <ModalBody>
+                <EntryApprovalForm entryId="" id={edidingApprovalId} onUpdate={onUpdate} />
+            </ModalBody>
+        </Modal>
+    </>
 }

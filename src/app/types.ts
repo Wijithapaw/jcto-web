@@ -49,4 +49,8 @@ export interface EntityCreateResult {
   concurrencyKey: string;
 }
 
+export interface EntityUpdateResult {
+  concurrencyKey: string;
+}
+
 export enum NotificationType { 'error', 'success', 'warning' }

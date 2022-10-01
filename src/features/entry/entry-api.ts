@@ -1,5 +1,5 @@
 import { coreApi } from "../../app/core-api";
-import { EntityCreateResult, PagedResult } from "../../app/types";
+import { EntityCreateResult, EntityUpdateResult, PagedResult } from "../../app/types";
 import { EntriesFilter, Entry, EntryApproval, EntryApprovalSummary, EntryBalanceQty, EntryListItem, EntryRebondToDto, EntryRemaningApproval } from "./types";
 
 export const entryApi = {
@@ -12,8 +12,10 @@ export const entryApi = {
     getEntry,
     deleteEntry,
     deleteApproval,
+    updateApproval,
     getApprovalSummary,
-    rebondTo
+    rebondTo,
+    getEntryApproval
 }
 
 function createEntry(entry: Entry) {
@@ -44,8 +46,17 @@ function approveEntry(approval: EntryApproval) {
     return coreApi.post<EntityCreateResult>('entries/approval', approval);
 }
 
+
+function getEntryApproval(id: string) {
+    return coreApi.get<EntryApproval>(`entries/approval/${id}`);
+}
+
 function deleteApproval(id: string) {
     return coreApi.del(`entries/approval/${id}`);
+}
+
+function updateApproval(id: string, approval: EntryApproval) {
+    return coreApi.put<EntityUpdateResult>(`entries/approval/${id}`, approval);
 }
 
 function getBalanceQuantities(entryNo: string) {
