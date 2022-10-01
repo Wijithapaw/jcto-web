@@ -64,6 +64,7 @@ export interface EntryListItem {
 export interface EntryTransaction {
     id?: string;
     transactionDate: string;
+    orderId?: string;
     orderNo?: number;
     orderStatus?: OrderStatus;
     obRef?: string;

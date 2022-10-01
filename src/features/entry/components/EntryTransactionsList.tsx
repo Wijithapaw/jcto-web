@@ -9,6 +9,7 @@ import { entryApi } from "../entry-api";
 import { NotificationType, showNotification } from "../../../app/notification-service";
 import EntryApprovalForm from "./EntryApprovalForm";
 import OrderStatusIcon from "../../order/components/OrderStatusIcon";
+import OrderDetailsForm from "../../order/components/OrderDetailsForm";
 
 interface Props {
     items: EntryTransaction[];
@@ -16,7 +17,8 @@ interface Props {
 }
 
 export default function EntryTransactionsList({ items, onUpdate }: Props) {
-    const [edidingApprovalId, setEditingApprovalId] = useState<string>()
+    const [edidingApprovalId, setEditingApprovalId] = useState<string>();
+    const [selectedOrderId, setSelectedOrderId] = useState<string>();
 
     const itemsFormated = useMemo(() => {
         const formated: EntryTransaction[] = [];
@@ -70,7 +72,12 @@ export default function EntryTransactionsList({ items, onUpdate }: Props) {
                 <td>
                     {val.type === EntryTransactionType.RebondTo ? `Rebonded To -> ${val.rebondedTo || ''}`
                         : val.type === EntryTransactionType.Approval ? `Approval (Bal: ${numbersHelpers.toDisplayStr(val.balance || 0)})`
-                            : <> {`Order-${val.orderNo}`} <OrderStatusIcon status={val.orderStatus!} /> </>
+                            : <>
+                                <span className="txt-link" onClick={() => setSelectedOrderId(val.orderId)}>
+                                    {`Order-${val.orderNo}`}
+                                </span>
+                                <OrderStatusIcon status={val.orderStatus!} />
+                            </>
                     }
                     {val.type === EntryTransactionType.Approval && <AppIcon icon="pencil"
                         title="Edit approval"
@@ -112,6 +119,18 @@ export default function EntryTransactionsList({ items, onUpdate }: Props) {
             </ModalHeader>
             <ModalBody>
                 <EntryApprovalForm entryId="" id={edidingApprovalId} onUpdate={onUpdate} />
+            </ModalBody>
+        </Modal>
+        <Modal isOpen={!!selectedOrderId} size="xl" toggle={() => setSelectedOrderId(undefined)} backdrop="static">
+            <ModalHeader toggle={() => setSelectedOrderId(undefined)}>
+                Order Details
+            </ModalHeader>
+            <ModalBody>
+                <OrderDetailsForm orderId={selectedOrderId} onUpdate={onUpdate}
+                    onDelete={() => {
+                        onUpdate && onUpdate();
+                        setSelectedOrderId(undefined);
+                    }} />
             </ModalBody>
         </Modal>
     </>

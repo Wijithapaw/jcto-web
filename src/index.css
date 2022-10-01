@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.txt-link:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}

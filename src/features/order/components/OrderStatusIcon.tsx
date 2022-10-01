@@ -25,7 +25,7 @@ function getTitle(status: OrderStatus) {
 
 function getIcon(status: OrderStatus): IconProp {
     switch (status) {
-        case OrderStatus.Cancelled: return "x";
+        case OrderStatus.Cancelled: return "ban";
         case OrderStatus.Delivered: return "check";
         case OrderStatus.Undelivered: return "hourglass-half";
         default: return "0";
@@ -34,7 +34,7 @@ function getIcon(status: OrderStatus): IconProp {
 
 export default function OrderStatusIcon({ status }: Props) {
     return <AppIcon
-        className={`${getCssClass(status)} me-2`}
+        className={`${getCssClass(status)} ms-2 me-2`}
         icon={getIcon(status)}
         title={getTitle(status)}
     />

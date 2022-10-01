@@ -77,7 +77,7 @@ export default function CustomerStocks() {
             {
                 customerStocks.map(customerStock => <tr key={customerStock.customerName}>
                     <th className="text-start">
-                        <span style={{ cursor: 'pointer' }}
+                        <span className="txt-link"
                             onClick={() => handleCustomerSelect(customerStock.customerId)}>
                             {customerStock.customerName}
                         </span>
