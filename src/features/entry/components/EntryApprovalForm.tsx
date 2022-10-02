@@ -33,6 +33,8 @@ export default function EntryApprovalForm({ entryId, id, onUpdate }: Props) {
         });
     }, [])
 
+    const editing = !!id;
+
     useEffect(() => {
         id && entryApi.getEntryApproval(id)
             .then((a) => {
@@ -90,7 +92,7 @@ export default function EntryApprovalForm({ entryId, id, onUpdate }: Props) {
                         <Col>
                             <FormGroup>
                                 <FormLabel label="Entry Date" touched={touched.approvalDate} error={errors.approvalDate} />
-                                <DateSelect2 value={values.approvalDate} onChange={(d) => setFieldValue('approvalDate', d)} />
+                                <DateSelect2 disabled={editing} value={values.approvalDate} onChange={(d) => setFieldValue('approvalDate', d)} />
                             </FormGroup>
                         </Col>
                         <Col>
@@ -104,13 +106,13 @@ export default function EntryApprovalForm({ entryId, id, onUpdate }: Props) {
                         <Col>
                             <FormGroup>
                                 <FormLabel label="Approval Type" touched={touched.type} error={errors.type} />
-                                <ApprovalTypeSelect selectedValue={values.type} onChange={(t) => setFieldValue('type', t)} />
+                                <ApprovalTypeSelect disabled={editing} selectedValue={values.type} onChange={(t) => setFieldValue('type', t)} />
                             </FormGroup>
                         </Col>
                         <Col>
                             <FormGroup>
                                 <FormLabel label="Approval Ref" touched={touched.approvalRef} error={errors.approvalRef} />
-                                <Field name="approvalRef" className="form-control" />
+                                <Field disabled={editing} name="approvalRef" className="form-control" />
                             </FormGroup>
                         </Col>
                     </Row>

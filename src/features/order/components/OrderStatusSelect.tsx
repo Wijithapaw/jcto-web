@@ -9,17 +9,18 @@ interface Props {
     showAllOption?: boolean;
     className?: string;
     disabled?: boolean;
+    hideCancelled?: boolean;
 }
 
-export default function OrderStatusSelect({ value, onChange, showAllOption, className, disabled }: Props) {
+export default function OrderStatusSelect({ value, onChange, showAllOption, className, disabled, hideCancelled }: Props) {
     const orderStatus = useMemo(() => {
         var types: ListItem[] = [
             { id: OrderStatus.Undelivered.toString(), label: 'Undelivered' },
-            { id: OrderStatus.Delivered.toString(), label: 'Delivered' },
-            { id: OrderStatus.Cancelled.toString(), label: 'Cancelled' }
+            { id: OrderStatus.Delivered.toString(), label: 'Delivered' }
         ];
+        !hideCancelled && types.push({ id: OrderStatus.Cancelled.toString(), label: 'Cancelled' });
         return types;
-    }, [])
+    }, [hideCancelled])
 
     return <Dropdown items={orderStatus}
         className={className}

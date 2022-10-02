@@ -21,6 +21,7 @@ import { customerListItemsSelector } from "../../customer/customer-slice";
 import { entryApi } from "../../entry/entry-api";
 import { EntryApprovalSummary } from "../../entry/types";
 import { v4 as uuidv4 } from 'uuid';
+import OrderStatusIcon from "./OrderStatusIcon";
 
 interface Props {
     orderId?: string;
@@ -312,9 +313,10 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approval
                                 {!isNewOrder() &&
                                     <FormGroup>
                                         <FormLabel label="Status" touched={touched.status} error={errors.status} />
-                                        {values.status === OrderStatus.Delivered && <AppIcon icon="check" className="text-success ms-2" />}
+                                        <OrderStatusIcon status={values.status} />
                                         <br />
                                         <OrderStatusSelect
+                                            hideCancelled={values.status != OrderStatus.Cancelled}
                                             disabled={editingOrder?.status === OrderStatus.Cancelled}
                                             value={values.status}
                                             onChange={(s) => {
@@ -411,6 +413,7 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approval
                                     <Input id="cbxTaxPaid"
                                         type="checkbox"
                                         checked={values.taxPaid}
+                                        disabled={disabled}
                                         onChange={(e) => setFieldValue("taxPaid", e.target.checked)} />
                                 </FormGroup>
                             </Col>
@@ -421,7 +424,11 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approval
                                     {editingOrder && !disabled && <Button type="button" className="me-2" color="danger" onClick={handleDelete}>Delete</Button>}
                                     {editingOrder && !disabled && <Button type="button" className="me-2" color="warning" onClick={handleCancel}>Cancel</Button>}
                                     <Button type="button" disabled={!dirty} onClick={() => resetForm()}>Reset</Button>
-                                    <Button type="submit" disabled={isSubmitting || editingOrder?.status == OrderStatus.Cancelled} className="ms-2" color="primary">Save</Button>
+                                    <Button type="submit"
+                                        disabled={isSubmitting
+                                            || (editingOrder?.status == OrderStatus.Cancelled)
+                                            || (values.status == OrderStatus.Delivered && editingOrder?.status == OrderStatus.Delivered)}
+                                        className="ms-2" color="primary">Save</Button>
                                 </FormGroup>
                             </Col>
                             <Col className="text-end">

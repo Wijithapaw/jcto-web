@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Card, CardBody, CardHeader, Col, Input, Label, Row, Table } from "reactstrap";
+import { Card, CardBody, CardHeader, Col, Input, Label, Row, Table, Tooltip } from "reactstrap";
 import { v4 as uuidv4 } from 'uuid';
 import { IDictionary } from "../../../app/types";
 import AppIcon from "../../../components/AppIcon";
+import AppTooltip from "../../../components/AppTooltip";
 import { entryApi } from "../../entry/entry-api";
 import { EntryRemaningApproval } from "../../entry/types";
 import { OrderStockReleaseEntry } from "../types"
@@ -99,7 +100,9 @@ export default function StockReleaseEntriesTable({ items = [], orderId, onChange
                         <td>Entry No</td>
                         <td></td>
                         <td width="30%">Approval</td>
-                        <td>OB Ref <small className="text-muted ms-1"><small><i>[leave empty to auto gen]</i></small></small></td>
+                        <td>OB Ref
+                            <AppTooltip id="obrefHelp" text="Leave empty to auto generate" />
+                        </td>
                         <td>Quantity</td>
                         {showDeliveredQty && <td>Delivered Quantity</td>}
                         {!disabled && <td></td>}
