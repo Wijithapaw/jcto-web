@@ -18,7 +18,9 @@ export default function EntryFilter() {
     useEffect(() => {
         const customerId = searchParams.get("customerId");
         customerId && handleCustomerChange(customerId);
-        dispatch(searchEntriesAsync(customerId ? { ...filter, customerId } : filter));
+        const page = customerId ? 1 : filter.page;
+        handleFilterChange('page', page);
+        dispatch(searchEntriesAsync(customerId ? { ...filter, customerId, page } : filter));
     }, [])
 
     const handleFilterChange = (field: string, value: any) => {
