@@ -39,7 +39,7 @@ export default function EntryCard({ entry, onUpdate }: Props) {
         setApprovedQty(apprQty);
     }, [entry])
 
-    return <Card className="mb-2 mt-2">
+    return <Card className="mb-2 mt-2 entry-card">
         <CardHeader>
             <Row>
                 <Col xs="auto">

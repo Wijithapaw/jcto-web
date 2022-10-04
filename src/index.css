@@ -16,3 +16,7 @@ code {
   text-decoration: underline;
   cursor: pointer;
 }
+
+.entry-card .card-header {
+  background-color: #cdcdcd;
+}
