@@ -53,4 +53,11 @@ export interface EntityUpdateResult {
   concurrencyKey: string;
 }
 
+export interface AuditedEntity {
+  createdBy?: string;
+  createdDateUtc?: string;
+  lastUpdatedBy?: string;
+  lastUpdatedDateUtc?: string;
+}
+
 export enum NotificationType { 'error', 'success', 'warning' }

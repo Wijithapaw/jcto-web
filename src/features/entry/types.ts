@@ -1,4 +1,4 @@
-import { PagedFilter } from "../../app/types";
+import { AuditedEntity, PagedFilter } from "../../app/types";
 import { OrderStatus } from "../order/types";
 
 export enum EntryStatus {
@@ -28,7 +28,7 @@ export interface EntriesFilter extends PagedFilter {
     active?: boolean;
 }
 
-export interface Entry {
+export interface Entry extends AuditedEntity {
     productId: string;
     customerId: string;
     entryNo: string;

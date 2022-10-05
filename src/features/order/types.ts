@@ -1,5 +1,4 @@
-import { PagedFilter } from "../../app/types";
-import { EntryApprovalType } from "../entry/types";
+import { AuditedEntity, PagedFilter } from "../../app/types";
 
 export enum OrderStatus {
     Undelivered = 0,
@@ -39,7 +38,7 @@ export interface OrderListItem {
     issueEndTime?: string;
 }
 
-export interface Order {
+export interface Order extends AuditedEntity {
     customerId: string;
     productId: string;
     orderDate: string;

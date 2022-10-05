@@ -22,6 +22,7 @@ import { entryApi } from "../../entry/entry-api";
 import { EntryApprovalSummary } from "../../entry/types";
 import { v4 as uuidv4 } from 'uuid';
 import OrderStatusIcon from "./OrderStatusIcon";
+import AuditInfo from "../../../components/AuditInfo";
 
 interface Props {
     orderId?: string;
@@ -429,6 +430,7 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approval
                                             || (editingOrder?.status == OrderStatus.Cancelled)
                                             || (values.status == OrderStatus.Delivered && editingOrder?.status == OrderStatus.Delivered)}
                                         className="ms-2" color="primary">Save</Button>
+                                    {editingOrder && <AuditInfo id="order-audit-info" value={editingOrder} />}
                                 </FormGroup>
                             </Col>
                             <Col className="text-end">

@@ -11,6 +11,7 @@ import { showNotification } from "../../../app/notification-service";
 import { NotificationType } from "../../../app/types";
 import CustomerSelect from "../../customer/components/CustomerSelect";
 import ProductSelect from "../../customer/components/ProductSelect";
+import AuditInfo from "../../../components/AuditInfo";
 
 interface Props {
     entryId?: string;
@@ -134,13 +135,14 @@ export default function EntryDetailsForm({ entryId, onUpdate, onDelete }: Props)
                     </Row>
                     <Row>
                         <Col>
-                            {
-                                entry.status === EntryStatus.Active &&
-                                <FormGroup>
+                            <FormGroup>
+                                {entry.status === EntryStatus.Active && <>
                                     {editingEntry && <Button type="button" className="me-2" color="danger" onClick={handleDelete}>Delete</Button>}
                                     <Button type="reset" onClick={() => resetForm()}>Reset</Button>
                                     <Button type="submit" disabled={isSubmitting} className="ms-2" color="primary">Save</Button>
-                                </FormGroup>}
+                                </>}
+                                {editingEntry && <AuditInfo id="entry-audit-info" value={editingEntry} />}
+                            </FormGroup>
                         </Col>
                         {
                             editingEntryId &&
