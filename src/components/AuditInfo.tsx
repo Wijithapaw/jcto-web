@@ -14,7 +14,7 @@ export default function AuditInfo({ value, id }: Props) {
     const toggle = () => setTooltipOpen(!tooltipOpen);
 
     return <>
-        <AppIcon icon="circle-info" id={id} title="Show audit information"
+        <AppIcon size="lg" icon="clipboard-list" id={id} title="Show audit information"
             className="text-primary ms-3 me-3" mode="button" onClick={toggle} />
         <UncontrolledPopover placement="right-end" isOpen={tooltipOpen} target={id} toggle={toggle} trigger="legacy">
             <PopoverHeader>Audit Info</PopoverHeader>
