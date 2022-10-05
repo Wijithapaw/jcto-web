@@ -9,6 +9,10 @@ import ProductSelect from "../../customer/components/ProductSelect";
 import OrderDetailsForm from "./OrderDetailsForm";
 import BuyerTypeSelect from "./BuyerTypeSelect";
 import { useSearchParams } from "react-router-dom";
+import AppIcon from "../../../components/AppIcon";
+import { orderApi } from "../order-api";
+import { NotificationType } from "../../../app/types";
+import { showNotification } from "../../../app/notification-service";
 
 export default function OrderFilter() {
     const dispatch = useAppDispatch();
@@ -22,10 +26,10 @@ export default function OrderFilter() {
         if (apprId) {
             setApprovalId(apprId);
             setShowAddNew(true);
-            
+
             searchParams.delete("approvalId");
             setSearchParams(searchParams);
-        }        
+        }
         dispatch(searchOrdersAsync(filter));
     }, [])
 
@@ -41,11 +45,17 @@ export default function OrderFilter() {
         e.preventDefault();
 
         handleFilterChange('page', 1);
-        dispatch(searchOrdersAsync({...filter, page: 1}));
+        dispatch(searchOrdersAsync({ ...filter, page: 1 }));
     }
 
     const refreshList = () => {
         dispatch(searchOrdersAsync(filter));
+    }
+
+    const downloadReport = () => {
+        orderApi.downloadOrdersReport(filter).then(() => {
+            showNotification(NotificationType.success, `Orders report downloaded`);
+        })
     }
 
     return <Card>
@@ -136,6 +146,13 @@ export default function OrderFilter() {
                                             onChange={(e) => handleFilterChange("buyer", e.target.value)} />
                                     </Col>
                                 </FormGroup>
+                            </Col>
+                            <Col xs="auto" className="pt-2">
+                                <AppIcon mode="button"
+                                    icon="download"
+                                    onClick={downloadReport}
+                                    className="text-primary"
+                                    title="Download Orders Report" />
                             </Col>
                         </Row>
                     </Col>

@@ -37,8 +37,9 @@ function del(path: string) {
         .catch(handleError);
 }
 
-function download(path: string, filename: string) {
+function download(path: string, filename: string, params?: any) {
     return API.get("jcto", path, {
+        queryStringParameters: params,
         responseType: 'blob',
         response: true
     }).then((response) => {
