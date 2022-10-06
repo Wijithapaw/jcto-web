@@ -31,7 +31,7 @@ export default function CustomerStocks() {
             summary = { ...summary, [productCode.id]: prodSummary }
         })
         setProductStockSummary(summary);
-    }, [customerStocks]);
+    }, [customerStocks, products]);
 
     const getRemainingStokcs = (productCode: string) => {
         const total = customerStocks.flatMap(s => s.stocks)
