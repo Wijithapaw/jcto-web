@@ -94,6 +94,13 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approval
         })
     }
 
+    const downloadPDDocument = () => {
+        const fileName = `PDDocument_${dateHelpers.dateFormat(order.orderDate, 'YYYY_MM_DD')}_${order.orderNo}`;
+        orderApi.downloadPDDocument(editingOrderId!, fileName).then(() => {
+            showNotification(NotificationType.success, `PD document downloaded`);
+        })
+    }
+
     const handleDelete = () => {
         if (editingOrder && window.confirm("Are you sure you want to delete the order? This action is not reversible.")) {
             orderApi.deleteOrder(editingOrderId!)
@@ -438,6 +445,10 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approval
                                     <Button type="button" className="ms-2" color="link" onClick={downloadStockRelease}>
                                         <AppIcon mode="button" icon="download" className="me-2" />
                                         Stock Release
+                                    </Button>
+                                    <Button type="button" className="ms-2" color="link" onClick={downloadPDDocument}>
+                                        <AppIcon mode="button" icon="download" className="me-2" />
+                                        PD Document
                                     </Button>
                                 </FormGroup>
                             </Col>
