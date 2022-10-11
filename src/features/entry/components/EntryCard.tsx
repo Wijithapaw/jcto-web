@@ -36,7 +36,7 @@ export default function EntryCard({ entry, onUpdate }: Props) {
             .filter(t => t.type == EntryTransactionType.Approval)
             .map(t => t.quantity)
             .reduce((a, b) => a + b, 0);
-        setApprovedQty(apprQty);
+        setApprovedQty(numbersHelpers.sanitize(apprQty));
     }, [entry])
 
     return <Card className="mb-2 mt-2 entry-card">

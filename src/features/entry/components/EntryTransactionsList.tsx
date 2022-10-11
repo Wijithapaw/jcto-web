@@ -25,9 +25,9 @@ export default function EntryTransactionsList({ items, onUpdate }: Props) {
         items.filter(i => i.type != EntryTransactionType.Out).forEach(approval => {
             if (approval.type == EntryTransactionType.Approval) {
                 const outgoing = items.filter(i => i.approvalId == approval.id);
-                const totalOut = outgoing
+                const totalOut = numbersHelpers.sanitize(outgoing
                     .map(e => e.orderStatus == OrderStatus.Delivered ? e.deliveredQuantity : e.quantity)
-                    .reduce((a, b) => a + b, 0);
+                    .reduce((a, b) => a + b, 0));
                 const balanceQty = approval.quantity + totalOut;
 
                 formated.push({ ...approval, balance: balanceQty, canDelete: (outgoing.length == 0) });

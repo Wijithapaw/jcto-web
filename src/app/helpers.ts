@@ -13,7 +13,8 @@ export const validationHelpers = {
 }
 
 export const numbersHelpers = {
-    toDisplayStr
+    toDisplayStr,
+    sanitize
 }
 
 function toDatetimeStr(date: Date | string) {
@@ -42,4 +43,9 @@ function digitsOnly(value?: string) {
 
 function toDisplayStr(value: number) {
     return value === 0 ? 0 : value.toFixed(3);
+}
+
+function sanitize(value: number) {
+    const sanitized = parseFloat(value.toFixed(3));
+    return sanitized;
 }

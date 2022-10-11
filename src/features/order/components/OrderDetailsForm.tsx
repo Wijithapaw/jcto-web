@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Button, Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { dateHelpers, validationHelpers } from "../../../app/helpers";
+import { dateHelpers, numbersHelpers, validationHelpers } from "../../../app/helpers";
 import FormLabel from "../../../components/FormLabel";
 import DateSelect2 from "../../../components/DateSelect2";
 import ProductSelect from "../../customer/components/ProductSelect";
@@ -150,7 +150,7 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approval
                     (items) => items ? items.every((i: OrderStockReleaseEntry) => (i.quantity >= (i.deliveredQuantity || 0))) : false)
                 .test('Summation', 'Sum of release quantities does not tally with overall quantity',
                     (items, ctx) => {
-                        const entrySum = items && items.map(i => i.quantity).reduce((a, b) => a + b, 0) || 0;
+                        const entrySum = numbersHelpers.sanitize(items && items.map(i => i.quantity).reduce((a, b) => a + b, 0) || 0);
                         return ctx.parent.quantity === entrySum;
                     }),
             bowserEntries: Yup.array()
@@ -390,7 +390,7 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approval
                                             setFieldTouched('releaseEntries')
                                             setFieldValue('releaseEntries', e);
 
-                                            var delQty = e.map(i => i.deliveredQuantity).reduce((a, b) => (a || 0) + (b || 0), 0);
+                                            var delQty = numbersHelpers.sanitize(e.map(i => i.deliveredQuantity || 0).reduce((a, b) => a + b, 0));
                                             setFieldValue('deliveredQuantity', delQty);
                                         }} />
                                 </FormGroup>
