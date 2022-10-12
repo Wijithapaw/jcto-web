@@ -17,9 +17,10 @@ interface Props {
     touched?: boolean;
     disabled?: boolean;
     showDeliveredQty: boolean;
+    orderVersion: string;
 }
 
-export default function StockReleaseEntriesTable({ items = [], orderId, onChange, error, touched, disabled, showDeliveredQty }: Props) {
+export default function StockReleaseEntriesTable({ items = [], orderId, onChange, error, touched, disabled, showDeliveredQty, orderVersion }: Props) {
     const [remApprovals, setRemApprovals] = useState<IDictionary<EntryRemaningApproval[]>>({});
     const [approvalsLoaded, setApprovalsLoaded] = useState(false);
 
@@ -31,8 +32,8 @@ export default function StockReleaseEntriesTable({ items = [], orderId, onChange
     }, [items])
 
     useEffect(() => {
-        orderId && items.forEach(i => getRemainingApprovals(i.entryNo));
-    }, [orderId])
+        approvalsLoaded && items.forEach(i => getRemainingApprovals(i.entryNo));
+    }, [approvalsLoaded, orderVersion])
 
     const refreshBalances = (entryNo: string) => {
         getRemainingApprovals(entryNo);

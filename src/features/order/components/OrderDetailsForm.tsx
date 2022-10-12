@@ -61,9 +61,13 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approval
     }, [orderId]);
 
     useEffect(() => {
+        loadEditingOrder();
+    }, [editingOrderId])
+
+    const loadEditingOrder = () => {
         editingOrderId && orderApi.getOrder(editingOrderId)
             .then(order => setEditingOrder(order));
-    }, [editingOrderId])
+    }
 
     const creatObPrefix = (customerId: string) => {
         const customer = customers.find(c => c.id == customerId);
@@ -230,8 +234,7 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approval
             const promise = isNewOrder() ? orderApi.createOrder(editingOrder) : orderApi.updateOrder(editingOrderId!, editingOrder);
             promise.then((res) => {
                 showNotification(NotificationType.success, `Order ${isNewOrder() ? 'Created' : 'Updated'} successfully`);
-                isNewOrder() ? setEditingOrderId(res.id)
-                    : setEditingOrder({ ...editingOrder, concurrencyKey: res.concurrencyKey });
+                isNewOrder() ? setEditingOrderId(res.id) : loadEditingOrder();
                 onUpdate && onUpdate();
             }).finally(() => setSubmitting(false));
         }}
@@ -392,7 +395,8 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approval
 
                                             var delQty = numbersHelpers.sanitize(e.map(i => i.deliveredQuantity || 0).reduce((a, b) => a + b, 0));
                                             setFieldValue('deliveredQuantity', delQty);
-                                        }} />
+                                        }} 
+                                        orderVersion={editingOrder?.concurrencyKey || ''} />
                                 </FormGroup>
                             </Col>
                         </Row>

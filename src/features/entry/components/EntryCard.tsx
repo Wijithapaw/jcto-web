@@ -99,7 +99,7 @@ export default function EntryCard({ entry, onUpdate }: Props) {
             </Row>
         </CardHeader>
         <CardBody>
-            <EntryTransactionsList items={entry.transactions} onUpdate={onUpdate} />
+            <EntryTransactionsList items={entry.transactions} onUpdate={onUpdate} entry={entry} />
         </CardBody>
         <Modal isOpen={showApproval} size="md" toggle={() => setShowApproval(false)} backdrop="static">
             <ModalHeader toggle={() => setShowApproval(false)}>

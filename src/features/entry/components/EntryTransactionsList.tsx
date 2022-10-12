@@ -2,7 +2,7 @@ import { Modal, ModalBody, ModalHeader, Table } from "reactstrap";
 import { dateHelpers, numbersHelpers } from "../../../app/helpers";
 import AppIcon from "../../../components/AppIcon";
 import { OrderStatus } from "../../order/types";
-import { EntryTransaction, EntryTransactionType, getApprovalType } from "../types";
+import { EntryListItem, EntryTransaction, EntryTransactionType, getApprovalType } from "../types";
 import { createSearchParams, useNavigate } from 'react-router-dom'
 import { useMemo, useState } from "react";
 import { entryApi } from "../entry-api";
@@ -12,11 +12,12 @@ import OrderStatusIcon from "../../order/components/OrderStatusIcon";
 import OrderDetailsForm from "../../order/components/OrderDetailsForm";
 
 interface Props {
+    entry: EntryListItem,
     items: EntryTransaction[];
     onUpdate?: () => void;
 }
 
-export default function EntryTransactionsList({ items, onUpdate }: Props) {
+export default function EntryTransactionsList({ entry, items, onUpdate }: Props) {
     const [edidingApprovalId, setEditingApprovalId] = useState<string>();
     const [selectedOrderId, setSelectedOrderId] = useState<string>();
 
@@ -28,7 +29,10 @@ export default function EntryTransactionsList({ items, onUpdate }: Props) {
                 const totalOut = numbersHelpers.sanitize(outgoing
                     .map(e => e.orderStatus == OrderStatus.Delivered ? e.deliveredQuantity : e.quantity)
                     .reduce((a, b) => a + b, 0));
-                const balanceQty = approval.quantity + totalOut;
+                let balanceQty = approval.quantity + totalOut;
+
+                if (balanceQty > entry.remainingQuantity)
+                    balanceQty = entry.remainingQuantity;
 
                 formated.push({ ...approval, balance: balanceQty, canDelete: (outgoing.length == 0) });
                 formated.push(...outgoing);
