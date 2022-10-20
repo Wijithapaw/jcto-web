@@ -1,8 +1,9 @@
-import { ChangeEvent, useEffect } from "react";
+import { ChangeEvent } from "react";
 import { Card, CardBody, CardHeader, Col, Input, Label, Row, Table } from "reactstrap";
 import { v4 as uuidv4 } from 'uuid';
 import AppIcon from "../../../components/AppIcon";
 import { BowserEntry } from "../types"
+import BowserSelect from "./BowserSelect";
 
 interface Props {
     items?: BowserEntry[];
@@ -65,13 +66,15 @@ export default function BowserDetailsTable({ items = [], onChange, error, touche
                     </tr>
                 </thead>
                 <tbody>
-                    {items.map((item) => <tr key={item.id}>
+                    {items.map((item, index) => <tr key={item.id}>
                         <td>
-                            <Input disabled={disabled}
-                                value={item.capacity}
+                            <BowserSelect
+                                index={index}
                                 name="capacity"
-                                type="number"
-                                onChange={(e) => updateItem(item.id, e)} />
+                                disabled={disabled}
+                                onChange={(e) => updateItem(item.id, e)}
+                                value={item.capacity}
+                            />
                         </td>
                         <td>
                             <Input
