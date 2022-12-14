@@ -25,7 +25,7 @@ export default function EntryTransactionsList({ entry, items, onUpdate }: Props)
         const formated: EntryTransaction[] = [];
         items.filter(i => i.type != EntryTransactionType.Out).forEach(approval => {
             if (approval.type == EntryTransactionType.Approval) {
-                const outgoing = items.filter(i => i.approvalId == approval.id);
+                const outgoing = items.filter(i => i.approvalId == approval.id && i.orderStatus != OrderStatus.Cancelled);
                 const totalOut = numbersHelpers.sanitize(outgoing
                     .map(e => e.orderStatus == OrderStatus.Delivered ? e.deliveredQuantity : e.quantity)
                     .reduce((a, b) => a + b, 0));
