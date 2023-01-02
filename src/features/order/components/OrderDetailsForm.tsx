@@ -147,7 +147,7 @@ export default function OrderDetailsForm({ orderId, onUpdate, onDelete, approval
                 .test('FillAll', 'must fill all required fields',
                     (items, ctx) => items ? items.every((i: OrderStockReleaseEntry) => {
                         const valid = i.entryNo && i.quantity > 0 && i.approvalId
-                            && (ctx.parent.status === OrderStatus.Undelivered || i.deliveredQuantity && i.deliveredQuantity > 0)
+                            && (ctx.parent.status === OrderStatus.Undelivered || i.deliveredQuantity != undefined)
                         return valid;
                     }) : false)
                 .test('DeliveredQuantityLessThanQuantity', 'Delivered Quantities must be <= Quantity',

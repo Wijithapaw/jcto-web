@@ -143,7 +143,7 @@ export default function StockReleaseEntriesTable({ items = [], orderId, onChange
                         </td>
                         <td><Input maxLength={20} value={item.obRef} disabled={disabled} name="obRef" onChange={(e) => updateItem(item.id, e)} /></td>
                         <td><Input disabled={disabled} value={item.quantity} name="quantity" type="number" step="0.001" onChange={(e) => updateItem(item.id, e)} /></td>
-                        {showDeliveredQty && <td><Input disabled={disabled} value={item.deliveredQuantity} name="deliveredQuantity" type="number" step="0.0001" onChange={(e) => updateItem(item.id, e)} /></td>}
+                        {showDeliveredQty && <td><Input disabled={disabled} value={item.deliveredQuantity} name="deliveredQuantity" type="number" step="0.001" onChange={(e) => updateItem(item.id, e)} /></td>}
                         {!disabled && <td className="align-middle"> <AppIcon icon="x"
                             onClick={() => deleteItem(item.id)}
                             className="text-danger"
